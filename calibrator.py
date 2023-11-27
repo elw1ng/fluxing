@@ -1,19 +1,17 @@
 from scripts.base import BaseScript  # обязательный импорт для наследования
 from ultralytics import YOLO
 import cv2 as cv
-import numpy as np
-import os
 import random
 from time import sleep
 from time import time
-from PIL import Image, ImageGrab
 import dxcam
 import pyautogui
 import win32api, win32con, win32gui
 import math
 from tools import telega
 from threading import Thread
-from matplotlib import pyplot as plt
+
+
 class ClassName(BaseScript):  # Название класса (должен отличаться от других названий скриптов)
 
     def __init__(self):
@@ -67,7 +65,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.target_fps = 45
         self.savemovetimer = 2.5
         self.savedelay = 69
-        self.bot = telega.Telega(self.USER1_ID,self.USER2_ID, self.TOKEN)
+        self.bot = telega.Telega(self.USER1_ID, self.USER2_ID, self.TOKEN)
         self.SleepMode = True
         self.NoAnsweredThecalltime = time()
         self.looptime = time()

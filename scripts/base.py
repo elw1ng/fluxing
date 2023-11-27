@@ -1,7 +1,6 @@
 import time
 
 import keyboard
-import autoit
 import tools.jsonOper
 import pyautogui
 

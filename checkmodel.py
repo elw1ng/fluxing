@@ -1,17 +1,11 @@
 from scripts.base import BaseScript  # обязательный импорт для наследования
 from ultralytics import YOLO
 import cv2 as cv
-import numpy as np
-import os
-import random
 from time import sleep
 from time import time
-from PIL import Image, ImageGrab
 import dxcam
-import win32api, win32con, win32gui
-import math
+import win32gui
 from tools import telega
-from matplotlib import pyplot as plt
 
 
 class ClassName(BaseScript):  # Название класса (должен отличаться от других названий скриптов)

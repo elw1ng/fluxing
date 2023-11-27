@@ -1,22 +1,32 @@
-import sys
-
 from scripts.base import BaseScript  # обязательный импорт для наследования
 from ultralytics import YOLO
 import cv2 as cv
-import numpy as np
-import os
 import random
 from time import sleep
 from time import time
-from PIL import Image, ImageGrab
 import dxcam
-import pyautogui
 import win32api, win32con, win32gui
 import math
 from tools import telega
-from threading import Thread
-from matplotlib import pyplot as plt
-import flux
+import socket
+
+# отримуємо IP-адресу хоста
+host_ip = socket.gethostbyname(socket.gethostname())
+#host_ip = "193.33.38.56"
+print("Host IP address:", host_ip)
+
+# створюємо сокет та встановлюємо його для прослуховування
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket.bind((host_ip, 12345))
+server_socket.listen(1)
+
+print("Waiting for connections...")
+
+# очікуємо на підключення першого клієнта
+client1_socket, client1_address = server_socket.accept()
+print("Client 1 connected from", client1_address)
+
+
 class ClassName(BaseScript):  # Название класса (должен отличаться от других названий скриптов)
 
     def __init__(self):
@@ -36,8 +46,8 @@ class ClassName(BaseScript):  # Название класса (должен от
         """ Кастомные атрибуты писать здесь """
         self.debug = True
         self.mousereturn = [0, 0]
+        #self.model = YOLO("bestminusGamma.pt")  # load a pretrained YOLOv8n model
         self.model = YOLO("bestNEW.pt")  # load a pretrained YOLOv8n model
-        #self.model = YOLO("bestOUTDOORnew.pt")  # load a pretrained YOLOv8n model
 
         # Get rect of Window
         self.hwnd = win32gui.FindWindow(None, 'Mortal Online 2  ')
@@ -68,33 +78,26 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.USER2_ID = self.keys['key18']['value']
         self.TOKEN = self.keys['key19']['value']
         self.target_fps = 45
-        self.savemovetimer = 2.5
-        self.savedelay = 69
-        self.bot = telega.Telega(self.USER1_ID,self.USER2_ID, self.TOKEN)
-        self.SleepMode = True
+        self.savemovetimer = 3
+        self.savedelay = 100
+        self.bot = telega.Telega(self.USER1_ID, self.USER2_ID, self.TOKEN)
+        self.SleepMode=False
         self.NoAnsweredThecalltime = time()
         self.looptime = time()
         self.movetime = 0
         self.movecounter = 0
         self.stop = False
-        self.lowmana_percentage = 0.07
+        self.lowmana_percentage = 0.02
         self.lkmpressed = False
-        self.pkmpressed = False
         self.SuperSave = False
         self.lkmspam = True
         self.lkmballspam = False
         self.SecretSpotSetting = False
         self.justReturned = False
-        self.safeMode = False
-        self.nospiritRow = 0
-        self.spiritCounter = 0
+
         self.nospiritCounter = 0
-        self.AFKtime = 0
-        self.lvling = False
-        self.ultrasave = True
-        self.ultrasavereturning = False
-        self.ultrasavecounter=0
-        self.earlydamagesave = True
+        self.spiritCounter = 0
+        self.lastCalibrate = 0
         self.hwnd = win32gui.FindWindow(None, 'Mortal Online 2  ')
         # hwnd = win32gui.FinwdWindow("UnrealWindow", None) # Fortnite
         self.rect = win32gui.GetWindowRect(self.hwnd)
@@ -103,14 +106,9 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         self.img = None
         self.fpstimer= time()
-        self.inittimer = time()
-        self.t = None
-        self.mover = None
+
     def getNextFrame(self):
-        if self.t is not None:
-            self.t.join()
-            self.t = None
-            sleep(1/35)
+
         while time() - self.fpstimer < (1 / self.target_fps):
             sleep(0.001)
         img = self.camera.grab(
@@ -136,22 +134,8 @@ class ClassName(BaseScript):  # Название класса (должен от
 
     # Посылает сообщение в телегу
     def send_message_telega(self, text):
-        self.bot.send_message(f"{text} \n when {self.spiritCounter} spirits were fluxed and {self.nospiritCounter} summon fails,\n overall AFKtime = {self.AFKtime} seconds \n sultrasaves: {self.ultrasavecounter} \n , working time: {(time()-self.inittimer)/3600} hours , spirits per minute: {60*self.spiritCounter/(time()-self.inittimer)}")
+        self.bot.send_message(f"{text} \n when {self.spiritCounter} spirits were fluxed and {self.nospiritCounter} summon fails")
 
-    def pkmpress(self):
-        win32gui.SetForegroundWindow(self.hwnd)
-        if not self.pkmpressed:
-            win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTDOWN, 0, 0)
-            self.pkmpressed = True
-            return True
-        return False
-    def pkmrelease(self):
-        win32gui.SetForegroundWindow(self.hwnd)
-        if self.pkmpressed:
-            win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP, 0, 0)
-            self.pkmpressed = False
-            return True
-        return False
     def checkDistanceY(self, box, img_h=640):
         x1, y1, x2, y2 = box.xyxy[0]
         c_y = ((y2 - y1) / 2) + y1
@@ -167,7 +151,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         c_x = ((x2 - x1) / 2) + x1
         c_y = ((y2 - y1) / 2) + y1
         return math.sqrt(math.pow(img_w / 2 - c_x, 2) + math.pow(img_h / 2 - c_y, 2))
-    def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove = None, limit = 400):
+    def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove = None, limit = 350):
         # Check Closest
 
         at = 0
@@ -188,34 +172,30 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         # Move mouse and shoot
         scalex = scale
-        scaley = 1.0
+        scaley = 0.9
         x = int(x * scalex)
         y = int(y * scaley)
         r1, r2 = self.get_angles([int(x + img_w / 2), int(y + img_h / 2)])
 
-        x = int(10 * r1 / 1.125*90/60)
-        y = int(10 * r2 / 1.125*90/60)
-        if x == 0 and y == 0:
-            return False, currentMousemove
+        x = int(10 * r1 / 1.125*90/75)
+        y = int(10 * r2 / 1.125*90/75)
 
         if currentMousemove is not None and limit is not None:
-            if math.sqrt(math.pow(currentMousemove[0]+x,2)+4*math.pow(currentMousemove[1]+y, 2)) < 1.5*limit:
+            if math.sqrt(math.pow(currentMousemove[0]+x,2)+4*math.pow(currentMousemove[1]+y, 2)) < 2*limit:
                 self.mousereturn[0] += x
                 self.mousereturn[1] += y
                 currentMousemove[0] += x
                 currentMousemove[1] += y
-                self.t=Thread(target=self.mousemove, args=(x, y))
-                self.t.start()
+                self.mousemove(x, y)
                 return True, currentMousemove
             else:
                 return False, currentMousemove
         else:
             self.mousereturn[0] += x
             self.mousereturn[1] += y
-            self.t=Thread(target=self.mousemove, args=(x, y))
-            self.t.start()
+            self.mousemove(x, y)
             return True, None
-    def confirmExisting(self, checkbox, precision=0.6,conf=0.03,i = 3):
+    def confirmExisting(self, checkbox, precision=0.6,conf=0.04,i = 3):
 
         newbox = None
         newbox_XDiff = None
@@ -255,6 +235,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             return True, checkbox
 
         return False, None
+
     def track(self, checkbox, precision=0.6, conf=0.03, i=1):
 
         newbox = None
@@ -290,40 +271,39 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         return False, None
     def nextTarget(self, checkbox, conf=0.03):
-            newbox = None
-            counter = 0
-            newbox_XDiff = None
-            newbox_YDiff = None
-            found = False
-            #sleep(1 / 60)
-            self.getNextFrame()
-            Prediction = self.model.predict(source=self.img, device=0, conf=conf, iou=0.2)
-            detected_boxes = Prediction[0].boxes
-            if len(detected_boxes) >= 1:
-                for box in detected_boxes:
-                    if (box.cls == checkbox.cls):
-                        sizeDiff = abs(box.xyxy[0][2]-box.xyxy[0][0]-checkbox.xyxy[0][2]+checkbox.xyxy[0][0])
-                        XDiff=abs(box.xyxy[0][0] - checkbox.xyxy[0][0])
-                        YDiff=abs(box.xyxy[0][1] - checkbox.xyxy[0][1])
-                        if sizeDiff < 35 and XDiff < 400 and YDiff < 400:
-                            if not found:
+        newbox = None
+        counter = 0
+        newbox_XDiff = None
+        newbox_YDiff = None
+        found = False
+        #sleep(1 / 60)
+        self.getNextFrame()
+        Prediction = self.model.predict(source=self.img, device=0, conf=conf, iou=0.2)
+        detected_boxes = Prediction[0].boxes
+        if len(detected_boxes) >= 1:
+            for box in detected_boxes:
+                if (box.cls == checkbox.cls):
+                    sizeDiff = abs(box.xyxy[0][2]-box.xyxy[0][0]-checkbox.xyxy[0][2]+checkbox.xyxy[0][0])
+                    XDiff=abs(box.xyxy[0][0] - checkbox.xyxy[0][0])
+                    YDiff=abs(box.xyxy[0][1] - checkbox.xyxy[0][1])
+                    if sizeDiff < 30 and XDiff < 120 and YDiff < 120:
+                        if not found:
+                            newbox = box
+                            newbox_XDiff = XDiff
+                            newbox_YDiff = YDiff
+                            found = True
+                        else:
+                            #dist1 = self.checkDistance(checkbox)
+                            #dist2 = self.checkDistance(box)
+
+                            if XDiff*XDiff+YDiff*YDiff >= 400 and \
+                                    (newbox.conf < box.conf or newbox_XDiff*newbox_XDiff + newbox_YDiff*newbox_YDiff<400):
                                 newbox = box
                                 newbox_XDiff = XDiff
                                 newbox_YDiff = YDiff
-                                found = True
-                            else:
-                                #dist1 = self.checkDistance(checkbox)
-                                #dist2 = self.checkDistance(box)
-
-                                if XDiff*XDiff+YDiff*YDiff >= 400 and \
-                                        (newbox.conf < box.conf or newbox_XDiff*newbox_XDiff + newbox_YDiff*newbox_YDiff<400):
-                                    newbox = box
-                                    newbox_XDiff = XDiff
-                                    newbox_YDiff = YDiff
-            if found:
-                return True, newbox
-            return False, None
-
+        if found:
+            return self.confirmExisting(newbox, i=1)
+        return False, None
     def lkmpress(self):
         if not self.lkmpressed:
             win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
@@ -335,31 +315,9 @@ class ClassName(BaseScript):  # Название класса (должен от
         if self.lkmpressed:
             win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
         self.lkmpressed = False
-    def moveOnSpirit(self):
-        self.getNextFrame()
-        Prediction = self.model.predict(source=self.img, device=0, conf=0.2, iou=0.2)
-        # print(Prediction[0].boxes.xyxy)
-
-        detected_boxes = Prediction[0].boxes
-
-        # debug the loop rate
-        # print('FPS {}'.format(1 / (time() - loop_time)))
-        # loop_time = time()
-        print("i will check")
-        if len(detected_boxes) >= 1:
-            results = self.getBestBox(detected_boxes, 1)
-            if not results is None:
-                best_box = results[0]
-                self.MouseMove(best_box)
-                sleep(0.1)
-
-    def BallLoop(self,firsttime = True):
+    def BallLoop(self):
         ball_loop = True
-        if firsttime:
-            ball_was = False
-        else:
-            ball_was = True
-        lkmpresstime = time()
+        ball_was = False
         noballstime = time()
         noballstimeFull = noballstime
         kitetime = time()
@@ -377,12 +335,10 @@ class ClassName(BaseScript):  # Название класса (должен от
                 sleep(0.15)
                 self.hold_and_release_sleep(self.moveforward, 1.5)
             '''
-            if time() - self.looptime > 2.5 and not ball_was:
-                print("noBALLSonspirit")
-                self.restart = True
-                self.gosave()
-                return False
-
+            if time() - self.looptime > 1 and not ball_was:
+                self.lkmpress()
+                sleep(0.35)
+                self.lkmrelease()
             '''
             if time() - self.looptime > 25:
                 sleep(0.2)
@@ -397,11 +353,6 @@ class ClassName(BaseScript):  # Название класса (должен от
 
             if (not ball_was):
                 noballstime = time()
-            if self.earlydamagesave and (not ball_was or (ball_was and (time()-noballstimeFull < 1.1))) and self.checklowmana(percentage=0.15,ignoresafemode=True):
-                print("earlyLOWMANA")
-                self.restart = True
-                self.gosave()
-                return False
             #sleep(1 / 60)
             self.getNextFrame()
 
@@ -410,7 +361,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.stop = True
                 break
 
-            Prediction = self.model.predict(source=self.img, device=0, conf=0.07)
+            Prediction = self.model.predict(source=self.img, device=0, conf=0.065)
             detected_boxes = Prediction[0].boxes
 
             if self.checklowmana():
@@ -428,35 +379,15 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                     bestbox, _ = results
 
-                    result = self.confirmExisting(bestbox,conf=0.04,i=1,precision=0.99)
+                    result = self.confirmExisting(bestbox,conf=0.065,i=2,precision=0.99)
                     confirmed = result[0]
                     bestbox = result[1]
                     scale = 1
                     #if confirmed:
                     holdtime = time()
                     while confirmed:
-                        if self.earlydamagesave and (not ball_was or (ball_was and (time() - noballstimeFull < 0.8))) and self.checklowmana(percentage=0.16, ignoresafemode=True):
-                            print("earlyLOWMANA")
-                            self.restart = True
-                            self.gosave()
-                            return False
-                        if self.safeMode and (time() - noballstimeFull > 2):
-                            if (time() - noballstimeFull > 6.5) and self.checklowmana(percentage=0.08):
-                                print("6.5 sec Timer + low mana in ballloop save")
-                                self.restart = True
-                                self.gosave()
-                                return False
-                            elif (time() - noballstimeFull > 4) and self.checklowmana(percentage=0.09):
-                                print("4 sec Timer + low mana in ballloop save")
-                                self.restart = True
-                                self.gosave()
-                                return False
-                            elif self.checklowmana(percentage=0.11):
-                                print("2 sec Timer + low mana in ballloop save")
-                                self.restart = True
-                                self.gosave()
-                                return False
-                        if self.safeMode and self.checklowmana():
+
+                        if self.checklowmana():
                             print("LOWMANA")
                             self.restart = True
                             self.gosave()
@@ -467,6 +398,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                         else:
                             scale = 1+(self.Prefire-1)*((100)/(ml*ml))
                         mouseresult = self.MouseMove(bestbox, scale=scale,currentMousemove=maxmousemove)
+                        noballstime = time()
                         if mouseresult[0]:
                             ball_was = True
                             noballstime = time()
@@ -485,71 +417,38 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                         maxmousemove = mouseresult[1]
 
-                        if time()-holdtime < 0.275:
-                            sleep(0.02)
-                            result = self.track(bestbox, conf=0.07,precision=0.99,i=1)
+                        if time()-holdtime < 0.255:
+                            sleep(0.040)
+                            result = self.track(bestbox, conf=0.065,precision=0.99,i=1)
                             confirmed = result[0]
-                            if confirmed:
-                                noballstime = time()
-                                bestbox = result[1]
-                            if not confirmed:
-                                result = self.nextTarget(bestbox, conf=0.07)
-                                confirmed = result[0]
-                                if confirmed:
-                                    noballstime = time()
-                                    bestbox = result[1]
-                                    holdtime = time()
+                            bestbox = result[1]
                         else:
-                            sleep(0.02)
-                            result = self.nextTarget(bestbox, conf=0.07)
+                            result = self.nextTarget(bestbox, conf=0.065)
                             confirmed = result[0]
-                            if confirmed:
-                                noballstime = time()
-                                bestbox = result[1]
-                                holdtime = time()
+                            bestbox = result[1]
+                            holdtime = time()
 
                     #print("Otpusk")
                     #if pressed:
                     #    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
                     #    pressed= False
 
-            #if (ball_was) and (time() - noballstime > 1.0):
-                #self.lkmrelease()
+            if (ball_was) and (time() - noballstime > 1.0):
+                self.lkmrelease()
                 #print("OTPUSK")
-
-            if (ball_was) and (time() - noballstime > 0.7) and (self.mousereturn[0] > 40 or self.mousereturn[1] > 40):
-                self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
-                self.mousereturn[0] = 0
-                self.mousereturn[1] = 0
-                maxmousemove = [0, 0]
-
-            if (ball_was) and (time() - noballstime > 3.4):
-                self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
-                self.mousereturn[0] = 0
-                self.mousereturn[1] = 0
-                maxmousemove = [0, 0]
+            if (ball_was) and (time() - noballstime > 7.5):
                 ball_loop = False
                 self.lkmrelease()
                 print("ballstop")
+                command = 1
+                command_with_time = f"{command}".encode()
+                client1_socket.sendall(command_with_time)
             if (time() - noballstimeFull > 50):
                 ball_loop = False
                 self.lkmrelease()
-            if self.safeMode and (time() - noballstimeFull > 2):
-                if (time() - noballstimeFull > 6.5) and self.checklowmana(percentage=0.08):
-                    print("6.5 sec Timer + low mana in ballloop save")
-                    self.restart = True
-                    self.gosave()
-                    return False
-                elif (time() - noballstimeFull > 4) and self.checklowmana(percentage=0.095):
-                    print("4 sec Timer + low mana in ballloop save")
-                    self.restart = True
-                    self.gosave()
-                    return False
-                elif self.checklowmana(percentage=0.11):
-                    print("2 sec Timer + low mana in ballloop save")
-                    self.restart = True
-                    self.gosave()
-                    return False
+                command = 1
+                command_with_time = f"{command}".encode()
+                client1_socket.sendall(command_with_time)
     def getBestBox(self, detected_boxes, cls):
         best_box = None
         #bestboxdistFactor = None
@@ -559,7 +458,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             distFactor = self.checkDistance(box)
             Y = self.checkDistanceY(box)
             #X = self.checkDistanceX(box)
-            if -180 < Y < 160  and distFactor < 320:
+            if -180 < Y < 300:
                 if box.cls == cls and not ballexist:
 
                     result = self.confirmExisting(box)
@@ -584,50 +483,74 @@ class ClassName(BaseScript):  # Название класса (должен от
             return best_box, no_time
         else:
             return None
+    def SpiritLoop1(self):
+        spirit_loop = True
+        nospirittime = time()
+        maxmousemove = [0,0]
 
-    def getBestBoxOLD(self, detected_boxes, cls):
-        best_box = None
-        bestboxdistFactor = None
-        ballexist = False
-        no_time = None
-        for box in detected_boxes:
-            distFactor = self.checkDistance(box)
-            Y = self.checkDistanceY(box)
-            #X = self.checkDistanceX(box)
-            if -180 < Y < 160  and distFactor < 320:
-                if box.cls == cls and not ballexist:
+        while (spirit_loop):
 
-                    result = self.confirmExisting(box)
+            self.getNextFrame()
 
-                    confirmed = result[0]
-                    box = result[1]
-                    if confirmed:
-                        best_box = box
-                        bestboxdistFactor= distFactor
-                        ballexist = True
-                        no_time = time()
-                elif box.cls == cls and box.conf/(1+distFactor) > best_box.conf/(1+bestboxdistFactor) and ballexist:
-                    result = self.confirmExisting(box)
+            if self.blackScreenDetect():
+                self.send_message_telega(f"{time() -nospirittime} sec, VAS ZABANISHILI or VAS KICKNULO Vo vremya dobivaniya")
+                self.stop = True
+                break
+            ###
+            Prediction = self.model.predict(source=self.img, device=0, conf=0.2, iou=0.2)
+            # print(Prediction[0].boxes.xyxy)
 
-                    confirmed = result[0]
-                    box = result[1]
-                    if confirmed:
-                        best_box = box
-                        bestboxdistFactor = distFactor
-                        no_time = time()
-        if ballexist:
-            return best_box, no_time
-        else:
-            return None
+            detected_boxes = Prediction[0].boxes
 
-    def SpiritLoop(self,firsttime = True):
+            # debug the loop rate
+            # print('FPS {}'.format(1 / (time() - loop_time)))
+            # loop_time = time()
+            print("i will check")
+            if len(detected_boxes) >= 1:
+                results = self.getBestBox(detected_boxes, 1)
+                if not results is None:
+                    best_box = results[0]
+                    result = self.MouseMove(best_box, currentMousemove=maxmousemove,limit=450)
+                    maxmousemove = result[1]
+                    sleep(0.3)
+                    if self.spiritdetect():
+                        sleep(1.2)
+                        self.lkmpress()
+                        holdtime = time()
+                        sleep(1.2)
+                        print("click")
+                        while self.spiritdetect():   #time() - nospirittime < 3
+                            sleep(0.1)
+                            #result = self.confirmExisting(best_box, precision=0.3, conf=0.4)
+                            #confirmed = result[0]
+                           # if confirmed:
+                           #     nospirittime = time()
+                           # if (time() - holdtime > 26.0):
+                           #     break;
+
+                        spirit_loop = False
+
+                sleep(0.05)
+                print("release")
+                self.lkmrelease()
+            if time() - nospirittime > 20:
+                spirit_loop = False
+            if not spirit_loop:
+                for _ in range(self.movecounter):
+                    sleep(0.25)
+                    self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
+                    self.mousereturn[0] = 0
+                    self.mousereturn[1] = 0
+                    self.hold_and_release_sleep(self.moveback, 1)
+                    sleep(1)
+                    self.movecounter=0
+
+    def SpiritLoop(self):
         spirit_loop = True
         nospirittime = time()
         predictedtime = time()
         maxmousemove = [0,0]
         detected = False
-        netlimited = False
-        netlimittimer = random.uniform(16.3,21.3)
         while (spirit_loop):
 
             self.getNextFrame()
@@ -649,41 +572,31 @@ class ClassName(BaseScript):  # Название класса (должен от
             # debug the loop rate
             # print('FPS {}'.format(1 / (time() - loop_time)))
             # loop_time = time()
-            #print("i will check")
-            if len(detected_boxes) >= 1:
-                results = self.getBestBox(detected_boxes, 0)
-                if not results is None:
-                    bestbox, _ = results
-                    result = self.confirmExisting(bestbox,conf=0.12,i=3,precision=0.99)
-                    confirmed = result[0]
-                    if confirmed:
-                        return False
-
+            print("i will check")
             if len(detected_boxes) >= 1:
                 results = self.getBestBox(detected_boxes, 1)
                 if not results is None:
                     predictedtime = time()
                     best_box = results[0]
-                    result = self.MouseMove(best_box, currentMousemove=maxmousemove,limit=450)
+                    result = self.MouseMove(best_box, currentMousemove=maxmousemove,limit=600)
                     maxmousemove = result[1]
-                    sleep(0.05)
+                    sleep(0.3)
                     if self.spiritdetect():
-
+                        sleep(1)
                         nospirittime=time()
-                        #print("click")
-                        if not detected:
-                            spambeforenetlimit = time()
+                        print("click")
                         detected = True
+                        command = 2
+                        command_with_time = f"{command}".encode()
+                        client1_socket.sendall(command_with_time)
+                        randdelay=random.uniform(-0.5, 0.35)
+                        if randdelay< 0:
+                            randdelay =0
+                        print(f"Delay is {randdelay}")
+                        sleep(randdelay)
+
                         self.lkmpress()
-                        spamtimer = time()
-                        while self.spiritdetect() and time() - nospirittime < netlimittimer:
-                            self.getNextFrame()
-
-                            # debug the loop rate
-                            # print('FPS {}'.format(1 / (time() - loop_time)))
-                            # loop_time = time()
-                            #print("i will check")
-
+                        while self.spiritdetect():
                             if self.blackScreenDetect():
                                 self.send_message_telega(
                                     f"{time() - nospirittime} sec, VAS ZABANISHILI or VAS KICKNULO Vo vremya dobivaniya")
@@ -694,32 +607,18 @@ class ClassName(BaseScript):  # Название класса (должен от
                                 self.restart = True
                                 self.gosave()
                                 return False
-
-                            if self.lkmspam and time() - spamtimer > 0.120:
-                                if not netlimited:
-                                    sleep(0.12)
-                                    netlimited = True
-                                    pyautogui.keyDown('ctrl')
-                                    pyautogui.press('r')
-                                    pyautogui.keyUp('ctrl')
-                                while time() - spamtimer < 0.220:
-                                    sleep(0.001)
+                            command = 2
+                            command_with_time = f"{command}".encode()
+                            client1_socket.sendall(command_with_time)
+                            if self.lkmspam:
                                 self.lkmrelease()
                                 sleep(0.001)
                                 self.lkmpress()
-                                spamtimer = time()
+                                sleep(0.115)
+                            sleep(0.1)
 
+                        print("release")
                         self.lkmrelease()
-                        if time() - nospirittime > netlimittimer or (time() - predictedtime > 5.5 and detected):
-                            sleep(0.3)
-                            netlimited = False
-                            pyautogui.keyDown('ctrl')
-                            pyautogui.press('r')
-                            pyautogui.keyUp('ctrl')
-                            spirit_loop = False
-                        #print("release")
-
-
 
 
                             #result = self.confirmExisting(best_box, precision=0.3, conf=0.4)
@@ -728,13 +627,13 @@ class ClassName(BaseScript):  # Название класса (должен от
                            #     nospirittime = time()
                            # if (time() - holdtime > 26.0):
                            #     break;
-            if time() - nospirittime > 30:
-                spirit_loop = False
-            if time() - predictedtime > 1.5 and not detected:
+            if time() - predictedtime > 3 and not detected:
                 self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
                 self.mousereturn[0] = 0
                 self.mousereturn[1] = 0
-            if time() - predictedtime > 7.5 and detected:
+            if time() - nospirittime > 30:
+                spirit_loop = False
+            if time() - predictedtime > 6 and detected:
                 spirit_loop = False
             if not spirit_loop:
                 for _ in range(self.movecounter):
@@ -746,8 +645,6 @@ class ClassName(BaseScript):  # Название класса (должен от
                     sleep(1)
                     self.movecounter=0
         self.spiritCounter += 1
-        self.nospiritRow = 0
-        return True
     def startLoop(self):
         start_loop = True
         startp=self.looptime
@@ -768,32 +665,23 @@ class ClassName(BaseScript):  # Название класса (должен от
             #loop_time = time()
 
             while not status_confirmed:
-                if (time() - self.looptime > 4.5):
-                    self.nospiritCounter += 1
-                    self.nospiritRow += 1
+                if (time() - self.looptime > 10):
+                    self.restart = True
+                    self.gosave()
                     return False
-                if self.blackScreenDetect():
-                    self.send_message_telega(f"VAS ZABANISHILI or VAS KICKNULO za {time() - startp} sec posle prizuva")
-                    self.stop = True
-                    break
-                # if (time()-self.looptime > self.MaxMoveBackTimer) and not released:
-                #     self.release(self.moveback)
-                #     self.looptime = time()
-                #     #sleep(0.4)
-                #     print(f"{self.MaxMoveBackTimer} release")
-                #     released = True
+                if self.checknospirit():
+                    self.release(self.moveback)
+                    self.looptime = time()
+                    sleep(0.8)
+                    print(f"nospirit release")
+                    self.nospiritCounter+=1
+                    return False
                 if self.checkdrawnspirit():
                     print(f"spiritdrawned")
                     status_confirmed = True
-                    break
-
-                if not status_confirmed and self.checknospirit():
-                    #sleep(0.3)
-                    print(f"nospirit release")
-                    self.nospiritCounter += 1
-                    self.nospiritRow += 1
-                    return False
-
+                    command = 4
+                    command_with_time = f"{command}".encode()
+                    client1_socket.sendall(command_with_time)
                 if self.checklowmana():
                     print("LOWMANA")
                     self.restart = True
@@ -801,49 +689,44 @@ class ClassName(BaseScript):  # Название класса (должен от
                     return False
 
                 self.getNextFrame()
+                if self.blackScreenDetect():
+                    self.send_message_telega(f"VAS ZABANISHILI or VAS KICKNULO za {time() - startp} sec posle prizuva")
+                    self.stop = True
+                    break
+                if (time()-self.looptime > self.MaxMoveBackTimer) and not released:
+                    self.release(self.moveback)
+                    self.looptime = time()
+                    sleep(0.8)
+                    print(f"{self.MaxMoveBackTimer} release")
+                    released = True
 
-
-            if self.mover is not None:
-                self.mover.join()
-                self.mover = None
+            if (time() - self.looptime >= self.MaxMoveBackTimer) and not released:
+                self.release(self.moveback)
+                self.looptime = time()
+                sleep(0.5)
+                print(f"{self.MaxMoveBackTimer} release")
                 released = True
 
+            if released:
+                Prediction = self.model.predict(source=self.img, device=0, conf=0.1, iou=0.2)
+                detected_boxes = Prediction[0].boxes
 
-            Prediction = self.model.predict(source=self.img, device=0, conf=0.2, iou=0.2)
-            detected_boxes = Prediction[0].boxes
+                if len(detected_boxes) >= 1:
+                    results = self.getBestBox(detected_boxes, 1)
+                    if (not results is None):
+                        best_box, nospirittime = results
+                        result = self.confirmExisting(best_box, conf=0.1, precision=0.99, i = 4)
+                        confirmed = result[0]
+                        best_box = result[1]
 
-            if len(detected_boxes) >= 1:
-                results = self.getBestBox(detected_boxes, 1)
-                if (not results is None):
-                    best_box, nospirittime = results
-                    result = self.confirmExisting(best_box, conf=0.2, precision=0.99, i = 4)
-                    confirmed = result[0]
-                    best_box = result[1]
+                        if confirmed and self.checkDistance(best_box) < 330 and released:
+                            result = self.MouseMove(best_box , currentMousemove=maxmousemove,limit= 600)
+                            maxmousemove = result[1]
+                            if result[0]:
+                                return True
 
-                    if confirmed and self.checkDistance(best_box) < 320 and (best_box.xyxy[0][2] - best_box.xyxy[0][0] < self.MaxSpiritSize or released):
-                        # if not released:
-                        #     self.release(self.moveback)
-                        #     self.looptime = time()
-                        #     #sleep(0.3)
 
-                        self.lkmpress()
-                        result = self.MouseMove(best_box , currentMousemove=maxmousemove,limit= 450)
-                        maxmousemove = result[1]
-                        if result[0]:
-                            return True
-
-            if self.ultrasave and released and (time() - nospirittime > 5):
-                self.lkmrelease()
-                if self.ultrasavereturning:
-                    self.gosave(nomessage=True,timer=2.5)
-                    self.ultrasavecounter+=1
-                    return True
-                else:
-                    self.restart = True
-                    self.gosave(nomessage=True)
-                    self.ultrasavecounter += 1
-                    return False
-            if (time() - nospirittime > 12):
+            if (time() - nospirittime > 10):
                 self.lkmrelease()
                 self.restart = True
                 self.gosave()
@@ -854,7 +737,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.gosave()
                 return False
         return True
-    def get_angles(self, aim_target, window_size=[640, 640], fov=(60, 60)):
+    def get_angles(self, aim_target, window_size=[640, 640], fov=(75, 75)):
         fov = (math.radians(fov[0]), math.radians(fov[1]))
 
         x_pos = aim_target[0] / (window_size[0] - 1)
@@ -866,7 +749,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         return (math.degrees(x_angle), math.degrees(y_angle))
     def mousemove(self, x, y, timer=0.01):
 
-        n = int(max(abs(x) / 70, abs(y) / 70))
+        n = int(max(abs(x) / 50, abs(y) / 50))
 
         if abs(x) > 0 or abs(y) > 0:
             if n > 0:
@@ -883,42 +766,33 @@ class ClassName(BaseScript):  # Название класса (должен от
             else:
                 win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, x, y, 0, 0)
                 sleep(timer)
-
-    def fastselfcast(self, spell, casttime):
-        if not self.checker.is_alive() or self.ban or self.mainmenu or self.blackscreen:
-            self.checker.join()
-            if self.ban:
-                self.returning()
-                if self.mover is not None:
-                    self.mover.join()
-                self.logout()
-            elif not self.mainmenu:
-                self.send_message_telega(f"VAS ZABANISHILI or VAS KICKNULO Vo vremya selfcasta knopki {spell}")
-            sys.exit()
+    def fastselfcast(self,spell,casttime):
         if self.stop:
             return False
-        # sleep(0.15)
+        sleep(0.15)
         self.press(spell)
-        sleep(0.05)
-        # self.hold_and_release_sleep(self.moveleft,0.1)
+        sleep(0.1)
+        #self.hold_and_release_sleep(self.moveleft,0.1)
         self.press(self.feint)
-        sleep(0.05)
-        # self.hold_and_release_sleep(self.moveright,0.1)
+        sleep(0.15)
+        #self.hold_and_release_sleep(self.moveright,0.1)
         self.press(self.selfcast)
         self.getNextFrame()
         if self.blackScreenDetect():
             self.send_message_telega(f"VAS ZABANISHILI or VAS KICKNULO Vo vremya selfcasta knopki {spell}")
-            sys.exit()
+            self.stop = True
+            return False
         if self.checklowmana():
             print("LOWMANA")
             self.restart = True
             self.gosave()
             return False
-        sleep(casttime / 2)
+        sleep(casttime/2)
         self.getNextFrame()
         if self.blackScreenDetect():
             self.send_message_telega(f"VAS ZABANISHILI or VAS KICKNULO Vo vremya selfcasta knopki {spell}")
-            sys.exit()
+            self.stop = True
+            return False
         if self.checklowmana():
             print("LOWMANA")
             self.restart = True
@@ -942,11 +816,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.getNextFrame()
         img = self.img[358:372,223:244]
         if self.imgfind(img, "nospirit.png", "nospiritmask.png"):
-            self.getNextFrame()
-            if self.imgfind(img, "nospirit.png", "nospiritmask.png"):
-                return True
-            else:
-                return False
+            return True
         else:
             return False
     def checkdrawnspirit(self):
@@ -954,51 +824,35 @@ class ClassName(BaseScript):  # Название класса (должен от
         # Read the images from the file
         self.getNextFrame()
         img = self.img[358:372, 223:253]
-        if self.imgfind(img, "drawnthespirit.png", "drawnthespiritmask.png",conf=0.5):
-            self.getNextFrame()
-            if self.imgfind(img, "drawnthespirit.png", "drawnthespiritmask.png",conf=0.5):
-                return True
-            else:
-                return False
+        if self.imgfind(img, "drawnthespirit.png", "drawnthespiritmask.png"):
+            return True
         else:
             return False
-    def checklowmana(self , percentage = None , ignoresafemode = False ):
-        result = True
-        if not self.safeMode and not ignoresafemode:
-            return False
-        if percentage is None:
-            percentage = self.lowmana_percentage
+    def checklowmana(self):
+
         # Read the images from the file
-        bgrA=self.img[33:38, int(182 * percentage)]
+        bgrA=self.img[33:38, int(182 * self.lowmana_percentage)]
+        result = True
         for i in range(5):
             bgr = bgrA[i]
             #print(bgr)
             if bgr[0]>=bgr[1]-1 and bgr[2]+1<bgr[0] and bgr[0]>4:
                 result = False
         return result
-    def gosave(self,nomessage = False,timer = None):
-        self.restart = True
-        if self.mover is not None:
-            self.mover.join()
-            self.mover = None
-        if timer is None:
-            delay = self.savedelay
-        else:
-            delay = timer
-        self.AFKtime += delay
+    def gosave(self):
         print("TRYINGTOSTAYALIVE")
-        if not self.SleepMode and not nomessage:
+        if not self.SleepMode:
             self.send_message_telega("TRYING TO STAY ALIVe")
         self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
         self.mousereturn[0] = 0
         self.mousereturn[1] = 0
-        for _ in range(1):
+        for _ in range(6):
             self.getNextFrame()
             if self.blackScreenDetect():
                 self.send_message_telega("VAS ZABANISHILI or VAS KICKNULO when trying to save")
                 self.stop = True
                 return False
-            self.hold_and_release_sleep(self.moveback, self.savemovetimer)
+            self.hold_and_release_sleep(self.moveback, self.savemovetimer/6)
         if self.SuperSave:
             sleep(0.05)
             self.press('4')
@@ -1032,14 +886,14 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.stop = True
             return False
         for _ in range(120):
-            sleep(delay/120)
+            sleep(self.savedelay/120)
             self.getNextFrame()
             if self.blackScreenDetect():
                 self.send_message_telega("VAS ZABANISHILI or VAS KICKNULO when trying to save")
                 self.stop = True
                 return False
-        for _ in range(1):
-            self.hold_and_release_sleep(self.moveforward, self.savemovetimer*self.MoveForwardMultiplier)
+        for _ in range(6):
+            self.hold_and_release_sleep(self.moveforward, self.savemovetimer/6)
             self.getNextFrame()
             if self.blackScreenDetect():
                 self.send_message_telega("VAS ZABANISHILI or VAS KICKNULO when trying to save")
@@ -1047,28 +901,20 @@ class ClassName(BaseScript):  # Название класса (должен от
                 return False
         self.justReturned = True
         return True
-    def mousemoveABS(self, x, y):
-        pos = (x + 8 + self.rect[0], y + 31 + self.rect[1])
-        win32api.SetCursorPos(pos)
-        win32gui.SetForegroundWindow(self.hwnd)
-    def imgfind(self, large_image, small_img, mask=None, conf=0.69, loc = False ):
+    def imgfind(self, large_image, small_img, mask, conf=0.6 ):
 
         # Read the images from the file
         small_image = cv.imread(small_img)
-        if mask is not None:
-            mask = cv.imread(mask)
+        mask = cv.imread(mask)
         method = cv.TM_CCOEFF_NORMED
-        result = cv.matchTemplate(large_image, small_image, method, None,mask=mask)
-        # We want the minimum squared diff`erence
-        _, mx, _, mxLoc = cv.minMaxLoc(result)
+        result = cv.matchTemplate(large_image, small_image, method, None, mask)
+        # We want the minimum squared difference
+        _, mx, mxLoc, _ = cv.minMaxLoc(result)
+        #print(mx)
         if mx > conf and mx < 1.1:
             self.NoAnsweredThecalltime = time()
-            if loc:
-                return mxLoc
             return True
         else:
-            if loc:
-                return None
             return False
 
     def blackScreenDetect(self):
@@ -1092,140 +938,70 @@ class ClassName(BaseScript):  # Название класса (должен от
             return True
         else:
             return False
-    def menuDetect(self):
-
-        # Read the images from the file
-
-        img = self.img[0:66, 300:630]
-        small_image = cv.imread("white.png")
-       # cv.imshow("asdasd",small_image)
-
-
-        small_image = small_image#[43:57, 60:88]
-        large_image = img
-        #cv.imshow("asdasd", large_image)
-       # cv.waitKey(0)
-        method = cv.TM_CCORR_NORMED
-        result = cv.matchTemplate( large_image , small_image , method,None)
-        # We want the minimum squared difference
-        _, mx, _, _ = cv.minMaxLoc(result)
-        if mx == 0:
-            return True
-        else:
-            return False
     def returning(self):
+        sleep(0.1)
         # win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, -mousereturn[0], -mousereturn[1], 0, 0)
         print("ANGLES", self.mousereturn[0], self.mousereturn[1])
         self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
         self.mousereturn[0] = 0
         self.mousereturn[1] = 0
-        sleep(0.15)
-        if self.mover is None:
-            self.mover = Thread(target=self.hold_and_release_sleep, args=(self.moveforward, self.MaxMoveBackTimer * self.MoveForwardMultiplier))
-            self.mover.start()
-        else:
-            self.mover.join()
-            self.mover = Thread(target=self.hold_and_release_sleep, args=(self.moveforward, self.MaxMoveBackTimer * self.MoveForwardMultiplier))
-            self.mover.start()
-    def delete_cuprum2(self):
-
-        self.getNextFrame()
-        # Read the images from the file
-        img = self.img
-        mxLoc = self.imgfind(img, "cuprum2.png", loc=True, conf=0.91)
-        if mxLoc is not None:
-            self.deleteLoc(mxLoc)
-
-            print("cuprumfound")
-            return True
-
-        return False
-
-    def delete_cuprum1(self):
-
-        self.getNextFrame()
-        # Read the images from the file
-        img = self.img
-        mxLoc = self.imgfind(img, "cuprum1.png", loc=True, conf=0.91)
-        if mxLoc is not None:
-            self.deleteLoc(mxLoc)
-
-            print("cuprumfound")
-            return True
-
-        return self.delete_cuprum2()
-    def delete_cuprum(self):
-
-
-        self.getNextFrame()
-        # Read the images from the file
-        img = self.img
-        mxLoc = self.imgfind(img, "cuprum.png",loc=True,conf=0.91)
-        if  mxLoc is not None:
-            self.deleteLoc(mxLoc)
-
-            print("cuprumfound")
-            return True
-
-
-
-        return self.delete_cuprum1()
-    def delete(self):
-        self.hold_and_release_sleep('i', 0.2)
-        sleep(0.5)
-        while self.delete_cuprum():
-            sleep(0.6)
-        sleep(0.5)
-        self.hold_and_release_sleep('i', 0.2)
-    def deleteLoc(self,mxLoc):
-        win32gui.SetForegroundWindow(self.hwnd)
-        self.hold('alt')
-        self.mousemoveABS(mxLoc[0],mxLoc[1])
-        sleep(0.4)
-        self.pkmpress()
         sleep(0.3)
-        self.pkmrelease()
-        sleep(0.5)
-        win32gui.SetForegroundWindow(self.hwnd)
-        self.release('alt')
-        sleep(0.5)
-        self.mousemoveABS(278,  356)
-        sleep(0.2)
-        self.lkmpress()
-        sleep(0.1)
-        self.lkmrelease()
-        sleep(0.4)
-    def MoveBack(self):
-        self.hold_and_release_sleep(self.moveback, self.MaxMoveBackTimer)
-        #sleep(0.75)
-    def custom(self):
-        sleep(1)
-
-
-        #self.camera.start(region=(8+self.rect[0], 31+self.rect[1], 640+self.rect[0]-8, 640+self.rect[1]-31), target_fps=self.target_fps)
-        extrabarriertime = 0
-        if self.ultrasave and self.ultrasavereturning:
-            extrabarriertime=8
-        self.getNextFrame()
-
-            ###
-        Prediction = self.model.predict(source=self.img, device=0, conf=0.6, iou=0.2, imgsz = 640 , show = False)
-        sleep(1)
-        ###
-        timer60power = time() - 60
-        k=0
-        timer60 = time()-60
-        while (True):
-            # 10 pixels = 1.25degree
-            self.lkmrelease()
-            if self.menuDetect():
-                self.send_message_telega("MAIN MENU")
+        self.hold_and_release_sleep(self.moveforward, self.movetime * self.MoveForwardMultiplier)
+    def calibrate(self):
+        print("CALIBRATION")
+        while True:
+            self.getNextFrame()
+            if self.blackScreenDetect():
+                self.send_message_telega("VAS ZABANISHILI or VAS KICKNULO")
                 self.stop = True
             if self.stop:
                 break
-            if self.spiritCounter % 40 == 0:
-                self.delete()
-            print(f"Spirit № {self.spiritCounter}  and {self.nospiritCounter} fails\n , working time: {(time()-self.inittimer)/3600} hours , spirits per minute: {60*self.spiritCounter/(time()-self.inittimer)}")
+            try:
+                signal = client1_socket.recv(1024)
+                command = signal.decode()
+                if int(command) == 2:
+                    self.hold_and_release_sleep(self.moveback,0.275)
+                    sleep(0.5)
+                    command = 0
+                    command_with_time = f"{command}".encode()
+                    client1_socket.sendall(command_with_time)
+
+                elif int(command) == 1:
+                    self.hold_and_release_sleep(self.moveforward, 0.275)
+                    sleep(0.5)
+                    command = 0
+                    command_with_time = f"{command}".encode()
+                    client1_socket.sendall(command_with_time)
+                else:
+                    sleep(2)
+                    return True
+            except socket.timeout():
+                return False
+
+
+    def custom(self):
+
+
+
+
+        #self.camera.start(region=(8+self.rect[0], 31+self.rect[1], 640+self.rect[0]-8, 640+self.rect[1]-31), target_fps=self.target_fps)
+        self.getNextFrame()
+
+        ###
+        Prediction = self.model.predict(source=self.img, device=0, conf=0.6, iou=0.2, imgsz = 640)
+        sleep(1)
+        ###
+        timer60power = time() - 60
+
+        timer60 = time()-60
+        while (True):
+            print(f"Spirit № {self.spiritCounter} and {self.nospiritCounter} fails")
+            print(f"need {16-self.spiritCounter + self.lastCalibrate} more spirits for calibration")
+            # 10 pixels = 1.25degree
+            self.lkmrelease()
+            command = 0
+            command_with_time = f"{command}".encode()
+            client1_socket.sendall(command_with_time)
 
             self.getNextFrame()
             if self.blackScreenDetect():
@@ -1238,25 +1014,67 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.hold_and_release_sleep(self.moveback,1.1)
                 self.justReturned = False
             if time()-self.NoAnsweredThecalltime> self.StopifInactive:
-                if k%15 == 0:
-                    self.send_message_telega("NO SPIRIT OCHEN DOLGO")
-                k+=1
+                self.send_message_telega("NO SPIRIT OCHEN DOLGO")
+
+            if self.spiritCounter - self.lastCalibrate >= 16:
+                sleep(4)
+                command = 99
+                command_with_time = f"{command}".encode()
+                client1_socket.sendall(command_with_time)
+                self.calibrate()
+                self.lastCalibrate = self.spiritCounter
+            rebuffed = False
+            if (time() - timer60 > 45):
+                while (time() - timer60 < 52.5):
+                    sleep(0.1)
+                    self.getNextFrame()
+                    if self.blackScreenDetect():
+                        self.send_message_telega(f"VAS ZABANISHILI or VAS KICKNULO Vo vremya obnovleniya barriera")
+                        self.stop = True
+                    if self.checklowmana():
+                        print("LOWMANA")
+                        self.restart = True
+                        self.gosave()
+
+                command = 3
+                command_with_time = f"{command}".encode()
+                client1_socket.sendall(command_with_time)
+                rebuffed = True
+                self.fastselfcast(self.barrier, 4.5)
+                self.fastselfcast(self.kau, 4)
+                timer60 = time()
+
             while(not started):
                 if self.stop:
                     break
                 if time() - self.NoAnsweredThecalltime > self.StopifInactive:
-                    if k % 15 == 0:
-                        self.send_message_telega("NO SPIRIT OCHEN DOLGO")
-                    k += 1
+                    self.send_message_telega("NO SPIRIT OCHEN DOLGO")
 
-                self.fastselfcast(self.summon, 6.2)
-                if self.mover is None:
-                    self.mover = Thread(target=self.MoveBack(), args=())
-                    self.mover.start()
-                else:
-                    self.mover.join()
-                    self.mover = Thread(target=self.MoveBack(), args=())
-                    self.mover.start()
+                if(time()-timer60>45):
+                    while (time()-timer60<52.5):
+                        sleep(0.1)
+                        self.getNextFrame()
+                        if self.blackScreenDetect():
+                            self.send_message_telega(
+                                f"VAS ZABANISHILI or VAS KICKNULO Vo vremya prizuva")
+                            self.stop = True
+
+                        if self.checklowmana():
+                            print("LOWMANA")
+                            self.restart = True
+                            self.gosave()
+
+                    command = 3
+                    command_with_time = f"{command}".encode()
+                    client1_socket.sendall(command_with_time)
+                    rebuffed = True
+                    self.fastselfcast(self.barrier, 4.5)
+                    self.fastselfcast(self.kau, 4)
+                    timer60=time()
+
+
+                self.fastselfcast(self.summon, 6.25)
+                self.hold(self.moveback)
                 startp = time()
                 self.looptime = startp
 
@@ -1269,7 +1087,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     continue
                 self.movetime = self.looptime-startp
                 if (not started):
-                    sleep(1.6)
+                    sleep(1)
                     self.getNextFrame()
                     if self.blackScreenDetect():
                         self.send_message_telega(
@@ -1280,8 +1098,8 @@ class ClassName(BaseScript):  # Название класса (должен от
                         print("LOWMANA")
                         self.restart = True
                         self.gosave()
-                    self.returning()
-                    #sleep(1)
+                    self.hold_and_release_sleep(self.moveforward, self.movetime*self.MoveForwardMultiplier)
+                    sleep(1)
                     self.getNextFrame()
                     if self.blackScreenDetect():
                         self.send_message_telega(
@@ -1292,71 +1110,48 @@ class ClassName(BaseScript):  # Название класса (должен от
                         print("LOWMANA")
                         self.restart = True
                         self.gosave()
+
+
             print("\n\nBALLLOOP\n\n")
-
-            spiritdone = False
-            firsttime = True
-            while not spiritdone:
-                self.looptime = time()
-                if self.stop:
-                    break
-                self.BallLoop(firsttime = firsttime)
-
-                if self.restart:
-                    self.restart = False
-                    break
-
-                checkrebuff = time()-timer60power > 50
-                if checkrebuff:
-                    while time()-timer60power < 60.05:
-                        self.getNextFrame()
-                        Prediction = self.model.predict(source=self.img, device=0, conf=0.10, iou=0.2)
-                        # print(Prediction[0].boxes.xyxy)
-
-                        detected_boxes = Prediction[0].boxes
-
-                        # debug the loop rate
-                        # print('FPS {}'.format(1 / (time() - loop_time)))
-                        # loop_time = time()
-                        print("i will check")
-                        if len(detected_boxes) >= 1:
-                            results = self.getBestBox(detected_boxes, 0)
-                            if not results is None:
-                                bestbox, _ = results
-                                result = self.confirmExisting(bestbox, conf=0.10, i=2, precision=0.99)
-                                confirmed = result[0]
-                                if confirmed:
-                                    continue
-                        if self.blackScreenDetect():
-                            self.send_message_telega(
-                                f"VAS ZABANISHILI or VAS KICKNULO pered buffom expel")
-                            self.stop = True
-
-                        if self.checklowmana():
-                            print("LOWMANA")
-                            self.restart = True
-                            self.gosave()
-                        print("wait until 4 sec of expel")
-                if checkrebuff:
-                    sleep(0.07)
-                    timer60power = time()
-                    self.fastselfcast(self.power, 6.5 )
-
-                else:
-                    sleep(0.07)
-                    self.fastselfcast(self.kau, 4)
-                print("\n\nSPIRITLOOP\n\n")
-                if self.stop:
-                    break
-                spiritdone = self.SpiritLoop(firsttime = firsttime)
-                firsttime = False
+            self.looptime = time()
+            if self.stop:
+                break
+            self.BallLoop()
             if self.restart:
                 self.restart = False
                 self.returning()
-                break
+                continue
+
+            checkrebuff = time()-timer60power > 53 or not rebuffed
+            if checkrebuff:
+                while time()-timer60power < 53.1:
+                    sleep(0.1)
+                    self.getNextFrame()
+                    if self.blackScreenDetect():
+                        self.send_message_telega(
+                            f"VAS ZABANISHILI or VAS KICKNULO pered buffom expel")
+                        self.stop = True
+
+                    if self.checklowmana():
+                        print("LOWMANA")
+                        self.restart = True
+                        self.gosave()
+                    print("wait until 4 sec of expel")
+            if checkrebuff:
+                self.fastselfcast(self.power, 6.5 )
+                timer60power = time()
+            #else:
+                #self.fastselfcast(self.kau, 4)
+            print("\n\nSPIRITLOOP\n\n")
             if self.stop:
                 break
-            sleep(random.uniform(36,44))
+            self.SpiritLoop()
+            if self.restart:
+                self.restart = False
+                self.returning()
+                continue
+            if self.stop:
+                break
             self.returning()
 
             '''
@@ -1365,7 +1160,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 sleep(0.02)
             sleep(10.1)
             '''
-
+        client1_socket.close()
         self.camera.stop()
         print('Done.')
         pass

@@ -1,45 +1,16 @@
-from scripts.base import BaseScript  # обязательный импорт для наследования
-from ultralytics import YOLO
-import cv2 as cv
-import numpy as np
-import os
-import random
-import pyautogui
 import sys
 from time import sleep
 from time import time
-from PIL import Image, ImageGrab
-import dxcam
-import win32api, win32con, win32gui
-import math
-from tools import telega
 from threading import Thread
-from matplotlib import pyplot as plt
 import fLUX
 
 class ClassName(fLUX.ClassName):  # Название класса (должен отличаться от других названий скриптов)
 
     def custom(self):
-        try:
-            with open("counter.txt", "r") as file1:
-                read_content = int (file1.read())
-                if read_content < 94:
-                    self.spiritCounter = int (read_content)
-                    print("continue from checkpoint")
-                else:
-                    pass
-        except:
-            pass
-
-        donecount = 88
-        if len(sys.argv) > 1:
-            donecount = int(sys.argv[1])
-        print(f"donecount = {donecount}")
         sleep(1)
         if self.checker is None:
             self.checker = Thread(target=self.checkers, args=())
             self.checker.start()
-        notified = False
         # self.camera.start(region=(8+self.rect[0], 31+self.rect[1], 640+self.rect[0]-8, 640+self.rect[1]-31), target_fps=self.target_fps)
         extrabarriertime = 0
         if self.ultrasave and self.ultrasavereturning:
@@ -59,21 +30,15 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
                 if time()-timer60 > 1200:
                     self.send_message_telega("Unable to coonect to server 20 mins")
                     sys.exit()
+            rebuffed = False
             # 10 pixels = 1.25degree
             self.lkmrelease()
             if self.stop:
                 break
-            if not notified and self.spiritCounter > donecount:
-                self.send_message_telega(f"{donecount} Spirits DONE")
-                notified = True
-            with open("counter.txt", "w") as file1:
-                file1.write(str(self.spiritCounter))
-
             print(
                 f"Spirit № {self.spiritCounter}  and {self.nospiritCounter} fails\n , working time: {(time() - self.inittimer) / 3600} hours , spirits per minute: {60 * self.spiritCounter / (time() - self.inittimer)}")
 
             self.getNextFrame()
-
             if not self.checker.is_alive() or self.ban or self.mainmenu or self.blackscreen:
                 self.checker.join()
                 if self.ban:
@@ -109,6 +74,36 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
                     if k % 15 == 0:
                         self.send_message_telega("NO SPIRIT OCHEN DOLGO")
                     k += 1
+                if (time() - timer60 > 47.5 - extrabarriertime):
+                    if self.nospiritRow > 20:
+                        sleep(90)
+                        self.AFKtime += 90
+                        continue
+                    while (time() - timer60 < 60.05):
+                        sleep(0.1)
+                        self.getNextFrame()
+                        if not self.checker.is_alive() or self.ban or self.mainmenu or self.blackscreen:
+                            self.checker.join()
+                            if self.ban:
+                                if self.mover is not None:
+                                    self.mover.join()
+                                self.logout()
+                            elif not self.mainmenu:
+                                self.send_message_telega("BANISHED on trying to summon")
+                            sys.exit()
+
+                        if self.lowmana:
+                            print("LOWMANA")
+                            self.restart = True
+                            self.gosave()
+                    rebuffed = True
+                    if self.lvling:
+                        self.press(1)
+                        sleep(13)
+                    timer60 = time()
+                    self.fastselfcast(self.barrier, 4)
+                    # if self.checklowmana(percentage=0.36):
+                    self.fastselfcast(self.kau, 3.7)
 
                 self.fastselfcast(self.summon, 6.2)
                 if self.mover is None:
@@ -130,7 +125,7 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
                     continue
                 self.movetime = self.looptime - startp
                 if (not started):
-                    sleep(0.8)
+                    sleep(1.6)
                     self.getNextFrame()
                     if not self.checker.is_alive() or self.ban or self.mainmenu or self.blackscreen:
                         self.checker.join()
@@ -147,16 +142,17 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
                         self.restart = True
                         self.gosave()
                     self.returning()
+                    #sleep(1)
                     self.getNextFrame()
-
                     if not self.checker.is_alive() or self.ban or self.mainmenu or self.blackscreen:
                         self.checker.join()
                         if self.ban:
+                            self.returning()
                             if self.mover is not None:
                                 self.mover.join()
                             self.logout()
                         elif not self.mainmenu:
-                            self.send_message_telega("BANISHED on trying to summon")
+                            self.send_message_telega("BANISHED before expel")
                         sys.exit()
 
                     if self.lowmana:
@@ -171,34 +167,38 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
                 self.looptime = time()
                 if self.stop:
                     break
-                #self.lkmrelease()
-                self.BallLoop(firsttime = firsttime,maxnoballtimer=1)
+
+                self.BallLoop(firsttime = firsttime,maxnoballtimer=1.45)
                 firsttime = False
                 if self.restart:
                     self.restart = False
                     break
 
-                checkrebuff = time() - timer60power > 53.4
+                checkrebuff = time() - timer60power > 60
                 if checkrebuff:
-                    worktime = 60.01 -(time() - timer60power)
-                    if worktime > 1.5:
-                        if worktime > 9.5:
-                            worktime = 9.5
-                        self.SpiritLoop(worktime=worktime)
-
                     while time() - timer60power < 60.04:
                         self.getNextFrame()
+                        Prediction = self.model.predict(source=self.img, device=0, conf=0.3, iou=0.2)
+                        # print(Prediction[0].boxes.xyxy)
 
-                        if not self.checker.is_alive() or self.ban or self.mainmenu or self.blackscreen:
-                            self.checker.join()
-                            if self.ban:
-                                self.returning()
-                                if self.mover is not None:
-                                    self.mover.join()
-                                self.logout()
-                            elif not self.mainmenu:
-                                self.send_message_telega("BANISHED before expel")
-                            sys.exit()
+                        detected_boxes = Prediction[0].boxes
+
+                        # debug the loop rate
+                        # print('FPS {}'.format(1 / (time() - loop_time)))
+                        # loop_time = time()
+                        print("i will check")
+                        if len(detected_boxes) >= 1:
+                            results = self.getBestBox(detected_boxes, 0)
+                            if not results is None:
+                                bestbox, _ = results
+                                result = self.confirmExisting(bestbox, conf=0.3, i=2, precision=0.99)
+                                confirmed = result[0]
+                                if confirmed:
+                                    continue
+                        if self.blackScreenDetect():
+                            self.send_message_telega(
+                                f"VAS ZABANISHILI or VAS KICKNULO pered buffom expel")
+                            self.stop = True
 
                         if self.lowmana:
                             print("LOWMANA")
@@ -210,6 +210,11 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
                     timer60power = time()
                     self.fastselfcast(self.power, 4.6)
 
+                if not checkrebuff and not rebuffed:
+                    #sleep(0.07)
+                    self.lkmrelease()
+                    self.press(self.kau)
+                    sleep(3.8)
                 #else:
                     #self.fastselfcast(self.kau, 4)
                 print("\n\nSPIRITLOOP\n\n")

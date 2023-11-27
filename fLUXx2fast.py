@@ -1,20 +1,7 @@
-from scripts.base import BaseScript  # обязательный импорт для наследования
-from ultralytics import YOLO
-import cv2 as cv
-import numpy as np
-import os
-import random
-import pyautogui
 import sys
 from time import sleep
 from time import time
-from PIL import Image, ImageGrab
-import dxcam
-import win32api, win32con, win32gui
-import math
-from tools import telega
 from threading import Thread
-from matplotlib import pyplot as plt
 import fLUX
 
 class ClassName(fLUX.ClassName):  # Название класса (должен отличаться от других названий скриптов)
