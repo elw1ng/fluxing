@@ -743,7 +743,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     self.send_message_telega(f"BANISHED in spiritloop")
                 sys.exit()
             ###
-            Prediction = self.model.predict(source=self.img, device=0, conf=0.35, iou=0.6)
+            Prediction = self.model.predict(source=self.img, device=0, conf=0.25, iou=0.4)
             # print(Prediction[0].boxes.xyxy)
 
             detected_boxes = Prediction[0].boxes
@@ -782,7 +782,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
 
                             self.getNextFrame()
-                            Prediction = self.model.predict(source=self.img, device=0, conf=0.3, iou=0.6)
+                            Prediction = self.model.predict(source=self.img, device=0, conf=0.22, iou=0.6)
                             # print(Prediction[0].boxes.xyxy)
 
                             detected_boxes = Prediction[0].boxes
@@ -795,7 +795,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                 results = self.getBestBox(detected_boxes, 1)
                                 if not results is None:
                                     bestbox, _ = results
-                                    result = self.confirmExisting(bestbox, conf=0.3, i=3, precision=0.99)
+                                    result = self.confirmExisting(bestbox, conf=0.21, i=3, precision=0.99)
                                     confirmed = result[0]
                                     if confirmed:
                                         self.lkmspam = False
