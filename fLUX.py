@@ -1034,10 +1034,10 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         # Read the images from the file
         self.getNextFrame()
-        img = self.img[358:372, 223:244]
-        if self.imgfind(img, "nospirit.png", "nospiritmask.png"):
+        img = self.img[348:382, 213:254]
+        if self.imgfind(img, "nospirit.png", "nospiritmask.png",conf=0.83):
             self.getNextFrame()
-            if self.imgfind(img, "nospirit.png", "nospiritmask.png"):
+            if self.imgfind(img, "nospirit.png", "nospiritmask.png",conf=0.83):
                 return True
             else:
                 return False
@@ -1048,10 +1048,10 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         # Read the images from the file
         self.getNextFrame()
-        img = self.img[358:372, 223:253]
-        if self.imgfind(img, "drawnthespirit.png", "drawnthespiritmask.png",conf=0.5):
+        img = self.img[348:382, 213:263]
+        if self.imgfind(img, "drawnthespirit.png", "drawnthespiritmask.png",conf=0.64):
             self.getNextFrame()
-            if self.imgfind(img, "drawnthespirit.png", "drawnthespiritmask.png",conf=0.5):
+            if self.imgfind(img, "drawnthespirit.png", "drawnthespiritmask.png",conf=0.64):
                 return True
             else:
                 return False
