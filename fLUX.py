@@ -825,15 +825,15 @@ class ClassName(BaseScript):  # Название класса (должен от
                         #     nospirittime = time()
                         # if (time() - holdtime > 26.0):
                         #     break;
-            if time() - nospirittime > 5:
+            if time() - nospirittime > 8:
                 spirit_loop = False
-            if time() - nospirittime > 1.4 and not detected:
+            if time() - nospirittime > 3.4 and not detected:
                 self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
                 self.mousereturn[0] = 0
                 self.mousereturn[1] = 0
-            if time() - predictedtime > 4 and detected:
+            if time() - predictedtime > 6 and detected:
                 spirit_loop = False
-            if time() - nospirittime > 2.5 and detected:
+            if time() - nospirittime > 4.5 and detected:
                 spirit_loop = False
 
         self.spiritCounter += 1
@@ -1285,6 +1285,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 while self.blackScreenDetect():
                     sleep(1)
                     self.getNextFrame(throttle=1/60)
+                    self.press('space')
                 sleep(2)
                 if self.menuDetect():
                     self.send_message_telega("MAIN MENU")
