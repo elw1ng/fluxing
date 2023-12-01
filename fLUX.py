@@ -639,16 +639,16 @@ class ClassName(BaseScript):  # Название класса (должен от
             # if (ball_was) and (time() - noballstime > 1.0):
             # self.lkmrelease()
             # print("OTPUSK")
-            if (ball_was) and (time() - noballstime > 0.5) and (self.mousereturn[0] > 90 or self.mousereturn[1] > 90):
+            if (ball_was) and (time() - noballstime > 0.5) and (self.mousereturn[0] > 30 or self.mousereturn[1] > 30):
                 self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
                 self.mousereturn[0] = 0
                 self.mousereturn[1] = 0
                 maxmousemove = [0, 0]
             if (ball_was) and (time() - noballstime > maxnoballtimer) and (time() - noballstimeFull > 3.5):
-                #self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
-                #self.mousereturn[0] = 0
-                #self.mousereturn[1] = 0
-                #maxmousemove = [0, 0]
+                self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
+                self.mousereturn[0] = 0
+                self.mousereturn[1] = 0
+                maxmousemove = [0, 0]
                 ball_loop = False
                 self.lkmrelease()
                 print("ballstop")
