@@ -269,9 +269,9 @@ class ClassName(BaseScript):  # Название класса (должен от
         centers = []
 
         x1, y1, x2, y2 = box.xyxy[0]
-        if box.cls == 2 and (2 * (x2 - x1) < (y2 - y1)):
-            y2 = y2 - random.uniform(0, 0.65) * ((y2 - y1) - (x2 - x1))
-            print("move upper")
+        if box.cls == 0 and (2 * (x2 - x1) < (y2 - y1)):
+            y2 = y2 - random.uniform(0.2, 0.9) * ((y2 - y1) - (x2 - x1))
+            #print("move upper")
         c_x = ((x2 - x1) / 2) + x1
         c_y = ((y2 - y1) / 2) + y1
         centers.append((c_x, c_y))
