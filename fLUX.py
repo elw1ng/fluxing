@@ -1318,7 +1318,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.lkmrelease()
         pyautogui.press('esc')
         sleep(1)
-        self.pressLoc((322,380))
+        self.pressLoc((322,395))
     def custom(self):
         #sleep(1)
         self.getNextFrame()
