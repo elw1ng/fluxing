@@ -1035,9 +1035,9 @@ class ClassName(BaseScript):  # Название класса (должен от
         # Read the images from the file
         self.getNextFrame()
         img = self.img[348:382, 213:254]
-        if self.imgfind(img, "nospirit.png", "nospiritmask.png",conf=0.83):
+        if self.imgfind(img, "nospirit.png", "nospiritmask.png",conf=0.91):
             self.getNextFrame()
-            if self.imgfind(img, "nospirit.png", "nospiritmask.png",conf=0.83):
+            if self.imgfind(img, "nospirit.png", "nospiritmask.png",conf=0.91):
                 return True
             else:
                 return False
