@@ -434,17 +434,19 @@ class ClassName(BaseScript):  # Название класса (должен от
 
     def lkmpress(self):
         sleep(0.001)
-        #if not self.lkmpressed:
-        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
-        self.lkmpressed = True
-        return True
-        #return False
+        if not self.lkmpressed:
+            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
+            self.lkmpressed = True
+            return True
+        return False
 
     def lkmrelease(self):
         sleep(0.001)
-        #if self.lkmpressed:
-        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
-        self.lkmpressed = False
+        if self.lkmpressed:
+            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
+            self.lkmpressed = False
+            return True
+        return False
 
     def moveOnSpirit(self):
         self.getNextFrame()
@@ -468,6 +470,11 @@ class ClassName(BaseScript):  # Название класса (должен от
         win32gui.SetForegroundWindow(self.hwnd)
         self.lkmrelease()
         self.lkmpress()
+        if not firsttime:
+            sleep(0.001)
+            self.lkmrelease()
+            sleep(0.002)
+            self.lkmpress()
         ball_loop = True
         if firsttime:
             ball_was = False
