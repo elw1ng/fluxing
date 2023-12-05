@@ -470,6 +470,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         if not firsttime:
             sleep(1)
         win32gui.SetForegroundWindow(self.hwnd)
+        self.lkmrelease()
         self.lkmpress()
         ball_loop = True
         if firsttime:
