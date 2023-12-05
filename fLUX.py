@@ -723,6 +723,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             sleep(0.215)
             self.lkmrelease()
             self.lkmpress()
+        sleep(0.002)
         self.lkmrelease()
     def SpiritLoop(self,worktime= None):
         win32gui.SetForegroundWindow(self.hwnd)
