@@ -168,7 +168,7 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
                 if self.stop:
                     break
 
-                self.BallLoop(firsttime = firsttime,maxnoballtimer=1.45)
+                self.BallLoop(firsttime = firsttime,maxnoballtimer=1.6)
                 firsttime = False
                 if self.restart:
                     self.restart = False

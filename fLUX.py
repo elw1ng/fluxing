@@ -434,16 +434,16 @@ class ClassName(BaseScript):  # Название класса (должен от
 
     def lkmpress(self):
         sleep(0.001)
-        if not self.lkmpressed:
-            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
-            self.lkmpressed = True
-            return True
-        return False
+        #if not self.lkmpressed:
+        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
+        self.lkmpressed = True
+        return True
+        #return False
 
     def lkmrelease(self):
         sleep(0.001)
-        if self.lkmpressed:
-            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
+        #if self.lkmpressed:
+        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
         self.lkmpressed = False
 
     def moveOnSpirit(self):
