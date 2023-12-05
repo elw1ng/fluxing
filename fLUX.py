@@ -468,7 +468,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
     def BallLoop(self,firsttime = True,maxnoballtimer = 2.6):
         if not firsttime:
-            sleep(1)
+            sleep(0.3)
         win32gui.SetForegroundWindow(self.hwnd)
         self.lkmrelease()
         self.lkmpress()
