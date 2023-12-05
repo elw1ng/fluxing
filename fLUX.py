@@ -483,7 +483,8 @@ class ClassName(BaseScript):  # Название класса (должен от
         kitetime = time()
         maxmousemove = [0, 0]
         while (ball_loop):
-
+            self.lkmrelease()
+            self.lkmpress()
             '''
             if time() - kitetime > 10:
                 sleep(0.1)
