@@ -1084,16 +1084,16 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         # Read the images from the file
         bgrA = self.img[490:639, 1:150]
-        for i in range(490,639):
+        for i in range(1,149):
             rowcounter = 0
-            for j in range(1,150):
+            for j in range(1,149):
                 bgr = bgrA[i][j]
             # print(bgr)
-            if bgr[2] > 70 and bgr[1]+bgr[0] < bgr[2]/8:
-                rowcounter += 1
+                sum = int(bgr[0]) + int(bgr[1])
+                if bgr[2] > 70 and sum < int (bgr[2] / 2):
+                    rowcounter += 1
             if rowcounter > 25:
                 return True
-
         return result
 
     def gosave(self, nomessage=False, timer=None):
@@ -1341,7 +1341,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 pass
             else:
                 gmcheck = time()
-            if time()-gmcheck>5 and not gmsent and self.fpstimer<1:
+            if time()-gmcheck>5 and not gmsent and time()-self.fpstimer<1:
                 self.send_message_telega("GM!!!!!!!!!!!!!!!")
                 gmsent=True
 
