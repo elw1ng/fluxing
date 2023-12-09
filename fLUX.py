@@ -1006,8 +1006,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.mover = Thread(target=self.strafing, args=())
                 self.mover.start()
         sleep(casttime/2)
-        if strafe:
-            self.strafe= False
+        self.strafe = False
         sleep(casttime/2)
         return True
 
