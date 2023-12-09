@@ -57,11 +57,7 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
             self.lkmrelease()
             if self.stop:
                 break
-            if not notified and self.spiritCounter > donecount:
-                self.send_message_telega(f"{donecount} Spirits DONE")
-                notified = True
-            with open("counter.txt", "w") as file1:
-                file1.write(str(self.spiritCounter))
+
 
             print(
                 f"Spirit № {self.spiritCounter}  and {self.nospiritCounter} fails\n , working time: {(time() - self.inittimer) / 3600} hours , spirits per minute: {60 * self.spiritCounter / (time() - self.inittimer)}")
