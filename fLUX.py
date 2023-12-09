@@ -1341,7 +1341,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 pass
             else:
                 gmcheck = time()
-            if time()-gmcheck>5 and not gmsent:
+            if time()-gmcheck>5 and not gmsent and self.fpstimer<1:
                 self.send_message_telega("GM!!!!!!!!!!!!!!!")
                 gmsent=True
 
