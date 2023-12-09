@@ -1355,18 +1355,29 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.pressLoc((322,395))
     def strafing(self):
         while self.strafe:
-            strafetime = random.uniform(0.4,0.9)
-            i = random.randint(1,2)
+            strafetime = random.uniform(0.15,0.6)
+            i = random.randint(1,4)
             if i==1:
-                sleep(random.uniform(1,4))
+                sleep(random.uniform(0.8,2.4))
                 self.hold_and_release_sleep('d',strafetime)
-                sleep(random.uniform(1, 4))
+                sleep(random.uniform(0.8, 2.4))
                 self.hold_and_release_sleep('a',strafetime)
-            else:
-                sleep(random.uniform(1, 4))
+            elif i==2:
+                sleep(random.uniform(0.8, 2.4))
                 self.hold_and_release_sleep('d', strafetime)
-                sleep(random.uniform(1, 4))
+                sleep(random.uniform(0.8, 2.4))
                 self.hold_and_release_sleep('a', strafetime)
+            elif i==3:
+                sleep(random.uniform(0.8, 2.4))
+                self.hold_and_release_sleep('w', strafetime)
+                sleep(random.uniform(0.8, 2.4))
+                self.hold_and_release_sleep('s', strafetime)
+            else:
+                sleep(random.uniform(0.8, 2.4))
+                self.hold_and_release_sleep('s', strafetime)
+                sleep(random.uniform(0.8, 2.4))
+                self.hold_and_release_sleep('w', strafetime)
+
     def custom(self):
         #sleep(1)
         self.getNextFrame()
