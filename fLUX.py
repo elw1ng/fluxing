@@ -1343,26 +1343,26 @@ class ClassName(BaseScript):  # Название класса (должен от
     def strafing(self,jump = False):
         while self.strafe:
             strafetime = random.uniform(0.2 , 0.64)*random.uniform(0.2 , 0.64)
-            i = random.randint(1,13)
+            i = random.randint(1,12)
             if i==1:
-                sleep(random.uniform(0.4,1.23)*random.uniform(0.4, 1.2))
+                sleep(random.uniform(0.3,1.1)*random.uniform(0.3, 1.1))
                 self.hold_and_release_sleep('d',strafetime)
-                sleep(random.uniform(0.4, 1.23)*random.uniform(0.4, 1.2))
+                sleep(random.uniform(0.3, 1.1)*random.uniform(0.3, 1.1))
                 self.hold_and_release_sleep('a',strafetime)
             elif i==2:
-                sleep(random.uniform(0.4, 1.23)*random.uniform(0.4, 1.2))
+                sleep(random.uniform(0.3, 1.23)*random.uniform(0.3, 1.1))
                 self.hold_and_release_sleep('d', strafetime)
-                sleep(random.uniform(0.4, 1.23)*random.uniform(0.4, 1.2))
+                sleep(random.uniform(0.3, 1.23)*random.uniform(0.3, 1.1))
                 self.hold_and_release_sleep('a', strafetime)
             elif i==3:
-                sleep(random.uniform(0.4, 1.23)*random.uniform(0.4, 1.2))
+                sleep(random.uniform(0.3, 1.1)*random.uniform(0.3, 1.1))
                 self.hold_and_release_sleep('w', strafetime)
-                sleep(random.uniform(0.4, 1.23)*random.uniform(0.4, 1.2))
+                sleep(random.uniform(0.3, 1.1)*random.uniform(0.3, 1.1))
                 self.hold_and_release_sleep('s', strafetime)
             elif i==4:
-                sleep(random.uniform(0.4, 1.2)*random.uniform(0.4, 1.2))
+                sleep(random.uniform(0.3, 1.1)*random.uniform(0.3, 1.1))
                 self.hold_and_release_sleep('s', strafetime)
-                sleep(random.uniform(0.4, 1.2)*random.uniform(0.4, 1.2))
+                sleep(random.uniform(0.3, 1.1)*random.uniform(0.3, 1.1))
                 self.hold_and_release_sleep('w', strafetime)
             elif i==5 and jump:
                 self.hold_and_release_sleep("space",0.1)
