@@ -133,6 +133,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.reconnection = False
         sleep(1)
         self.inittimer = time()
+        self.strafe = False
 
 
     def videocamera(self):
@@ -1325,6 +1326,20 @@ class ClassName(BaseScript):  # Название класса (должен от
         pyautogui.press('esc')
         sleep(1)
         self.pressLoc((322,395))
+    def strafing(self):
+        while self.strafe:
+            strafetime = random.uniform(0.4,0.9)
+            i = random.randint(1,2)
+            if i==1:
+                sleep(random.uniform(1,4))
+                self.hold_and_release_sleep('d',strafetime)
+                sleep(random.uniform(1, 4))
+                self.hold_and_release_sleep('a',strafetime)
+            else:
+                sleep(random.uniform(1, 4))
+                self.hold_and_release_sleep('d', strafetime)
+                sleep(random.uniform(1, 4))
+                self.hold_and_release_sleep('a', strafetime)
     def custom(self):
         #sleep(1)
         self.getNextFrame()
@@ -1487,6 +1502,8 @@ class ClassName(BaseScript):  # Название класса (должен от
                 if self.stop:
                     break
                 #self.lkmrelease()
+
+
                 self.BallLoop(firsttime = firsttime,maxnoballtimer=2.6)
                 firsttime = False
                 if self.restart:
