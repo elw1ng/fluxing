@@ -183,11 +183,11 @@ class ClassName(BaseScript):  # Название класса (должен от
     def send_message_telega(self, text):
         try:
             self.bot.send_message(
-                f"{text} \n when {self.spiritCounter} spirits were fluxed and {self.nospiritCounter} summon fails,\n overall AFKtime = {self.AFKtime} seconds \n sultrasaves: {self.ultrasavecounter} \n , working time: {(time() - self.inittimer) / 3600} hours , spirits per minute: {60 * self.spiritCounter / (time() - self.inittimer)}")
+                f"{text} \n when {self.spiritCounter} spirits were fluxed and {self.nospiritCounter} summon fails,\n overall AFKtime = {self.AFKtime} seconds  \n , working time: {(time() - self.inittimer) / 3600} hours , spirits per minute: {60 * self.spiritCounter / (time() - self.inittimer)}")
         except Exception:
             print("NO INTERNET CONNECTION... retry")
             sleep(30)
-            self.send_message_telega(f"{text} due to UNSTABLE INTERNET \n when {self.spiritCounter} spirits were fluxed and {self.nospiritCounter} summon fails,\n overall AFKtime = {self.AFKtime} seconds \n sultrasaves: {self.ultrasavecounter} \n , working time: {(time() - self.inittimer) / 3600} hours , spirits per minute: {60 * self.spiritCounter / (time() - self.inittimer)}")
+            self.send_message_telega(f"{text}")
     def checkDistanceY(self, box, img_h=640):
         x1, y1, x2, y2 = box.xyxy[0]
         c_y = ((y2 - y1) / 2) + y1
@@ -1079,6 +1079,22 @@ class ClassName(BaseScript):  # Название класса (должен от
             if bgr[0] >= bgr[1] - 1 and bgr[2] + 1 < bgr[0] and bgr[0] > 4:
                 result = False
         return result
+    def checkGM(self, percentage=None, ignoresafemode=False):
+        result = False
+
+        # Read the images from the file
+        bgrA = self.img[490:639, 1:150]
+        for i in range(490,639):
+            rowcounter = 0
+            for j in range(1,150):
+                bgr = bgrA[i][j]
+            # print(bgr)
+            if bgr[2] > 70 and bgr[1]+bgr[0] < bgr[2]/8:
+                rowcounter += 1
+            if rowcounter > 25:
+                return True
+
+        return result
 
     def gosave(self, nomessage=False, timer=None):
         self.restart = True
@@ -1231,6 +1247,8 @@ class ClassName(BaseScript):  # Название класса (должен от
         #sleep(0.75)
 
     def checkers(self):
+        gmcheck=time()
+        gmsent = False
         while True:
             try:
                 command = self.client_socket.recv(1)
@@ -1319,6 +1337,15 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.lowmana = True
             else:
                 self.lowmana = False
+            if self.checkGM():
+                pass
+            else:
+                gmcheck = time()
+            if time()-gmcheck>5 and not gmsent:
+                self.send_message_telega("GM!!!!!!!!!!!!!!!")
+                gmsent=True
+
+
 
     def logout(self):
         print("log out")
