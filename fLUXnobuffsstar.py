@@ -16,7 +16,7 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
             pass
 
         sleep(1)
-        self.mousemove(povorotX / 2, 0)
+        self.mousemove(int(povorotX / 2), 0)
         if self.checker is None:
             self.checker = Thread(target=self.checkers, args=())
             self.checker.start()
@@ -191,12 +191,14 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
                     # sleep(0.07)
                     timer60power = time()
                     if self.mover is not None:
+                        self.strafe = False
                         self.mover.join()
                     self.fastselfcast(self.power, 4.6,strafe=True)
 
                 else:
                     # sleep(0.07)
                     if self.mover is not None:
+                        self.strafe= False
                         self.mover.join()
                     self.fastselfcast(self.kau, 3.8,strafe=True)
 

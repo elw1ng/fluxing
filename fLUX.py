@@ -1341,7 +1341,8 @@ class ClassName(BaseScript):  # Название класса (должен от
         sleep(1)
         self.pressLoc((322,395))
     def strafing(self,jump = False):
-        while self.strafe:
+        strafetime = time()
+        while self.strafe and time()- strafetime < 5:
             strafetime = random.uniform(0.2 , 0.64)*random.uniform(0.2 , 0.64)
             i = random.randint(1,12)
             if i==1:
