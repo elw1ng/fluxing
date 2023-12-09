@@ -1363,7 +1363,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 sleep(random.uniform(0.4, 1.2)*random.uniform(0.4, 1.2))
                 self.hold_and_release_sleep('w', strafetime)
             elif i==5 and jump:
-                self.press('space')
+                self.hold_and_release_sleep("space",0.1)
             else:
                 sleep(1.5)
 
