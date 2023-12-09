@@ -8,7 +8,7 @@ import fLUX
 class ClassName(fLUX.ClassName):  # Название класса (должен отличаться от других названий скриптов)
 
     def custom(self):
-        povorotX = int(10 * random.uniform(200, 225) / 1.125 * 90 / 60)
+        povorotX = int(10 * random.uniform(135, 163) / 1.125 * 90 / 60)
         negative = random.randint(1,2)
         if negative ==1:
             povorotX = -povorotX
@@ -16,7 +16,10 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
             pass
 
         sleep(1)
-        self.mousemove(int(povorotX / 2), 0)
+        if negative == 1:
+            self.mousemove(int((180 + povorotX) / 2), 0)
+        else:
+            self.mousemove(-int((180 - povorotX) / 2), 0)
         if self.checker is None:
             self.checker = Thread(target=self.checkers, args=())
             self.checker.start()
