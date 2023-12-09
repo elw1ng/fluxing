@@ -14,21 +14,7 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
             povorotX = -povorotX
         else:
             pass
-        try:
-            with open("counter.txt", "r") as file1:
-                read_content = int (file1.read())
-                if read_content < 94:
-                    self.spiritCounter = int (read_content)
-                    print("continue from checkpoint")
-                else:
-                    pass
-        except:
-            pass
 
-        donecount = 88
-        if len(sys.argv) > 1:
-            donecount = int(sys.argv[1])
-        print(f"donecount = {donecount}")
         sleep(1)
         if self.checker is None:
             self.checker = Thread(target=self.checkers, args=())
