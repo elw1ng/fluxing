@@ -1077,7 +1077,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 sum = int(bgr[0]) + int(bgr[1])
                 if bgr[2] > 70 and sum < int (bgr[2] / 2):
                     rowcounter += 1
-            if rowcounter > 25:
+            if rowcounter > 19:
                 return True
         return result
 
