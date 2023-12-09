@@ -650,6 +650,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.mousereturn[0] = 0
                 self.mousereturn[1] = 0
                 maxmousemove = [0, 0]
+                self.strafe = False
             if (ball_was) and (time() - noballstime > maxnoballtimer) and (time() - noballstimeFull > 3.5):
                 self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
                 self.mousereturn[0] = 0

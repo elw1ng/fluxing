@@ -103,7 +103,8 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
                     if k % 15 == 0:
                         self.send_message_telega("NO SPIRIT OCHEN DOLGO")
                     k += 1
-
+                if self.mover is not None:
+                    self.mover.join()
                 self.fastselfcast(self.summon, 6.2,strafe=True)
                 if self.mover is None:
                     self.mover = Thread(target=self.MoveBack(), args=())
@@ -211,6 +212,8 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
                 if checkrebuff:
                     #sleep(0.07)
                     timer60power = time()
+                    if self.mover is not None:
+                        self.mover.join()
                     self.fastselfcast(self.power, 4.6,strafe=True)
 
                 #else:
