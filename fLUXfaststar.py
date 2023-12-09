@@ -8,7 +8,7 @@ import fLUX
 class ClassName(fLUX.ClassName):  # Название класса (должен отличаться от других названий скриптов)
 
     def custom(self):
-        povorotX = int(10 * random.uniform(20, 40) / 1.125 * 90 / 60)
+        povorotX = int(10 * random.uniform(320, 340) / 1.125 * 90 / 60)
         try:
             with open("counter.txt", "r") as file1:
                 read_content = int (file1.read())
