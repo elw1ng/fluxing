@@ -645,12 +645,14 @@ class ClassName(BaseScript):  # Название класса (должен от
             # if (ball_was) and (time() - noballstime > 1.0):
             # self.lkmrelease()
             # print("OTPUSK")
+            if ball_was and (time() - noballstime > 0.3):
+                self.strafe = False
             if (ball_was) and (time() - noballstime > 0.5) and (self.mousereturn[0] > 30 or self.mousereturn[1] > 30):
                 self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
                 self.mousereturn[0] = 0
                 self.mousereturn[1] = 0
                 maxmousemove = [0, 0]
-                self.strafe = False
+
             if (ball_was) and (time() - noballstime > maxnoballtimer) and (time() - noballstimeFull > 3.5):
                 self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
                 self.mousereturn[0] = 0
@@ -1340,8 +1342,8 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.pressLoc((322,395))
     def strafing(self,jump = False):
         while self.strafe:
-            strafetime = random.uniform(0.3 , 0.66)*random.uniform(0.3 , 0.66)
-            i = random.randint(1,11)
+            strafetime = random.uniform(0.2 , 0.64)*random.uniform(0.2 , 0.64)
+            i = random.randint(1,13)
             if i==1:
                 sleep(random.uniform(0.4,1.23)*random.uniform(0.4, 1.2))
                 self.hold_and_release_sleep('d',strafetime)
@@ -1365,7 +1367,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             elif i==5 and jump:
                 self.hold_and_release_sleep("space",0.1)
             else:
-                sleep(1.5)
+                sleep(1)
 
     def custom(self):
         #sleep(1)

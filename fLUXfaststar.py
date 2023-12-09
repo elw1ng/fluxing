@@ -43,6 +43,7 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
         ###
         Prediction = self.model.predict(source=self.img, device=0, conf=0.6, iou=0.2, imgsz=640, show=False, verbose=False)
         sleep(1)
+        self.mousemove(povorotX / 2, 0)
         ###
         timer60power = time() - 60
         k = 0
