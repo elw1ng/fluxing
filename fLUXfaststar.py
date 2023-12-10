@@ -44,9 +44,9 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
         Prediction = self.model.predict(source=self.img, device=0, conf=0.6, iou=0.2, imgsz=640, show=False, verbose=False)
         sleep(1)
         if negative ==1:
-            self.mousemove(int((180+povorotX) / 2), 0)
+            self.mousemove(int((10 * 180 / 1.125 * 90 / 60+povorotX) / 2), 0)
         else:
-            self.mousemove(-int((180 - povorotX) / 2), 0)
+            self.mousemove(-int((10 * 180 / 1.125 * 90 / 60 - povorotX) / 2), 0)
         ###
         timer60power = time() - 60
         k = 0
