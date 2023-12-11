@@ -322,7 +322,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             found = False
             # sleep(1 / 60)
             self.getNextFrame()
-            Prediction = self.model.predict(source=self.img, device=0, conf=conf, iou=0.6)
+            Prediction = self.model.predict(source=self.img, device=0, conf=conf, iou=0.3)
             detected_boxes = Prediction[0].boxes
             if len(detected_boxes) >= 1:
                 for box in detected_boxes:
@@ -367,7 +367,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             found = False
             # sleep(1 / 60)
             self.getNextFrame()
-            Prediction = self.model.predict(source=self.img, device=0, conf=conf, iou=0.6)
+            Prediction = self.model.predict(source=self.img, device=0, conf=conf, iou=0.3)
             detected_boxes = Prediction[0].boxes
             if len(detected_boxes) >= 1:
                 for box in detected_boxes:
@@ -403,7 +403,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         found = False
         # sleep(1 / 60)
         self.getNextFrame()
-        Prediction = self.model.predict(source=self.img, device=0, conf=conf, iou=0.6)
+        Prediction = self.model.predict(source=self.img, device=0, conf=conf, iou=0.3)
         detected_boxes = Prediction[0].boxes
         if len(detected_boxes) >= 1:
             for box in detected_boxes:
@@ -451,7 +451,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
     def moveOnSpirit(self):
         self.getNextFrame()
-        Prediction = self.model.predict(source=self.img, device=0, conf=0.2, iou=0.6)
+        Prediction = self.model.predict(source=self.img, device=0, conf=0.2, iou=0.3)
         # print(Prediction[0].boxes.xyxy)
 
         detected_boxes = Prediction[0].boxes
@@ -533,7 +533,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 sys.exit()
 
 
-            Prediction = self.model.predict(source=self.img, device=0, conf=0.1)
+            Prediction = self.model.predict(source=self.img, device=0, conf=0.07)
             detected_boxes = Prediction[0].boxes
 
             if self.lowmana:
@@ -551,7 +551,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                     bestbox, _ = results
 
-                    result = self.confirmExisting(bestbox, conf=0.1, i=1, precision=0.99)
+                    result = self.confirmExisting(bestbox, conf=0.05, i=1, precision=0.99)
                     confirmed = result[0]
                     bestbox = result[1]
                     scale = 1
@@ -616,13 +616,13 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                             if time() - holdtime < 0.26 and confirmed:
                                 #sleep(0.02)
-                                result = self.track(bestbox, conf=0.06, precision=0.99, i=1)
+                                result = self.track(bestbox, conf=0.05, precision=0.99, i=1)
                                 confirmed = result[0]
                                 if confirmed:
                                     noballstime = time()
                                     bestbox = result[1]
                                 else:
-                                    result = self.nextTarget(bestbox, conf=0.06)
+                                    result = self.nextTarget(bestbox, conf=0.05)
                                     confirmed = result[0]
                                     if confirmed:
                                         noballstime = time()
@@ -630,7 +630,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                         holdtime = time()
                             else:
                                 #sleep(0.02)
-                                result = self.nextTarget(bestbox, conf=0.06)
+                                result = self.nextTarget(bestbox, conf=0.05)
                                 confirmed = result[0]
                                 if confirmed:
                                     noballstime = time()
@@ -753,7 +753,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     self.send_message_telega(f"BANISHED in spiritloop")
                 sys.exit()
             ###
-            Prediction = self.model.predict(source=self.img, device=0, conf=0.25, iou=0.4)
+            Prediction = self.model.predict(source=self.img, device=0, conf=0.25, iou=0.3)
             # print(Prediction[0].boxes.xyxy)
 
             detected_boxes = Prediction[0].boxes
@@ -792,7 +792,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
 
                             self.getNextFrame()
-                            Prediction = self.model.predict(source=self.img, device=0, conf=0.22, iou=0.6)
+                            Prediction = self.model.predict(source=self.img, device=0, conf=0.22, iou=0.3)
                             # print(Prediction[0].boxes.xyxy)
 
                             detected_boxes = Prediction[0].boxes
@@ -919,7 +919,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.mover = None
                 released = True
 
-            Prediction = self.model.predict(source=self.img, device=0, conf=0.3, iou=0.6)
+            Prediction = self.model.predict(source=self.img, device=0, conf=0.3, iou=0.3)
             detected_boxes = Prediction[0].boxes
 
             if len(detected_boxes) >= 1:
@@ -1340,11 +1340,11 @@ class ClassName(BaseScript):  # Название класса (должен от
         pyautogui.press('esc')
         sleep(1)
         self.pressLoc((322,395))
-    def strafing(self,jump = False):
+    def strafing(self,jump = False,imax=12):
         strafetime = time()
         while self.strafe and time()- strafetime < 5:
             strafetime = random.uniform(0.2 , 0.64)*random.uniform(0.2 , 0.64)
-            i = random.randint(1,12)
+            i = random.randint(1,imax)
             if i==1:
                 sleep(random.uniform(0.3,1.1)*random.uniform(0.3, 1.1))
                 self.hold_and_release_sleep('d',strafetime)
@@ -1383,7 +1383,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
 
         ###
-        Prediction = self.model.predict(source=self.img, device=0, conf=0.6, iou=0.6, imgsz=640, show=False, verbose=False)
+        Prediction = self.model.predict(source=self.img, device=0, conf=0.6, iou=0.3, imgsz=640, show=False, verbose=False)
 
         #sleep(1)
         ###
@@ -1544,7 +1544,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 if checkrebuff:
                     while time() - timer60power < 60.04:
                         self.getNextFrame()
-                        Prediction = self.model.predict(source=self.img, device=0, conf=0.3, iou=0.6)
+                        Prediction = self.model.predict(source=self.img, device=0, conf=0.3, iou=0.3)
                         # print(Prediction[0].boxes.xyxy)
 
                         detected_boxes = Prediction[0].boxes

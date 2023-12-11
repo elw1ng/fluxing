@@ -156,11 +156,11 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
                 #self.lkmrelease()
                 self.strafe = True
                 if self.mover is None:
-                    self.mover = Thread(target=self.strafing, args=(True,))
+                    self.mover = Thread(target=self.strafing, args=(True,28))
                     self.mover.start()
                 else:
                     self.mover.join()
-                    self.mover = Thread(target=self.strafing, args=(True,))
+                    self.mover = Thread(target=self.strafing, args=(True,28))
                     self.mover.start()
                 self.BallLoop(firsttime = firsttime,maxnoballtimer=1)
                 self.strafe = False
