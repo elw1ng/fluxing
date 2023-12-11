@@ -1341,9 +1341,9 @@ class ClassName(BaseScript):  # Название класса (должен от
         pyautogui.press('esc')
         sleep(1)
         self.pressLoc((322,395))
-    def strafing(self,jump = False,imax = 10):
-        strafetime = time()
-        while self.strafe and time()- strafetime < 5:
+    def strafing(self,jump = False,imax = 11):
+        strafingtime = time()
+        while self.strafe and time()- strafingtime < 5:
             strafetime = random.uniform(0.2 , 0.64)*random.uniform(0.2 , 0.64)
             i = random.randint(1,imax)
             if i==1:
