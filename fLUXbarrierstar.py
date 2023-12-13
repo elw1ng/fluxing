@@ -9,17 +9,27 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
 
     def custom(self):
         povorotX = int(10 * random.uniform(135, 163) / 1.125 * 90 / 60)
-        negative = random.randint(1,2)
-        if negative ==1:
+        negative = random.randint(1, 2)
+        if negative == 1:
             povorotX = -povorotX
         else:
             pass
+        try:
+            with open("counter.txt", "r") as file1:
+                read_content = int(file1.read())
+                if read_content < 94:
+                    self.spiritCounter = int(read_content)
+                    print("continue from checkpoint")
+                else:
+                    pass
+        except:
+            pass
 
+        donecount = 88
+        if len(sys.argv) > 1:
+            donecount = int(sys.argv[1])
+        print(f"donecount = {donecount}")
         sleep(1)
-        if negative == 1:
-            self.mousemove(int((10 * 180 / 1.125 * 90 / 60 + povorotX) / 2), 0)
-        else:
-            self.mousemove(-int((10 * 180 / 1.125 * 90 / 60 - povorotX) / 2), 0)
         if self.checker is None:
             self.checker = Thread(target=self.checkers, args=())
             self.checker.start()
@@ -31,8 +41,13 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
         self.getNextFrame()
 
         ###
-        Prediction = self.model.predict(source=self.img, device=0, conf=0.6, iou=0.2, imgsz=640, show=False, verbose=False)
+        Prediction = self.model.predict(source=self.img, device=0, conf=0.6, iou=0.2, imgsz=640, show=False,
+                                        verbose=False)
         sleep(1)
+        if negative == 1:
+            self.mousemove(int((10 * 180 / 1.125 * 90 / 60 + povorotX) / 2), 0)
+        else:
+            self.mousemove(-int((10 * 180 / 1.125 * 90 / 60 - povorotX) / 2), 0)
         ###
         timer60power = time() - 60
         k = 0
@@ -40,14 +55,18 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
         while (True):
             while self.reconnection:
                 sleep(1)
-                if time()-timer60 > 1200:
+                if time() - timer60 > 1200:
                     self.send_message_telega("Unable to coonect to server 20 mins")
                     sys.exit()
             # 10 pixels = 1.25degree
             self.lkmrelease()
             if self.stop:
                 break
-
+            if not notified and self.spiritCounter > donecount:
+                self.send_message_telega(f"{donecount} Spirits DONE")
+                notified = True
+            with open("counter.txt", "w") as file1:
+                file1.write(str(self.spiritCounter))
 
             print(
                 f"Spirit № {self.spiritCounter}  and {self.nospiritCounter} fails\n , working time: {(time() - self.inittimer) / 3600} hours , spirits per minute: {60 * self.spiritCounter / (time() - self.inittimer)}")
@@ -234,8 +253,7 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
                     if self.mover is not None:
                         self.strafe= False
                         self.mover.join()
-                    self.press(self.kau)
-                    sleep(3.8)
+
 
                 #else:
                     #self.fastselfcast(self.kau, 4)
