@@ -1080,7 +1080,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 sum = int(bgr[0]) + int(bgr[1])
                 if bgr[2] > 70 and sum < int (bgr[2] / 2):
                     rowcounter += 1
-            if rowcounter > 19:
+            if rowcounter > 22:
                 return True
         return result
 
@@ -1329,7 +1329,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 pass
             else:
                 gmcheck = time()
-            if time()-gmcheck>5 and not gmsent and time()-self.fpstimer<1:
+            if time()-gmcheck > 8 and not gmsent and time()-self.fpstimer < 1:
                 self.send_message_telega("GM!!!!!!!!!!!!!!!")
                 gmsent=True
 
