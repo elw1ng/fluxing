@@ -20,7 +20,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         super().__init__()  # инициализация класса после наследования
 
         """                   Ключи - Обязательное                   """
-        self.host_ip = "188.72.203.58" #"188.72.203.58"
+        self.host_ip = "113.30.191.17" #"188.72.203.58"
         self.port = 20035
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         connected = False
