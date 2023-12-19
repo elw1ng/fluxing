@@ -1369,16 +1369,15 @@ class ClassName(BaseScript):  # Название класса (должен от
             elif i==5 and jump:
                 self.hold_and_release_sleep("space",0.1)
             elif (i==6 or i==7) and mousemovement:
-                kmrange = random.randint(1,3)
-                for k in range(kmrange):
-                    x = random.randint(-3000, 3000)
-                    y = random.randint(-555, 555)
-                    self.mousemove(x,y,timer=0.05)
-                    self.mousereturn[0] += x
-                    self.mousereturn[1] += y
-                    self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
-                    self.mousereturn[0] = 0
-                    self.mousereturn[1] = 0
+                x = random.randint(-3000, 3000)
+                y = random.randint(-555, 555)
+                self.mousemove(x,y)
+                self.mousereturn[0] += x
+                self.mousereturn[1] += y
+                sleep(0.7)
+                self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
+                self.mousereturn[0] = 0
+                self.mousereturn[1] = 0
             else:
                 sleep(1)
 
