@@ -1003,11 +1003,11 @@ class ClassName(BaseScript):  # Название класса (должен от
         if strafe:
             self.strafe = True
             if self.mover is None:
-                self.mover = Thread(target=self.strafing, args=())
+                self.mover = Thread(target=self.strafing, args=(False,12,True,))
                 self.mover.start()
             else:
                 self.mover.join()
-                self.mover = Thread(target=self.strafing, args=())
+                self.mover = Thread(target=self.strafing, args=(False,12,True,))
                 self.mover.start()
         sleep(casttime/2)
         self.strafe = False
