@@ -1341,7 +1341,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         pyautogui.press('esc')
         sleep(1)
         self.pressLoc((322,395))
-    def strafing(self,jump = False,imax = 11):
+    def strafing(self,jump = False,imax = 11,mousemovement= False):
         strafingtime = time()
         while self.strafe and time()- strafingtime < 5:
             strafetime = random.uniform(0.2 , 0.64)*random.uniform(0.2 , 0.64)
@@ -1368,6 +1368,15 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.hold_and_release_sleep('w', strafetime)
             elif i==5 and jump:
                 self.hold_and_release_sleep("space",0.1)
+            elif (i==6 or i==7) and mousemovement:
+                kmrange = random.randint(1,3)
+                for k in range(kmrange):
+                    x = random.randint(-3000, 3000)
+                    y = random.randint(-555, 555)
+                    self.mousemove(x,y,timer=0.05)
+                    self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
+                    self.mousereturn[0] = 0
+                    self.mousereturn[1] = 0
             else:
                 sleep(1)
 
