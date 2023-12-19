@@ -1374,6 +1374,8 @@ class ClassName(BaseScript):  # Название класса (должен от
                     x = random.randint(-3000, 3000)
                     y = random.randint(-555, 555)
                     self.mousemove(x,y,timer=0.05)
+                    self.mousereturn[0] += x
+                    self.mousereturn[1] += y
                     self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
                     self.mousereturn[0] = 0
                     self.mousereturn[1] = 0
