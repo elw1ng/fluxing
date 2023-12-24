@@ -138,8 +138,10 @@ class ClassName(BaseScript):  # Название класса (должен от
 
     def videocamera(self):
         while True:
-            while time()-self.fpstimer < 1/self.target_fps:
-                sleep(0.001)
+            delta =time()-self.fpstimer
+            fpstimer=1/self.target_fps
+            if delta < fpstimer:
+                sleep(fpstimer-delta)
             while self.camerastop:
                 sleep(0.001)
             img = self.camera.grab(
