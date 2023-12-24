@@ -35,7 +35,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             except (ConnectionRefusedError):
                 sleep(2)
                 print("Unable to connect. try again")
-        self.client_socket.settimeout(0.05)
+        self.client_socket.settimeout(10.05)
 
         self.name = "fluxing"  # имя в базе ключей
         self.keys = self.keys_data[self.name]  # загрузка настройки всех ключей данного скрипта
@@ -1238,7 +1238,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         gmcheck=time()
         gmsent = False
         while True:
-            sleep(1)
+            sleep(0.4)
             try:
                 command = self.client_socket.recv(1)
                 command = command.decode()
@@ -1272,7 +1272,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     except ConnectionRefusedError:
                         sleep(2)
                         print("Unable to connect. try again")
-                self.client_socket.settimeout(0.05)
+                self.client_socket.settimeout(10.05)
                 self.reconnection = False
 
 
