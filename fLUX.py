@@ -1238,7 +1238,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         gmcheck=time()
         gmsent = False
         while True:
-            sleep(0.6)
+            sleep(0.7)
             try:
                 command = self.client_socket.recv(1)
                 command = command.decode()
@@ -1330,7 +1330,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 pass
             else:
                 gmcheck = time()
-            if time()-gmcheck > 8 and not gmsent and time()-self.fpstimer < 1:
+            if time()-gmcheck > 14 and not gmsent and time()-self.fpstimer < 1:
                 self.send_message_telega("GM!!!!!!!!!!!!!!!")
                 gmsent=True
 
