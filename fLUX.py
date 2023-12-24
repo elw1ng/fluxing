@@ -1240,7 +1240,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         gmcheck=time()
         gmsent = False
         while True:
-            sleep(0.7)
+            sleep(0.8)
             try:
                 command = self.client_socket.recv(1)
                 command = command.decode()
