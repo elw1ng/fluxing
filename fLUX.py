@@ -1280,7 +1280,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.send_message_telega("MAIN MENU")
                 sleep(1)
 
-                for i in range(5):
+                for i in range(15):
                     self.pressLoc((127, 360))
                     sleep(2)
                     self.getNextFrame(throttle=1/60)
