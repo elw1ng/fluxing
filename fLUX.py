@@ -82,7 +82,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.USER1_ID = self.keys['key17']['value']
         self.USER2_ID = self.keys['key18']['value']
         self.TOKEN = self.keys['key19']['value']
-        self.target_fps = 59
+        self.target_fps = 49
         self.savemovetimer = 2.5
         self.savedelay = 69
         self.bot = telega.Telega(self.USER1_ID, self.USER2_ID, self.TOKEN)
@@ -1286,7 +1286,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 for i in range(15):
                     self.pressLoc((127, 360))
                     sleep(2)
-                    self.getNextFrame(throttle=1/60)
+                    self.getNextFrame()
                     if self.banDetect():
                         self.send_message_telega("BAN")
                         command = 0
@@ -1300,16 +1300,16 @@ class ClassName(BaseScript):  # Название класса (должен от
                 sleep(3)
                 while self.blackScreenDetect():
                     sleep(1)
-                    self.getNextFrame(throttle=1/60)
+                    self.getNextFrame()
                     self.press('space')
                 sleep(2)
                 if self.menuDetect():
                     self.send_message_telega("MAIN MENU")
                     sleep(1)
                     self.pressLoc((127, 360))
-                    for i in range(5):
-                        sleep(1)
-                        self.getNextFrame(throttle=1/60)
+                    for i in range(15):
+                        sleep(2)
+                        self.getNextFrame()
                         if self.banDetect():
                             self.send_message_telega("BAN")
                             command = 0
