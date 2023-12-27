@@ -82,7 +82,9 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.USER1_ID = self.keys['key17']['value']
         self.USER2_ID = self.keys['key18']['value']
         self.TOKEN = self.keys['key19']['value']
-        self.target_fps = 49
+        self.target_fps = 55
+        if "fps" in sys.argv:
+            self.target_fps = int(sys.argv[sys.argv.index("fps")+1])
         self.savemovetimer = 2.5
         self.savedelay = 69
         self.bot = telega.Telega(self.USER1_ID, self.USER2_ID, self.TOKEN)
