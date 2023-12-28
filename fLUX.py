@@ -275,7 +275,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         x1, y1, x2, y2 = box.xyxy[0]
         if box.cls == 0 and (2 * (x2 - x1) < (y2 - y1)):
-            y2 = y2 - random.uniform(0.15, 0.8) * ((y2 - y1) - (x2 - x1))
+            y2 = y2 - random.uniform(0.1, 0.4) * ((y2 - y1) - (x2 - x1))
             #print("move upper")
         c_x = ((x2 - x1) / 2) + x1
         c_y = ((y2 - y1) / 2) + y1
@@ -758,7 +758,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     self.send_message_telega(f"BANISHED in spiritloop")
                 sys.exit()
             ###
-            Prediction = self.model.predict(source=self.img, device=0, conf=0.25, iou=0.3)
+            Prediction = self.model.predict(source=self.img, device=0, conf=0.15, iou=0.3)
             # print(Prediction[0].boxes.xyxy)
 
             detected_boxes = Prediction[0].boxes
@@ -797,7 +797,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
 
                             self.getNextFrame()
-                            Prediction = self.model.predict(source=self.img, device=0, conf=0.22, iou=0.3)
+                            Prediction = self.model.predict(source=self.img, device=0, conf=0.15, iou=0.3)
                             # print(Prediction[0].boxes.xyxy)
 
                             detected_boxes = Prediction[0].boxes
@@ -810,7 +810,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                 results = self.getBestBox(detected_boxes, 1)
                                 if not results is None:
                                     bestbox, _ = results
-                                    result = self.confirmExisting(bestbox, conf=0.21, i=3, precision=0.99)
+                                    result = self.confirmExisting(bestbox, conf=0.15, i=3, precision=0.99)
                                     confirmed = result[0]
                                     if confirmed:
                                         self.lkmspam = False
@@ -840,15 +840,15 @@ class ClassName(BaseScript):  # Название класса (должен от
                         #     nospirittime = time()
                         # if (time() - holdtime > 26.0):
                         #     break;
-            if time() - nospirittime > 8:
+            if time() - nospirittime > 14:
                 spirit_loop = False
-            if time() - nospirittime > 3.4 and not detected:
+            if time() - nospirittime > 4.5 and not detected:
                 self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
                 self.mousereturn[0] = 0
                 self.mousereturn[1] = 0
-            if time() - predictedtime > 6 and detected:
+            if time() - predictedtime > 8 and detected:
                 spirit_loop = False
-            if time() - nospirittime > 4.5 and detected:
+            if time() - nospirittime > 7.5 and detected:
                 spirit_loop = False
 
         self.spiritCounter += 1
