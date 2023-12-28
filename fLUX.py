@@ -159,7 +159,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.t.join()
             self.t = None
             self.camerastop = True
-            sleep(1/21)
+            sleep(1/20)
             self.camerastop = False
         while time()-self.fpstimer > 1/60:
             sleep(0.0005)
