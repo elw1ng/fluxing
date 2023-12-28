@@ -1284,11 +1284,11 @@ class ClassName(BaseScript):  # Название класса (должен от
             if self.menuDetect():
 
                 self.send_message_telega("MAIN MENU")
-                sleep(1)
 
-                for i in range(15):
+                for i in range(20):
+                    sleep(0.5)
                     self.pressLoc((127, 360))
-                    sleep(2)
+                    sleep(1)
                     self.getNextFrame()
                     if self.banDetect():
                         self.send_message_telega("BAN")
@@ -1308,10 +1308,10 @@ class ClassName(BaseScript):  # Название класса (должен от
                 sleep(2)
                 if self.menuDetect():
                     self.send_message_telega("MAIN MENU")
-                    sleep(1)
-                    self.pressLoc((127, 360))
-                    for i in range(15):
-                        sleep(2)
+                    for i in range(20):
+                        sleep(0.5)
+                        self.pressLoc((127, 360))
+                        sleep(1)
                         self.getNextFrame()
                         if self.banDetect():
                             self.send_message_telega("BAN")
