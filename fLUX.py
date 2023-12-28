@@ -216,11 +216,12 @@ class ClassName(BaseScript):  # Название класса (должен от
     def pressLoc(self, mxLoc):
         win32gui.SetForegroundWindow(self.hwnd)
         self.mousemoveABS(mxLoc[0], mxLoc[1])
-        sleep(0.5)
-        self.lkmpress()
-        sleep(0.5)
         self.lkmrelease()
-        sleep(0.5)
+        sleep(0.1)
+        self.lkmpress()
+        sleep(0.1)
+        self.lkmrelease()
+        sleep(0.1)
     def mousemove(self, x, y, timer=0.023):
         limiter = 235
         length = abs(x) + abs(y)
