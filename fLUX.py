@@ -1021,19 +1021,13 @@ class ClassName(BaseScript):  # Название класса (должен от
     def spiritdetect(self):
 
         # Read the images from the file
-        self.getNextFrame()
-        img = self.img[328:346, 290:350]
-        if self.imgfind(img, self.SpiritFile, "mask.png"):
-            self.NoAnsweredThecalltime = time()
-            return True
-        else:
+        for i in range(3):
             self.getNextFrame()
             img = self.img[328:346, 290:350]
             if self.imgfind(img, self.SpiritFile, "mask.png"):
                 self.NoAnsweredThecalltime = time()
                 return True
-            else:
-                return False
+        return False
 
     def checknospirit(self):
 
