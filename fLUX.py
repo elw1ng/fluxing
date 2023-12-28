@@ -1027,7 +1027,13 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.NoAnsweredThecalltime = time()
             return True
         else:
-            return False
+            self.getNextFrame()
+            img = self.img[328:346, 290:350]
+            if self.imgfind(img, self.SpiritFile, "mask.png"):
+                self.NoAnsweredThecalltime = time()
+                return True
+            else:
+                return False
 
     def checknospirit(self):
 
