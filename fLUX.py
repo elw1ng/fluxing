@@ -1519,6 +1519,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 print("\n\nSTARTLOOP\n\n")
 
                 started = self.startLoop()
+
                 if self.restart:
                     self.restart = False
                     self.returning()
