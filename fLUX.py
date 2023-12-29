@@ -489,6 +489,9 @@ class ClassName(BaseScript):  # Название класса (должен от
         kitetime = time()
         maxmousemove = [0, 0]
         while (ball_loop):
+            if self.ban:
+                self.fastselfcast(self.summon, 6.5)
+                self.logout()
             if time()-noballstimeFull<1:
                 self.lkmrelease()
                 self.lkmpress()
@@ -1343,10 +1346,13 @@ class ClassName(BaseScript):  # Название класса (должен от
 
     def logout(self):
         print("log out")
+        self.fastselfcast(self.summon,6.5)
+        '''
         self.lkmrelease()
         pyautogui.press('esc')
         sleep(1)
         self.pressLoc((322,395))
+        '''
     def strafing(self,jump = False,imax = 11,mousemovement= False):
         strafingtime = time()
         while self.strafe and time()- strafingtime < 5:
