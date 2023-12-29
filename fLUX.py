@@ -1557,7 +1557,6 @@ class ClassName(BaseScript):  # Название класса (должен от
                     break
                 #self.lkmrelease()
 
-
                 self.BallLoop(firsttime = firsttime,maxnoballtimer=2.6)
                 firsttime = False
                 if self.restart:
