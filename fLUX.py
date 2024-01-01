@@ -1346,7 +1346,13 @@ class ClassName(BaseScript):  # Название класса (должен от
 
     def logout(self):
         print("log out")
-        self.fastselfcast(self.summon,6.5)
+        self.press(self.summon)
+        # sleep(0.05)
+        # self.hold_and_release_sleep(self.moveleft,0.1)
+        self.press(self.feint)
+        # sleep(0.05)
+        # self.hold_and_release_sleep(self.moveright,0.1)
+        self.press(self.selfcast)
         '''
         self.lkmrelease()
         pyautogui.press('esc')
