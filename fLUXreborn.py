@@ -13,26 +13,28 @@ from tools import telega
 from threading import Thread
 import socket
 import pyautogui
+import copy
 
 class ClassName(BaseScript):  # Название класса (должен отличаться от других названий скриптов)
-    class Turn ():
+    class Turn():
         def to_rad(self, alp):
             return (alp * math.pi / self.pi)
+
         def mirror(self):
             if self.alp >= self.pi:
-                self.alp = self.alp-self.pi
+                self.alp = self.alp - self.pi
             else:
-                self.alp = self.alp+self.pi
-            self.gamma = self.alp + int(self.beta / 2)-self.pi
+                self.alp = self.alp + self.pi
+            self.gamma = self.alp + int(self.beta / 2) - self.pi
             self.x = -self.x
             self.y = -self.y
 
-        def __init__(self,alp,beta,t,avgd):
+        def __init__(self, alp, beta, t, avgd):
             self.pi = 6858
             self.alp = alp
             self.beta = beta
             self.t = t
-            self.gamma = self.alp + int(self.beta/2)-self.pi
+            self.gamma = self.alp + int(self.beta / 2) - self.pi
             self.avgd = avgd
             self.x = self.avgd * math.sin(self.to_rad(self.gamma))
             self.y = self.avgd * math.cos(self.to_rad(self.gamma))
@@ -40,11 +42,15 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         def __eq__(self, other):
             return self.alp == other.alp and self.beta == other.beta and self.t == other.t
+
+
+
+
     def __init__(self):
         super().__init__()  # инициализация класса после наследования
 
         """                   Ключи - Обязательное                   """
-        self.host_ip = "113.30.191.17" #"188.72.203.58"
+        self.host_ip = "113.30.191.17"  # "188.72.203.58"
         self.port = 20035
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         connected = False
@@ -108,7 +114,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.TOKEN = self.keys['key19']['value']
         self.target_fps = 55
         if "fps" in sys.argv:
-            self.target_fps = int(sys.argv[sys.argv.index("fps")+1])
+            self.target_fps = int(sys.argv[sys.argv.index("fps") + 1])
         self.savemovetimer = 2.5
         self.savedelay = 69
         self.bot = telega.Telega(self.USER1_ID, self.USER2_ID, self.TOKEN)
@@ -148,6 +154,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         self.t = None
         self.mover = None
+        self.turner = None
         self.checker = None
         self.blackscreen_event = threading.Event()
         self.mainmenu = False
@@ -161,57 +168,61 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.inittimer = time()
         self.strafe = False
 
-
-        #gps
-        self.R=15
-        self.x=0
-        self.y=0
+        # gps
+        self.R = 15
+        self.x = 0
+        self.y = 0
         self.yelipse = 1
-        self.alp=0
+        self.alp = 0
         self.pi = 6858
         self.turns = []
+        self.turn = None
 
-    def movetoalp(self,alp):
-        if alp >= 2*self.pi:
-            alp = alp-2*self.pi * int(alp/(2*self.pi))
-        d1 = alp-self.alp
-        d2 = 2*self.pi-d1
-        if d1<d2:
-            self.mousemove(d1,0)
+    def movetoalp(self, alp):
+        if alp >= 2 * self.pi:
+            alp = alp - 2 * self.pi * int(alp / (2 * self.pi))
+        d1 = alp - self.alp
+        d2 = 2 * self.pi - d1
+        if d1 < d2:
+            self.mousemove(d1, 0,limiter = 200)
         else:
-            self.mousemove(-d2,0)
+            self.mousemove(-d2, 0,limiter = 200)
         self.alp = alp
 
-    def to_rad(self,alp):
-        return (alp*math.pi/self.pi)
-    def from_rad(self,rad):
-        return (rad*self.pi/math.pi)
-    def Dt(self,t):
+    def to_rad(self, alp):
+        return (alp * math.pi / self.pi)
+
+    def from_rad(self, rad):
+        return (rad * self.pi / math.pi)
+
+    def Dt(self, t):
         if t >= 0.5:
-            return 7.6*t-1.8
+            return 7.6 * t - 1.8
         else:
             return False
-    def Td(self,d):
+
+    def Td(self, d):
         if d >= 2:
-            return (d+1.8)/7.6
+            return (d + 1.8) / 7.6
         else:
             return False
 
     def generateturn(self):
-        beta = random.randint(-int(self.pi/2.3), int(self.pi/2.3))
+        beta = random.randint(-int(self.pi / 2.3), int(self.pi / 2.3))
         rads = self.to_rad(beta)
         alp = self.fromcenteralp()
-        d=13.4
+        d = 13.4
         print(f"alp {alp}")
         if rads == 0:
-            t=2.0
+            t = 2.0
         else:
-            mult = random.uniform(0.91,1.15)
-            t = self.Td(mult*6.7*rads/math.sin(rads/2))
-            d = d* mult
+            mult = random.uniform(0.92, 1.02)
+            t = self.Td(mult * 6.7 * rads / math.sin(rads / 2))
+            d = d * mult
 
-        return self.Turn(alp,beta,t,d)
-    def maketurn(self,turn):
+        return self.Turn(alp, beta, t, d)
+
+    def maketurn(self, turn):
         self.movetoalp(turn.alp)
         sleep(0.04)
         if self.mover is not None:
@@ -223,57 +234,85 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.mover.start()
 
         sleep(0.6)
+        print("rotate")
         self.mousemove(turn.beta, 0, limiter=turn.limiter)
+        print("end rotate")
         self.alp += turn.beta
         self.x += turn.x
         self.y += turn.y
+        self.mover.join()
+        sleep(random.uniform(0.3,1))
 
+    def maketurnw(self, turn):
+        self.movetoalp(turn.alp+self.pi)
+        sleep(0.04)
+        if self.mover is not None:
+            self.mover.join()
+            self.mover = Thread(target=self.hold_and_release_sleep, args=('w', turn.t,))
+            self.mover.start()
+        else:
+            self.mover = Thread(target=self.hold_and_release_sleep, args=('w', turn.t,))
+            self.mover.start()
+
+        sleep(0.6)
+        print("rotate")
+        self.mousemove(turn.beta, 0, limiter=turn.limiter)
+        print("end rotate")
+        self.alp += turn.beta
+        self.x += turn.x
+        self.y += turn.y
+        self.mover.join()
+        sleep(random.uniform(0.3,1))
+
+    def checkturn(self,turn):
+        return math.pow(self.x + turn.x, 2) + math.pow(self.y + turn.y, 2) / math.pow(self.yelipse, 2) < math.pow(self.R - len(self.turns), 2)
 
     def decider(self):
         turn = self.generateturn()
-        if math.pow(self.x+turn.x, 2)+math.pow(self.y+turn.y, 2)/math.pow(self.yelipse, 2) < math.pow(self.R-len(self.turns)-1, 2):
+        if math.pow(self.x + turn.x, 2) + math.pow(self.y + turn.y, 2) / math.pow(self.yelipse, 2) < math.pow(
+                self.R - len(self.turns) - 1, 2):
             #self.maketurn(turn)
             print(f"Turn with :{turn.alp, turn.beta, turn.t, turn.x, turn.y}")
-            returning = turn
+            returning = copy.copy(turn)
             turn.mirror()
             self.turns.append(turn)
             return returning
 
         else:
             for turn in self.turns:
-                if math.pow(self.x+turn.x,2)+math.pow(self.y+turn.y,2)/math.pow(self.yelipse, 2) < math.pow(self.R - len(self.turns) + 1, 2):
-                    self.maketurn(turn)
-                    print(f"Turn from stack with  :{turn.alp, turn.beta, turn.t,turn.x,turn.y}")
-                    returning = turn
+                if math.pow(self.x + turn.x, 2) + math.pow(self.y + turn.y, 2) / math.pow(self.yelipse, 2) < math.pow(
+                        self.R - len(self.turns) + 1, 2):
+                    #self.maketurn(turn)
+                    print(f"Turn from stack with  :{turn.alp, turn.beta, turn.t, turn.x, turn.y}")
+                    returning = copy.copy(turn)
                     self.turns.remove(turn)
                     return returning
+
     def fromcenteralp(self):
         x = abs(self.x)
         y = abs(self.y)
-        print(f"calculate center{self.x,self.y}")
+        print(f"calculate center{self.x, self.y}")
         if y == 0:
-            rad = math.pi/2
+            rad = math.pi / 2
         else:
-            rad = math.atan(x/y)
+            rad = math.atan(x / y)
         print(f"rad {rad}")
         if self.y < 0:
-            rad += math.pi-rad
+            rad += math.pi - rad
 
         if self.x < 0:
-            rad = 2*math.pi-rad
+            rad = 2 * math.pi - rad
         print(f"real rad {rad}")
         alp = int(self.from_rad(rad))
-        print (f"alp{ alp }")
-        return alp+random.randint(int(-self.pi/5), int(self.pi/5))
-
-
+        print(f"alp{alp}")
+        return alp + random.randint(int(-self.pi / 5), int(self.pi / 5))
 
     def videocamera(self):
         while True:
-            delta =time()-self.fpstimer
-            fpstimer=1/self.target_fps
+            delta = time() - self.fpstimer
+            fpstimer = 1 / self.target_fps
             if delta < fpstimer:
-                sleep(fpstimer-delta)
+                sleep(fpstimer - delta)
             while self.camerastop:
                 sleep(0.001)
             img = self.camera.grab(
@@ -284,19 +323,20 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.fpstimer = time()
             img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
             self.img = img
-    def getNextFrame(self,throttle = 0.0):
+
+    def getNextFrame(self, throttle=0.0):
         if self.t is not None:
             self.t.join()
             self.t = None
             self.camerastop = True
-            sleep(1/20)
+            sleep(1 / 20)
             self.camerastop = False
-        while time()-self.fpstimer > 1/60:
+        while time() - self.fpstimer > 1 / 60:
             sleep(0.0005)
         '''
         while time() - self.fpstimer < (1 / self.target_fps):
             sleep(0.001)
-        
+
         if throttle > 0:
             sleep(throttle)
         img = self.camera.grab(
@@ -322,6 +362,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             print("NO INTERNET CONNECTION... retry")
             sleep(30)
             self.send_message_telega(f"{text}")
+
     def checkDistanceY(self, box, img_h=640):
         x1, y1, x2, y2 = box.xyxy[0]
         c_y = ((y2 - y1) / 2) + y1
@@ -343,6 +384,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         pos = (x + 8 + self.rect[0], y + 31 + self.rect[1])
         win32api.SetCursorPos(pos)
         win32gui.SetForegroundWindow(self.hwnd)
+
     def pressLoc(self, mxLoc):
         win32gui.SetForegroundWindow(self.hwnd)
         self.mousemoveABS(mxLoc[0], mxLoc[1])
@@ -352,40 +394,41 @@ class ClassName(BaseScript):  # Название класса (должен от
         sleep(0.1)
         self.lkmrelease()
         sleep(0.1)
-    def mousemove(self, x, y, timer=0.023,limiter = 510 ):
-        #limiter = 235
-        length = abs(x) + abs(y)
-        n = int( length / limiter)  #35 UE5
 
+    def mousemove(self, x, y, timer=0.023, limiter=500,deltax=21,deltay=4):
+        # limiter = 235
+        length = abs(x) + abs(y)
+        n = int(length / limiter)  # 35 UE5
 
         if abs(x) > 0 or abs(y) > 0:
             if n > 0:
 
-
                 xstep = int(limiter * x / length)
                 ystep = int(limiter * y / length)
-                xlast = x - xstep*n
-                ylast = y - ystep*n
-                lengthlast = xlast+ylast
-                #timestep = timer / n
+                xlast = x - xstep * n
+                ylast = y - ystep * n
+                lengthlast = xlast + ylast
+                # timestep = timer / n
                 timespent = 0
-                for _ in range(n):
 
+                k=-1
+                for i in range(n):
+                    if i >= int(n/2)*2:
+                        k=0
+                    k*=-1
                     self.mousemovetimer = time()
-                    win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, xstep, ystep, 0, 0)
+                    win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, xstep+k*deltax, ystep+k*deltay, 0, 0)
                     delay = time() - self.mousemovetimer
                     if (delay < timer):
                         sleep(timer - (delay))
 
-
-
-                    #timespent+= time()-starttime
-                #print(f"avgtimespentfor cycle = {timespent/n}")
+                    # timespent+= time()-starttime
+                # print(f"avgtimespentfor cycle = {timespent/n}")
 
                 self.mousemovetimer = time()
                 win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, xlast, ylast, 0, 0)
                 delay = time() - self.mousemovetimer
-                lasttimer= timer*(lengthlast/ limiter)
+                lasttimer = timer * (lengthlast / limiter)
                 if (delay < lasttimer):
                     sleep(lasttimer - (delay))
 
@@ -397,8 +440,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 if (delay < lasttimer):
                     sleep(lasttimer - (delay))
 
-
-    def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=400):
+    def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=1200):
         # Check Closest
 
         at = 0
@@ -407,7 +449,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         x1, y1, x2, y2 = box.xyxy[0]
         if box.cls == 0 and (2 * (x2 - x1) < (y2 - y1)):
             y2 = y2 - random.uniform(0.1, 0.4) * ((y2 - y1) - (x2 - x1))
-            #print("move upper")
+            # print("move upper")
         c_x = ((x2 - x1) / 2) + x1
         c_y = ((y2 - y1) / 2) + y1
         centers.append((c_x, c_y))
@@ -423,9 +465,10 @@ class ClassName(BaseScript):  # Название класса (должен от
         x = int(x * scalex)
         y = int(y * scaley)
         r1, r2 = self.get_angles([int(x + img_w / 2), int(y + img_h / 2)])
-
-        x = int(10 * r1 / 1.1167 * 90 / 60)  #2.8 UE 5
-        y = int(10 * r2 / 1.125 * 90 / 60)
+        #print(r1,r2)
+        x = int(self.from_rad(r1))  # 2.8 UE 5
+        y = int(self.from_rad(r2))
+        #print(x,y)
         if x == 0 and y == 0:
             return False, currentMousemove
 
@@ -478,11 +521,10 @@ class ClassName(BaseScript):  # Название класса (должен от
                                     newbox = box
                                     newbox_XDiff = XDiff
                                     newbox_YDiff = YDiff
-                            if sizeDiff<5 and XDiff < 8 and YDiff < 8:
+                            if sizeDiff < 5 and XDiff < 8 and YDiff < 8:
                                 checkbox = box
                                 counter += 1
                                 continue
-
 
             if found:
                 checkbox = newbox
@@ -562,7 +604,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                 newbox = box
                                 newbox_XDiff = XDiff
                                 newbox_YDiff = YDiff
-                        if newbox.conf > 0.4 and newbox_XDiff * newbox_XDiff + newbox_YDiff * newbox_YDiff >=650:
+                        if newbox.conf > 0.4 and newbox_XDiff * newbox_XDiff + newbox_YDiff * newbox_YDiff >= 650:
                             return True, newbox
         if found:
             return True, newbox
@@ -602,7 +644,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.MouseMove(best_box)
                 sleep(0.1)
 
-    def BallLoop(self,firsttime = True,maxnoballtimer = 2.6):
+    def BallLoop(self, firsttime=True, maxnoballtimer=2.6):
         if not firsttime:
             sleep(0.3)
         win32gui.SetForegroundWindow(self.hwnd)
@@ -622,7 +664,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             if self.ban:
                 self.fastselfcast(self.summon, 6.5)
                 self.logout()
-            if time()-noballstimeFull<1:
+            if time() - noballstimeFull < 1:
                 self.lkmrelease()
                 self.lkmpress()
             '''
@@ -671,7 +713,6 @@ class ClassName(BaseScript):  # Название класса (должен от
                     self.send_message_telega(f"BANISHED on {time() - noballstimeFull} sec in ballloop")
                 sys.exit()
 
-
             Prediction = self.model.predict(source=self.img, device=0, conf=0.07)
             detected_boxes = Prediction[0].boxes
 
@@ -698,7 +739,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     holdtime = time()
                     if confirmed:
                         noballstime = time()
-                        while time()-noballstime < 0.59:
+                        while time() - noballstime < 0.59:
                             if self.earlydamagesave and (
                                     not ball_was or (ball_was and (time() - noballstimeFull < 0.8))) and self.lowmana:
                                 print("earlyLOWMANA")
@@ -722,7 +763,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                     self.restart = True
                                     self.gosave()
                                     return False
-                            
+
                             if self.safeMode and self.checklowmana():
                                 print("LOWMANA")
                                 self.restart = True
@@ -754,7 +795,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                 maxmousemove = mouseresult[1]
 
                             if time() - holdtime < 0.26 and confirmed:
-                                #sleep(0.02)
+                                # sleep(0.02)
                                 result = self.track(bestbox, conf=0.05, precision=0.99, i=1)
                                 confirmed = result[0]
                                 if confirmed:
@@ -768,7 +809,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                         bestbox = result[1]
                                         holdtime = time()
                             else:
-                                #sleep(0.02)
+                                # sleep(0.02)
                                 result = self.nextTarget(bestbox, conf=0.05)
                                 confirmed = result[0]
                                 if confirmed:
@@ -829,9 +870,9 @@ class ClassName(BaseScript):  # Название класса (должен от
         no_time = None
         for box in detected_boxes:
             if box.cls == cls:
-                #distFactor = self.checkDistance(box)
+                # distFactor = self.checkDistance(box)
                 Y = self.checkDistanceY(box)
-                #X = self.checkDistanceX(box)
+                # X = self.checkDistanceX(box)
                 if -210 < Y < 210:
                     if not ballexist:
 
@@ -858,7 +899,6 @@ class ClassName(BaseScript):  # Название класса (должен от
         else:
             return None
 
-
     def lkmspamer(self):
         while self.lkmspam:
             sleep(0.215)
@@ -866,7 +906,8 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.lkmpress()
         sleep(0.002)
         self.lkmrelease()
-    def SpiritLoop(self,worktime= None):
+
+    def SpiritLoop(self, worktime=None):
         win32gui.SetForegroundWindow(self.hwnd)
         starttime = time()
         spirit_loop = True
@@ -902,18 +943,16 @@ class ClassName(BaseScript):  # Название класса (должен от
             # loop_time = time()
             # print("i will check")
 
-
             if len(detected_boxes) >= 1:
                 results = self.getBestBox(detected_boxes, 0)
                 if not results is None:
                     predictedtime = time()
                     best_box = results[0]
-                    result = self.MouseMove(best_box, currentMousemove=maxmousemove, limit=450)
+                    result = self.MouseMove(best_box, currentMousemove=maxmousemove, limit=1450)
                     maxmousemove = result[1]
-                    #sleep(0.05)
+                    # sleep(0.05)
                     if self.spiritdetect():
                         self.lkmspam = True
-
 
                         lkmspamer = Thread(target=self.lkmspamer, args=())
                         lkmspamer.start()
@@ -923,12 +962,11 @@ class ClassName(BaseScript):  # Название класса (должен от
                         self.lkmpress()
 
                         while self.spiritdetect():
-                            if worktime is not None and time()-starttime>=worktime:
+                            if worktime is not None and time() - starttime >= worktime:
                                 self.lkmspam = False
                                 lkmspamer.join()
                                 self.lkmrelease()
                                 return True
-
 
                             self.getNextFrame()
                             Prediction = self.model.predict(source=self.img, device=0, conf=0.15, iou=0.3)
@@ -1007,8 +1045,6 @@ class ClassName(BaseScript):  # Название класса (должен от
                     self.send_message_telega(f"BANISHED on {time() - startp} sec in startloop")
                 sys.exit()
 
-
-
             # print('FPS {}'.format(1 / (time() - loop_time)))
             # loop_time = time()
 
@@ -1025,7 +1061,6 @@ class ClassName(BaseScript):  # Название класса (должен от
                         self.send_message_telega(f"BANISHED on {time() - startp} sec in startloop")
                     sys.exit()
 
-
                 # if (time()-self.looptime > self.MaxMoveBackTimer) and not released:
                 #     self.release(self.moveback)
                 #     self.looptime = time()
@@ -1035,14 +1070,25 @@ class ClassName(BaseScript):  # Название класса (должен от
                 if self.checkdrawnspirit():
                     print(f"spiritdrawned")
                     status_confirmed = True
+                    if self.turner is not None:
+                        self.turner.join()
+                        self.turner = None
+                        released = True
+                    sleep(0.2)
+                    self.movetoalp(self.alp - int(self.turn.beta / 2))
+                    sleep(0.01)
                     break
 
                 if not status_confirmed and self.checknospirit():
-
                     # sleep(0.3)
                     print(f"nospirit release")
                     self.nospiritCounter += 1
                     self.nospiritRow += 1
+                    if self.turner is not None:
+                        self.turner.join()
+                        self.turner = None
+                        released = True
+                    sleep(0.2)
                     return False
 
                 if self.lowmana:
@@ -1053,10 +1099,12 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                 self.getNextFrame()
 
-            if self.mover is not None:
-                self.mover.join()
-                self.mover = None
+            if self.turner is not None:
+                self.turner.join()
+                self.turner = None
                 released = True
+
+            self.getNextFrame()
 
             Prediction = self.model.predict(source=self.img, device=0, conf=0.3, iou=0.3)
             detected_boxes = Prediction[0].boxes
@@ -1076,9 +1124,10 @@ class ClassName(BaseScript):  # Название класса (должен от
                         #     #sleep(0.3)
 
                         self.lkmpress()
-                        result = self.MouseMove(best_box, currentMousemove=maxmousemove, limit=450)
+                        print("trying to move")
+                        result = self.MouseMove(best_box, currentMousemove=maxmousemove, limit=1450)
                         maxmousemove = result[1]
-                        #sleep(0.11)
+                        # sleep(0.11)
                         if self.checkDistance(best_box) < 25:
                             return True
             '''
@@ -1115,11 +1164,9 @@ class ClassName(BaseScript):  # Название класса (должен от
         x_angle = math.atan((x_pos - 0.5) * 2 * math.tan(fov[0] / 2))
         y_angle = math.atan((y_pos - 0.5) * 2 * math.tan(fov[1] / 2))
 
-        return (math.degrees(x_angle), math.degrees(y_angle))
+        return ((x_angle), (y_angle))
 
-
-
-    def fastselfcast(self, spell, casttime,strafe = False):
+    def fastselfcast(self, spell, casttime, strafe=False):
         if not self.checker.is_alive() or self.ban or self.mainmenu or self.blackscreen:
             self.checker.join()
             if self.ban:
@@ -1132,24 +1179,24 @@ class ClassName(BaseScript):  # Название класса (должен от
             sys.exit()
         # sleep(0.15)
         self.press(spell)
-        #sleep(0.05)
+        # sleep(0.05)
         # self.hold_and_release_sleep(self.moveleft,0.1)
         self.press(self.feint)
-        #sleep(0.05)
+        # sleep(0.05)
         # self.hold_and_release_sleep(self.moveright,0.1)
         self.press(self.selfcast)
         if strafe:
             self.strafe = True
             if self.mover is None:
-                self.mover = Thread(target=self.strafing, args=(False,12,True,))
+                self.mover = Thread(target=self.strafing, args=(False, 22, True,))
                 self.mover.start()
             else:
                 self.mover.join()
-                self.mover = Thread(target=self.strafing, args=(False,12,True,))
+                self.mover = Thread(target=self.strafing, args=(False, 22, True,))
                 self.mover.start()
-        sleep(casttime/2)
+        sleep(casttime / 2)
         self.strafe = False
-        sleep(casttime/2)
+        sleep(casttime / 2)
         return True
 
     def spiritdetect(self):
@@ -1168,9 +1215,9 @@ class ClassName(BaseScript):  # Название класса (должен от
         # Read the images from the file
         self.getNextFrame()
         img = self.img[348:382, 213:254]
-        if self.imgfind(img, "nospirit.png", "nospiritmask.png",conf=0.91):
+        if self.imgfind(img, "nospirit.png", "nospiritmask.png", conf=0.91):
             self.getNextFrame()
-            if self.imgfind(img, "nospirit.png", "nospiritmask.png",conf=0.91):
+            if self.imgfind(img, "nospirit.png", "nospiritmask.png", conf=0.91):
                 return True
             else:
                 return False
@@ -1182,9 +1229,9 @@ class ClassName(BaseScript):  # Название класса (должен от
         # Read the images from the file
         self.getNextFrame()
         img = self.img[348:382, 213:263]
-        if self.imgfind(img, "drawnthespirit.png", "drawnthespiritmask.png",conf=0.64):
+        if self.imgfind(img, "drawnthespirit.png", "drawnthespiritmask.png", conf=0.64):
             self.getNextFrame()
-            if self.imgfind(img, "drawnthespirit.png", "drawnthespiritmask.png",conf=0.64):
+            if self.imgfind(img, "drawnthespirit.png", "drawnthespiritmask.png", conf=0.64):
                 return True
             else:
                 return False
@@ -1205,18 +1252,19 @@ class ClassName(BaseScript):  # Название класса (должен от
             if bgr[0] >= bgr[1] - 1 and bgr[2] + 1 < bgr[0] and bgr[0] > 4:
                 result = False
         return result
+
     def checkGM(self, percentage=None, ignoresafemode=False):
         result = False
 
         # Read the images from the file
         bgrA = self.img[490:639, 1:150]
-        for i in range(1,149):
+        for i in range(1, 149):
             rowcounter = 0
-            for j in range(1,149):
+            for j in range(1, 149):
                 bgr = bgrA[i][j]
-            # print(bgr)
+                # print(bgr)
                 sum = int(bgr[0]) + int(bgr[1])
-                if bgr[2] > 70 and sum < int (bgr[2] / 2):
+                if bgr[2] > 70 and sum < int(bgr[2] / 2):
                     rowcounter += 1
             if rowcounter > 22:
                 return True
@@ -1284,13 +1332,13 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.justReturned = True
         return True
 
-    def imgfind(self, large_image, small_img, mask, conf=0.69, loc = False ):
+    def imgfind(self, large_image, small_img, mask, conf=0.69, loc=False):
 
         # Read the images from the file
         small_image = cv.imread(small_img)
         mask = cv.imread(mask)
         method = cv.TM_CCOEFF_NORMED
-        result = cv.matchTemplate(large_image, small_image, method, None,mask=mask)
+        result = cv.matchTemplate(large_image, small_image, method, None, mask=mask)
         # We want the minimum squared diff`erence
         _, mx, _, mxLoc = cv.minMaxLoc(result)
         if mx > conf and mx < 1.1:
@@ -1319,7 +1367,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         result = cv.matchTemplate(large_image, small_image, method, None)
         # We want the minimum squared difference
         _, mx, _, _ = cv.minMaxLoc(result)
-        #print(mx)
+        # print(mx)
         if mx == 0:
             return True
         else:
@@ -1336,6 +1384,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         else:
             self.mainmenu = False
             return False
+
     def banDetect(self):
 
         # Read the images from the file
@@ -1356,24 +1405,28 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.mousereturn[0] = 0
         self.mousereturn[1] = 0
 
-        sleep(0.02)
-        while self.movecounter > 0:
-            self.movecounter -= 1
-            if self.mover is None:
-                self.mover = Thread(target=self.hold_and_release_sleep, args=(self.moveforward, self.MaxMoveBackTimer * self.MoveForwardMultiplier))
-                self.mover.start()
-            else:
-                self.mover.join()
-                self.mover = Thread(target=self.hold_and_release_sleep, args=(self.moveforward, self.MaxMoveBackTimer * self.MoveForwardMultiplier))
-                self.mover.start()
+        sleep(0.05)
+        max = 3
+        extramove = random.randint(0,max)
+        while extramove == max:
+            d= random.uniform(2.8, 8.5)
+            t = self.Td(d)
+            turn = self.Turn(self.fromcenteralp(), 0, t, d)
+            self.movetoalp(turn.alp+self.pi)
+            sleep(random.uniform(0.5, 1.4))
+            if self.checkturn(turn):
+                self.maketurnw(turn)
+            max += 2
+            extramove = random.randint(0,max)
+
 
     def MoveBack(self):
-        self.movecounter+=1
+        self.movecounter += 1
         self.hold_and_release_sleep(self.moveback, self.MaxMoveBackTimer)
-        #sleep(0.75)
+        # sleep(0.75)
 
     def checkers(self):
-        gmcheck=time()
+        gmcheck = time()
         gmsent = False
         while True:
             sleep(0.8)
@@ -1382,7 +1435,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 command = command.decode()
                 print(command)
                 if command:
-                    if int (command) >= 0:
+                    if int(command) >= 0:
                         self.send_message_telega("SAVING FROM BAN")
                         self.ban = True
                         break
@@ -1412,7 +1465,6 @@ class ClassName(BaseScript):  # Название класса (должен от
                         print("Unable to connect. try again")
                 self.client_socket.settimeout(0.05)
                 self.reconnection = False
-
 
             if self.menuDetect():
 
@@ -1468,11 +1520,9 @@ class ClassName(BaseScript):  # Название класса (должен от
                 pass
             else:
                 gmcheck = time()
-            if time()-gmcheck > 14 and not gmsent and time()-self.fpstimer < 1:
+            if time() - gmcheck > 14 and not gmsent and time() - self.fpstimer < 1:
                 self.send_message_telega("GM!!!!!!!!!!!!!!!")
-                gmsent=True
-
-
+                gmsent = True
 
     def logout(self):
         print("log out")
@@ -1489,76 +1539,80 @@ class ClassName(BaseScript):  # Название класса (должен от
         sleep(1)
         self.pressLoc((322,395))
         '''
-    def strafing(self,jump = False,imax = 11,mousemovement= False):
+
+    def strafing(self, jump=False, imax=11, mousemovement=False,morews = False):
         strafingtime = time()
-        while self.strafe and time()- strafingtime < 5:
-            strafetime = random.uniform(0.2 , 0.64)*random.uniform(0.2 , 0.64)
-            i = random.randint(1,imax)
-            if i==1:
-                sleep(random.uniform(0.3,1.1)*random.uniform(0.3, 1.1))
-                self.hold_and_release_sleep('d',strafetime)
-                sleep(random.uniform(0.3, 1.1)*random.uniform(0.3, 1.1))
-                self.hold_and_release_sleep('a',strafetime)
-            elif i==2:
-                sleep(random.uniform(0.3, 1.1)*random.uniform(0.3, 1.1))
+        while self.strafe and time() - strafingtime < 5:
+            strafetime = random.uniform(0.2, 0.64) * random.uniform(0.2, 0.64)
+            i = random.randint(1, imax)
+            if i == 1:
+                sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
                 self.hold_and_release_sleep('d', strafetime)
-                sleep(random.uniform(0.3, 1.1)*random.uniform(0.3, 1.1))
+                sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
                 self.hold_and_release_sleep('a', strafetime)
-            elif i==3:
-                sleep(random.uniform(0.3, 1.1)*random.uniform(0.3, 1.1))
-                self.hold_and_release_sleep('w', strafetime)
-                sleep(random.uniform(0.3, 1.1)*random.uniform(0.3, 1.1))
-                self.hold_and_release_sleep('s', strafetime)
-            elif i==4:
-                sleep(random.uniform(0.3, 1.1)*random.uniform(0.3, 1.1))
-                self.hold_and_release_sleep('s', strafetime)
-                sleep(random.uniform(0.3, 1.1)*random.uniform(0.3, 1.1))
-                self.hold_and_release_sleep('w', strafetime)
-            elif i==5 and jump:
-                self.hold_and_release_sleep("space",0.1)
-            elif (i==6 or i==7) and mousemovement:
-                x = random.randint(-3000, 3000)
-                y = random.randint(-555, 555)
-                self.mousemove(x,y)
+            elif i == 2:
+                sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
+                self.hold_and_release_sleep('d', strafetime)
+                sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
+                self.hold_and_release_sleep('a', strafetime)
+            elif i == 3 or (morews and (i>10 and i<=14)):
+                sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
+                self.hold_and_release_sleep('w', strafetime*1.4)
+                sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
+                self.hold_and_release_sleep('s', strafetime*1.4)
+            elif i == 4 or (morews and (i>14 and i<=18)):
+                sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
+                self.hold_and_release_sleep('s', strafetime*1.4)
+                sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
+                self.hold_and_release_sleep('w', strafetime*1.4)
+            elif i == 5 and jump:
+                self.hold_and_release_sleep("space", 0.1)
+            elif (i == 6 or i == 7) and mousemovement:
+                x = random.randint(-2000, 2000)
+                y = random.randint(-355, 355)
+                self.mousemove(x, y)
                 self.mousereturn[0] += x
                 self.mousereturn[1] += y
-                sleep(0.7)
-                self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
+                sleep(random.uniform(0.3 , 0.7))
+                self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]),limiter=random.randint(120,300))
                 self.mousereturn[0] = 0
                 self.mousereturn[1] = 0
             else:
-                sleep(1)
+                sleep(0.8)
 
     def custom(self):
-        #sleep(1)
-        self.getNextFrame()
+        sleep(1)
         if self.checker is None:
             self.checker = Thread(target=self.checkers, args=())
             self.checker.start()
+
         # self.camera.start(region=(8+self.rect[0], 31+self.rect[1], 640+self.rect[0]-8, 640+self.rect[1]-31), target_fps=self.target_fps)
         extrabarriertime = 0
         if self.ultrasave and self.ultrasavereturning:
             extrabarriertime = 8
-
+        self.getNextFrame()
 
         ###
-        Prediction = self.model.predict(source=self.img, device=0, conf=0.6, iou=0.3, imgsz=640, show=False, verbose=False)
-
-        #sleep(1)
+        Prediction = self.model.predict(source=self.img, device=0, conf=0.6, iou=0.2, imgsz=640, show=False,
+                                        verbose=False)
+        sleep(1)
         ###
         timer60power = time() - 60
         k = 0
         timer60 = time() - 60
         while (True):
-
             while self.reconnection:
                 sleep(1)
-                if time()-timer60 > 1200:
+                if time() - timer60 > 1200:
                     self.send_message_telega("Unable to coonect to server 20 mins")
                     sys.exit()
-            rebuffed = False
             # 10 pixels = 1.25degree
             self.lkmrelease()
+
+            print(
+                f"Spirit № {self.spiritCounter}  and {self.nospiritCounter} fails\n , working time: {(time() - self.inittimer) / 3600} hours , spirits per minute: {60 * self.spiritCounter / (time() - self.inittimer)}")
+
+            self.getNextFrame()
 
             if not self.checker.is_alive() or self.ban or self.mainmenu or self.blackscreen:
                 self.checker.join()
@@ -1569,13 +1623,6 @@ class ClassName(BaseScript):  # Название класса (должен от
                 elif not self.mainmenu:
                     self.send_message_telega("BANISHED BEFORE START")
                 sys.exit()
-
-            if self.stop:
-                break
-            print(
-                f"Spirit № {self.spiritCounter}  and {self.nospiritCounter} fails\n , working time: {(time() - self.inittimer) / 3600} hours , spirits per minute: {60 * self.spiritCounter / (time() - self.inittimer)}")
-
-            self.getNextFrame()
             if self.stop:
                 break
             started = False
@@ -1587,13 +1634,12 @@ class ClassName(BaseScript):  # Название класса (должен от
                     self.send_message_telega("NO SPIRIT OCHEN DOLGO")
                 k += 1
             while (not started):
-
+                sleep(random.uniform(0.5 , 1))
                 if not self.checker.is_alive() or self.ban or self.mainmenu or self.blackscreen:
                     self.checker.join()
                     if self.ban:
                         if self.mover is not None:
                             self.mover.join()
-
                         self.logout()
                     elif not self.mainmenu:
                         self.send_message_telega("BANISHED BEFORE START")
@@ -1604,85 +1650,36 @@ class ClassName(BaseScript):  # Название класса (должен от
                     if k % 15 == 0:
                         self.send_message_telega("NO SPIRIT OCHEN DOLGO")
                     k += 1
-                if (time() - timer60 > 47.5 - extrabarriertime):
-                    if self.nospiritRow > 20:
-                        sleep(90)
-                        self.AFKtime += 90
-                        continue
-                    while (time() - timer60 < 60.05):
-                        sleep(0.1)
-                        self.getNextFrame()
-                        if self.lowmana:
-                            print("LOWMANA")
-                            self.restart = True
-                            self.gosave()
-
-                    rebuffed = True
-
-
-                    if not self.checker.is_alive() or self.ban or self.mainmenu or self.blackscreen:
-                        self.checker.join()
-                        if self.ban:
-                            if self.mover is not None:
-                                self.mover.join()
-                            self.logout()
-                        elif not self.mainmenu:
-                            self.send_message_telega("BANISHED BEFORE START")
-                        sys.exit()
-                    if self.lowmana:
-                        print("LOWMANA")
-                        self.restart = True
-                        self.gosave()
-                    if self.lvling:
-                        self.press(1)
-                        sleep(13)
-                    timer60 = time()
-                    self.fastselfcast(self.barrier, 4.5)
-                    # if self.checklowmana(percentage=0.36):
-                    self.fastselfcast(self.kau, 4.01)
-
-                self.fastselfcast(self.summon, 6.2)
-                if self.mover is None:
-                    self.mover = Thread(target=self.MoveBack, args=())
-                    self.mover.start()
-                else:
+                self.turn = None
+                if self.turner is not None:
+                    self.turner.join()
+                while self.turn is None:
+                    self.turn = self.decider()
+                print(f"alp {self.turn.alp}")
+                self.movetoalp(self.turn.alp)
+                sleep(random.uniform(0.5,1.2))
+                self.fastselfcast(self.summon, 6.2,strafe=True)
+                if self.mover is not None:
                     self.mover.join()
-                    self.mover = Thread(target=self.MoveBack, args=())
-                    self.mover.start()
+                sleep(0.3)
+                if self.turner is None:
+                    self.turner = Thread(target=self.maketurn, args=(self.turn,))
+                    self.turner.start()
+                else:
+                    self.turner.join()
+                    self.turner = Thread(target=self.maketurn, args=(self.turn,))
+                    self.turner.start()
                 startp = time()
                 self.looptime = startp
 
                 print("\n\nSTARTLOOP\n\n")
 
                 started = self.startLoop()
-
                 if self.restart:
                     self.restart = False
                     self.returning()
-
                     continue
                 self.movetime = self.looptime - startp
-                if (not started):
-                    sleep(1.6)
-                    self.getNextFrame()
-                    self.returning()
-                    #sleep(1)
-                    self.getNextFrame()
-
-                    if not self.checker.is_alive() or self.ban or self.mainmenu or self.blackscreen:
-                        self.checker.join()
-                        if self.ban:
-                            if self.mover is not None:
-                                self.mover.join()
-                            self.logout()
-                        elif not self.mainmenu:
-                            self.send_message_telega("BANISHED BEFORE on trying to summon spirit")
-                        sys.exit()
-
-                    if self.lowmana:
-                        print("LOWMANA")
-                        self.restart = True
-                        self.gosave()
             print("\n\nBALLLOOP\n\n")
 
             spiritdone = False
@@ -1691,9 +1688,17 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.looptime = time()
                 if self.stop:
                     break
-                #self.lkmrelease()
 
-                self.BallLoop(firsttime = firsttime,maxnoballtimer=2.6)
+                self.strafe = True
+                if self.mover is None:
+                    self.mover = Thread(target=self.strafing, args=(True, 35,False,True,))
+                    self.mover.start()
+                else:
+                    self.mover.join()
+                    self.mover = Thread(target=self.strafing, args=(True, 35,False,True,))
+                    self.mover.start()
+                self.BallLoop(firsttime=firsttime, maxnoballtimer=1)
+                self.strafe = False
                 firsttime = False
                 if self.restart:
                     self.restart = False
@@ -1703,23 +1708,6 @@ class ClassName(BaseScript):  # Название класса (должен от
                 if checkrebuff:
                     while time() - timer60power < 60.04:
                         self.getNextFrame()
-                        Prediction = self.model.predict(source=self.img, device=0, conf=0.3, iou=0.3)
-                        # print(Prediction[0].boxes.xyxy)
-
-                        detected_boxes = Prediction[0].boxes
-
-                        # debug the loop rate
-                        # print('FPS {}'.format(1 / (time() - loop_time)))
-                        # loop_time = time()
-                        print("i will check")
-                        if len(detected_boxes) >= 1:
-                            results = self.getBestBox(detected_boxes, 1)
-                            if not results is None:
-                                bestbox, _ = results
-                                result = self.confirmExisting(bestbox, conf=0.3, i=2, precision=0.99)
-                                confirmed = result[0]
-                                if confirmed:
-                                    continue
 
                         if not self.checker.is_alive() or self.ban or self.mainmenu or self.blackscreen:
                             self.checker.join()
@@ -1729,7 +1717,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                     self.mover.join()
                                 self.logout()
                             elif not self.mainmenu:
-                                self.send_message_telega("BANISHED BEFORE EXPEL")
+                                self.send_message_telega("BANISHED before expel")
                             sys.exit()
 
                         if self.lowmana:
@@ -1738,18 +1726,13 @@ class ClassName(BaseScript):  # Название класса (должен от
                             self.gosave()
                         print("wait until 4 sec of expel")
                 if checkrebuff:
-                    #sleep(0.07)
+                    # sleep(0.07)
                     timer60power = time()
-                    self.fastselfcast(self.power, 5.5)
+                    self.fastselfcast(self.power, 4.6)
 
-                if not checkrebuff and not rebuffed:
-                    #sleep(0.03)
-                    self.lkmrelease()
-                    #sleep(0.07)
-                    self.press(self.kau)
-                    sleep(4)
-                #else:
-                    #self.fastselfcast(self.kau, 4)
+                else:
+                    # sleep(0.07)
+                    self.fastselfcast(self.kau, 3.8)
                 print("\n\nSPIRITLOOP\n\n")
                 if self.stop:
                     break
@@ -1764,6 +1747,25 @@ class ClassName(BaseScript):  # Название класса (должен от
                 break
 
             self.returning()
+            sl = random.randint(1,20)
+            if sl ==20:
+                sleep(4)
+                x= random.randint(-222,222)
+                y= random.randint(-666,666)
+                self.mousemove(x,y,limiter=random.randint(166,311))
+                sleep(11)
+                self.mousemove(-x, -y, limiter=random.randint(166, 311))
+                sleep(3)
+            elif sl>18:
+                sleep(3.5)
+                self.hold_and_release_sleep('space',0.1)
+                sleep(3.5)
+            elif sl>14:
+                sleep(7.5)
+            elif sl>5:
+                sleep(random.uniform(1.2,3.5))
+            else:
+                sleep(0.8)
 
             '''
             for _ in range(320):
