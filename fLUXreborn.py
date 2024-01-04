@@ -184,9 +184,9 @@ class ClassName(BaseScript):  # Название класса (должен от
         d1 = alp - self.alp
         d2 = 2 * self.pi - d1
         if d1 < d2:
-            self.mousemove(d1, 0,limiter = 200)
+            self.mousemove(d1, 0,limiter = random.randint(180,500))
         else:
-            self.mousemove(-d2, 0,limiter = 200)
+            self.mousemove(-d2, 0,limiter = random.randint(180,500))
         self.alp = alp
 
     def to_rad(self, alp):
@@ -1574,7 +1574,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.mousereturn[0] += x
                 self.mousereturn[1] += y
                 sleep(random.uniform(0.3 , 0.7))
-                self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]),limiter=random.randint(120,300))
+                self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]),limiter=random.randint(140,450))
                 self.mousereturn[0] = 0
                 self.mousereturn[1] = 0
             else:
@@ -1756,9 +1756,9 @@ class ClassName(BaseScript):  # Название класса (должен от
                 sleep(4)
                 x= random.randint(-222,222)
                 y= random.randint(-666,666)
-                self.mousemove(x,y,limiter=random.randint(166,311))
+                self.mousemove(x,y,limiter=random.randint(216,511))
                 sleep(11)
-                self.mousemove(-x, -y, limiter=random.randint(166, 311))
+                self.mousemove(-x, -y, limiter=random.randint(216, 511))
                 sleep(3)
             elif sl>18:
                 sleep(3.5)
