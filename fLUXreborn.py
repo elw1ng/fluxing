@@ -1601,6 +1601,10 @@ class ClassName(BaseScript):  # Название класса (должен от
         k = 0
         timer60 = time() - 60
         while (True):
+            pererva = (time() - self.inittimer) / 2200
+            if pererva-int(pererva) < 0.02 and pererva > 1:
+                print("PERERVA")
+                sleep(random.randint(90, 250))
             while self.reconnection:
                 sleep(1)
                 if time() - timer60 > 1200:
