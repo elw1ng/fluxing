@@ -1573,8 +1573,8 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.hold_and_release_sleep('w', strafetime*1.4)
             elif i == 5 and jump:
                 self.hold_and_release_sleep("space", 0.1)
-            elif (i == 6 or i == 7) and mousemovement:
-                x = random.randint(-2000, 2000)
+            elif (i >= 6 and i <= 9) and mousemovement:
+                x = random.randint(-1200, 1200)
                 y = random.randint(-355, 355)
                 self.mousemove(x, y)
                 self.mousereturn[0] += x
