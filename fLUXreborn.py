@@ -169,7 +169,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.strafe = False
 
         # gps
-        self.R = 15
+        self.R = 14
         self.x = 0
         self.y = 0.01
         self.yelipse = 1
