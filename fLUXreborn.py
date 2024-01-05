@@ -189,10 +189,22 @@ class ClassName(BaseScript):  # Название класса (должен от
             d2 = d1-2*self.pi
         else:
             d2 = 2*self.pi+d1
+        deltas = []
+        d = 0
         if abs(d1) < abs(d2):
-            self.mousemove(d1, 0,limiter = random.randint(255,510))
+            d = d1
         else:
-            self.mousemove(d2, 0,limiter = random.randint(255,510))
+            d = d2
+        while random.randint( 0, 1) > 0:
+            delta = random.randint(-int(d/7),int(d/7))
+            deltas.append(delta)
+            d -= delta
+
+        self.mousemove(d, 0,limiter = random.randint(255,510))
+        for delta in deltas:
+            sleep(random.uniform(0.07 , 0.3))
+            self.mousemove(delta, 0, limiter=random.randint(255, 510))
+
         self.alp = alp
 
     def to_rad(self, alp):
@@ -1573,7 +1585,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.hold_and_release_sleep('w', strafetime*1.4)
             elif i == 5 and jump:
                 self.hold_and_release_sleep("space", 0.1)
-            elif (i >= 6 and i <= 9) and mousemovement:
+            elif (i >= 6 and i <= 10) and mousemovement:
                 x = random.randint(-1200, 1200)
                 y = random.randint(-355, 355)
                 self.mousemove(x, y)
@@ -1584,7 +1596,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.mousereturn[0] = 0
                 self.mousereturn[1] = 0
             else:
-                sleep(0.4)
+                sleep(random.uniform(0.25, 0.6))
 
     def custom(self):
         sleep(1)
