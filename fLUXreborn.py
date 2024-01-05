@@ -276,7 +276,7 @@ class ClassName(BaseScript):  # Название класса (должен от
     def decider(self):
         turn = self.generateturn()
         if math.pow(self.x + turn.x, 2) + math.pow(self.y + turn.y, 2) / math.pow(self.yelipse, 2) < math.pow(
-                self.R - len(self.turns) - 1, 2):
+                self.R - len(self.turns), 2):
             #self.maketurn(turn)
             print(f"Turn with :{turn.alp, turn.beta, turn.t, turn.x, turn.y}")
             returning = copy.copy(turn)
@@ -287,7 +287,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         else:
             for turn in self.turns:
                 if math.pow(self.x + turn.x, 2) + math.pow(self.y + turn.y, 2) / math.pow(self.yelipse, 2) < math.pow(
-                        self.R - len(self.turns) + 1, 2):
+                        self.R, 2):
                     #self.maketurn(turn)
                     print(f"Turn from stack with  :{turn.alp, turn.beta, turn.t, turn.x, turn.y}")
                     returning = copy.copy(turn)
@@ -311,7 +311,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         print(f"real rad {rad}")
         alp = int(self.from_rad(rad))
         print(f"alp{alp}")
-        return alp + random.randint(int(-self.pi / 3), int(self.pi / 3))
+        return alp + random.randint(int(-self.pi / 2), int(self.pi / 2))
 
     def videocamera(self):
         while True:
