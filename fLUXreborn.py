@@ -1707,6 +1707,19 @@ class ClassName(BaseScript):  # Название класса (должен от
                     self.mover.start()
                 self.BallLoop(firsttime=firsttime, maxnoballtimer=1)
                 self.strafe = False
+                if self.mover is not None:
+                    self.mover.join()
+                max = 2
+                extramove = random.randint(0, max)
+                if extramove == max:
+                    d = random.uniform(2.1, 3.9)
+                    t = self.Td(d)
+                    turn = self.Turn(self.alp-self.pi, 0, t, d)
+                    self.movetoalp(turn.alp + self.pi)
+                    sleep(random.uniform(0.1, 0.4))
+                    if self.checkturn(turn):
+                        self.maketurnw(turn)
+
                 firsttime = False
                 if self.restart:
                     self.restart = False
