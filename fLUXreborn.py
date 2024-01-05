@@ -185,12 +185,14 @@ class ClassName(BaseScript):  # Название класса (должен от
             alp += 2 * self.pi
         d1 = alp - self.alp
         d2 = 2 * self.pi - d1
-        if d2 > 2*self.pi:
-            d2 -= 2*self.pi
+        if d1>=0:
+            d2 = d1-2*self.pi
+        else:
+            d2 = 2*self.pi+d1
         if abs(d1) < abs(d2):
             self.mousemove(d1, 0,limiter = random.randint(180,500))
         else:
-            self.mousemove(-d2, 0,limiter = random.randint(180,500))
+            self.mousemove(d2, 0,limiter = random.randint(180,500))
         self.alp = alp
 
     def to_rad(self, alp):
@@ -212,7 +214,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             return False
 
     def generateturn(self):
-        beta = random.randint(-int(self.pi / 2.3), int(self.pi / 2.3))
+        beta = random.randint(-int(self.pi / 2.5), int(self.pi / 2.5))
         rads = self.to_rad(beta)
         alp = self.fromcenteralp()
         d = 13.4
@@ -220,7 +222,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         if rads == 0:
             t = 2.0
         else:
-            mult = random.uniform(0.92, 1.02)
+            mult = random.uniform(0.95, 1.03)
             t = self.Td(mult * 6.7 * rads / math.sin(rads / 2))
             d = d * mult
 
