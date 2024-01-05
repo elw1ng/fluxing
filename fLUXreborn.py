@@ -1559,12 +1559,12 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.hold_and_release_sleep('d', strafetime)
                 sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
                 self.hold_and_release_sleep('a', strafetime)
-            elif i == 3 or (morews and (i>10 and i<=14)):
+            elif i == 3 or (morews and (i>10 and i<=15)):
                 sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
                 self.hold_and_release_sleep('w', strafetime*1.4)
                 sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
                 self.hold_and_release_sleep('s', strafetime*1.4)
-            elif i == 4 or (morews and (i>14 and i<=18)):
+            elif i == 4 or (morews and (i>15 and i<=20)):
                 sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
                 self.hold_and_release_sleep('s', strafetime*1.4)
                 sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
@@ -1712,7 +1712,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 max = 2
                 extramove = random.randint(0, max)
                 if extramove == max:
-                    d = random.uniform(2.1, 3.9)
+                    d = random.uniform(2.2, 4.6)
                     t = self.Td(d)
                     turn = self.Turn(self.alp-self.pi, 0, t, d)
                     self.movetoalp(turn.alp + self.pi)
