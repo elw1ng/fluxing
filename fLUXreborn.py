@@ -181,9 +181,11 @@ class ClassName(BaseScript):  # Название класса (должен от
     def movetoalp(self, alp):
         if alp >= 2 * self.pi:
             alp = alp - 2 * self.pi * int(alp / (2 * self.pi))
+        if alp < 0:
+            alp += 2 * self.pi
         d1 = alp - self.alp
         d2 = 2 * self.pi - d1
-        if d1 < d2:
+        if abs(d1) < abs(d2):
             self.mousemove(d1, 0,limiter = random.randint(180,500))
         else:
             self.mousemove(-d2, 0,limiter = random.randint(180,500))
