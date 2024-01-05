@@ -171,7 +171,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         # gps
         self.R = 15
         self.x = 0
-        self.y = 0
+        self.y = 0.01
         self.yelipse = 1
         self.alp = 0
         self.pi = 6858
