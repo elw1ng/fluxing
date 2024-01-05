@@ -214,7 +214,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             return False
 
     def generateturn(self):
-        beta = random.randint(-int(self.pi / 2.5), int(self.pi / 2.5))
+        beta = random.randint(-int(self.pi / 2.87), int(self.pi / 2.87))
         rads = self.to_rad(beta)
         alp = self.fromcenteralp()
         d = 13.4
@@ -311,7 +311,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         print(f"real rad {rad}")
         alp = int(self.from_rad(rad))
         print(f"alp{alp}")
-        return alp + random.randint(int(-self.pi / 5), int(self.pi / 5))
+        return alp + random.randint(int(-self.pi / 3), int(self.pi / 3))
 
     def videocamera(self):
         while True:
