@@ -1609,27 +1609,27 @@ class ClassName(BaseScript):  # Название класса (должен от
     def strafing(self, jump=False, imax=11, mousemovement=False,morews = False):
         strafingtime = time()
         while self.strafe and time() - strafingtime < 5:
-            strafetime = random.uniform(0.2, 0.64) * random.uniform(0.2, 0.64)
+            strafetime = random.uniform(0.15, 0.58) * random.uniform(0.15, 0.58)
             i = random.randint(1, imax)
             if i == 1:
-                sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
+                sleep(random.uniform(0.2, 0.9) * random.uniform(0.2, 0.9))
                 self.hold_and_release_sleep('d', strafetime)
-                sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
+                sleep(random.uniform(0.2, 0.9) * random.uniform(0.2, 0.9))
                 self.hold_and_release_sleep('a', strafetime)
             elif i == 2:
-                sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
+                sleep(random.uniform(0.2, 0.9) * random.uniform(0.2, 0.9))
                 self.hold_and_release_sleep('d', strafetime)
-                sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
+                sleep(random.uniform(0.2, 0.9) * random.uniform(0.2, 0.9))
                 self.hold_and_release_sleep('a', strafetime)
             elif i == 3 or (morews and (i>=10 and i<=15)):
-                sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
+                sleep(random.uniform(0.2, 0.9) * random.uniform(0.2, 0.9))
                 self.hold_and_release_sleep('w', strafetime*1.4)
-                sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
+                sleep(random.uniform(0.2, 0.9) * random.uniform(0.2, 0.9))
                 self.hold_and_release_sleep('s', strafetime*1.4)
             elif i == 4 or (morews and (i>15 and i<=20)):
-                sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
+                sleep(random.uniform(0.2, 0.9) * random.uniform(0.2, 0.9))
                 self.hold_and_release_sleep('s', strafetime*1.4)
-                sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
+                sleep(random.uniform(0.2, 0.9) * random.uniform(0.2, 0.9))
                 self.hold_and_release_sleep('w', strafetime*1.4)
             elif i == 5 and jump:
                 sleep(0.2)
@@ -1646,7 +1646,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.mousereturn[0] = 0
                 self.mousereturn[1] = 0
             else:
-                sleep(random.uniform(0.25, 0.6))
+                sleep(random.uniform(0.33, 0.66))
 
     def custom(self):
         sleep(1)
