@@ -217,14 +217,16 @@ class ClassName(BaseScript):  # Название класса (должен от
             d = d1
         else:
             d = d2
-        while random.randint( 0, 1) > 0:
+        chance = 0.66
+        while random.uniform(0.0, 1.0) <chance:
             delta = random.randint(-abs(int(d/5)),abs(int(d/5)))
             deltas.append(delta)
             d -= delta
+            chance *= 0.6
 
         self.mousemove(d, 0,limiter = random.randint(255,510))
         for delta in deltas:
-            sleep(random.uniform(0.06 , 0.2))
+            sleep(random.uniform(0.05 , 0.12))
             self.mousemove(delta, 0, limiter=random.randint(255, 510))
 
         self.alp = alp
@@ -293,7 +295,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.x += turn.x
             self.y += turn.y
             self.mover.join()
-            sleep(random.uniform(0.3,1))
+            sleep(random.uniform(0.22,0.66))
         else:
             for strafe in turn.timings:
                 k,dly,t = strafe
@@ -302,7 +304,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.x += turn.x
             self.y += turn.y
             self.mover.join()
-            sleep(random.uniform(0.3, 1))
+            sleep(random.uniform(0.22, 0.66))
 
 
     def maketurnw(self, turn):
@@ -1136,7 +1138,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                         self.turner.join()
                         self.turner = None
                         released = True
-                    sleep(0.2)
+                    sleep(0.1)
                     self.movetoalp(self.alp - int(self.turn.beta / 2))
                     sleep(0.01)
                     break
