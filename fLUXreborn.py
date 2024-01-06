@@ -296,7 +296,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.x += turn.x
             self.y += turn.y
             self.mover.join()
-            sleep(random.uniform(0.22,0.66))
+            sleep(random.uniform(0.15,0.44))
         else:
             self.mover.start()
             for strafe in turn.timings:
@@ -306,7 +306,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.x += turn.x
             self.y += turn.y
             self.mover.join()
-            sleep(random.uniform(0.22, 0.66))
+            sleep(random.uniform(0.15, 0.44))
 
 
     def maketurnw(self, turn):
@@ -1774,11 +1774,11 @@ class ClassName(BaseScript):  # Название класса (должен от
                 max = 2
                 extramove = random.randint(0, max)
                 if extramove == max:
-                    d = random.uniform(2.2, 4.6)
+                    d = random.uniform(2.2, 4.8)
                     t = self.Td(d)
                     turn = self.Turn(self.alp-self.pi, 0, t, d)
                     self.movetoalp(turn.alp + self.pi)
-                    sleep(random.uniform(0.1, 0.4))
+                    sleep(random.uniform(0.12, 0.4))
                     if self.checkturn(turn):
                         self.maketurnw(turn)
 
