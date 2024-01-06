@@ -28,17 +28,39 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.gamma = self.alp + int(self.beta / 2) - self.pi
             self.x = -self.x
             self.y = -self.y
+        def generatetimings(self):
+            n = random.randint(1, 2)
+            dt = self.t / n
+            for _ in range(n):
+                tm = random.uniform(0.2, dt - 0.7)
 
-        def __init__(self, alp, beta, t, avgd):
+                strtime = random.uniform(0.1, 0.3)
+                tdel = random.uniform(0.15, dt - tm - 2 * strtime)
+                str1 = ('a', tm, strtime)
+                str2 = ('d', tdel, strtime)
+                self.timings.append(str1)
+                self.append(str2)
+        def __init__(self, alp, beta, t, avgd,strafes = False):
             self.pi = 6858
             self.alp = alp
             self.beta = beta
             self.t = t
+
             self.gamma = self.alp + int(self.beta / 2) - self.pi
+
             self.avgd = avgd
             self.x = self.avgd * math.sin(self.to_rad(self.gamma))
             self.y = self.avgd * math.cos(self.to_rad(self.gamma))
             self.limiter = random.randint(60, 100)
+            self.strafes = strafes
+            self.timings = []
+
+            if self.strafes:
+                self.generatetimings()
+
+
+
+
 
         def __eq__(self, other):
             return self.alp == other.alp and self.beta == other.beta and self.t == other.t
@@ -226,17 +248,29 @@ class ClassName(BaseScript):  # Название класса (должен от
             return False
 
     def generateturn(self):
-        beta = random.randint(-int(self.pi / 2.87), int(self.pi / 2.87))
-        rads = self.to_rad(beta)
-        alp = self.fromcenteralp()
-        d = 13.4
-        print(f"alp {alp}")
-        if rads == 0:
-            t = 2.0
+        type = random.randint(0,4)
+        if type <4:
+            beta = random.randint(-int(self.pi / 2.87), int(self.pi / 2.87))
+            rads = self.to_rad(beta)
+            alp = self.fromcenteralp()
+            d = 13.4
+            print(f"alp {alp}")
+            if rads == 0:
+                t = 2.0
+            else:
+                mult = random.uniform(0.95, 1.03)
+                t = self.Td(mult * 6.7 * rads / math.sin(rads / 2))
+                d = d * mult
         else:
+            beta = 0
+            alp = self.fromcenteralp()
+            d = 13.4
+            print(f"alp {alp}")
+
             mult = random.uniform(0.95, 1.03)
-            t = self.Td(mult * 6.7 * rads / math.sin(rads / 2))
+            t = 2.15*mult
             d = d * mult
+            return self.Turn(alp, beta, t, d,strafes=True)
 
         return self.Turn(alp, beta, t, d)
 
@@ -250,16 +284,22 @@ class ClassName(BaseScript):  # Название класса (должен от
         else:
             self.mover = Thread(target=self.hold_and_release_sleep, args=('s', turn.t,))
             self.mover.start()
+        if not turn.strafes:
+            sleep(0.6)
+            print("rotate")
+            self.mousemove(turn.beta, 0, limiter=turn.limiter)
+            print("end rotate")
+            self.alp += turn.beta
+            self.x += turn.x
+            self.y += turn.y
+            self.mover.join()
+            sleep(random.uniform(0.3,1))
+        else:
+            for strafe in turn.timings:
+                k,dly,t = strafe
+                sleep(dly)
+                self.hold_and_release_sleep(k,t)
 
-        sleep(0.6)
-        print("rotate")
-        self.mousemove(turn.beta, 0, limiter=turn.limiter)
-        print("end rotate")
-        self.alp += turn.beta
-        self.x += turn.x
-        self.y += turn.y
-        self.mover.join()
-        sleep(random.uniform(0.3,1))
 
     def maketurnw(self, turn):
         self.movetoalp(turn.alp+self.pi)
