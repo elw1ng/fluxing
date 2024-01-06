@@ -218,7 +218,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         else:
             d = d2
         while random.randint( 0, 2) > 0:
-            delta = random.randint(-int(d/7),int(d/7))
+            delta = random.randint(-abs(int(d/7)),abs(int(d/7)))
             deltas.append(delta)
             d -= delta
 
