@@ -32,10 +32,10 @@ class ClassName(BaseScript):  # Название класса (должен от
             n = random.randint(1, 2)
             dt = self.t / n
             for _ in range(n):
-                tm = random.uniform(0.15, dt - 0.82)
+                tm = random.uniform(0.13, dt - 0.87)
 
-                strtime = random.uniform(0.06, 0.2)
-                tdel = random.uniform(0.11, dt - tm - 2 * strtime-0.1)
+                strtime = random.uniform(0.06, 0.14)
+                tdel = random.uniform(0.1, dt - tm - 2 * strtime-0.2)
                 str1 = ('a', tm, strtime)
                 str2 = ('d', tdel, strtime)
                 self.timings.append(str1)
@@ -1254,11 +1254,11 @@ class ClassName(BaseScript):  # Название класса (должен от
         if strafe:
             self.strafe = True
             if self.mover is None:
-                self.mover = Thread(target=self.strafing, args=(False, 26, True,))
+                self.mover = Thread(target=self.strafing, args=(False, 27, True,))
                 self.mover.start()
             else:
                 self.mover.join()
-                self.mover = Thread(target=self.strafing, args=(False, 26, True,))
+                self.mover = Thread(target=self.strafing, args=(False, 27, True,))
                 self.mover.start()
         sleep(casttime / 2)
         self.strafe = False
@@ -1632,7 +1632,9 @@ class ClassName(BaseScript):  # Название класса (должен от
                 sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
                 self.hold_and_release_sleep('w', strafetime*1.4)
             elif i == 5 and jump:
+                sleep(0.2)
                 self.hold_and_release_sleep("space", 0.1)
+                sleep(1.7)
             elif (i >= 6 and i <= 10) and mousemovement:
                 x = random.randint(-1200, 1200)
                 y = random.randint(-355, 355)
@@ -1761,11 +1763,11 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                 self.strafe = True
                 if self.mover is None:
-                    self.mover = Thread(target=self.strafing, args=(True, 39,False,True,))
+                    self.mover = Thread(target=self.strafing, args=(True, 42,False,True,))
                     self.mover.start()
                 else:
                     self.mover.join()
-                    self.mover = Thread(target=self.strafing, args=(True, 39,False,True,))
+                    self.mover = Thread(target=self.strafing, args=(True, 42,False,True,))
                     self.mover.start()
                 self.BallLoop(firsttime=firsttime, maxnoballtimer=1)
                 self.strafe = False
