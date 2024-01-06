@@ -1621,7 +1621,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.hold_and_release_sleep('d', strafetime)
                 sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
                 self.hold_and_release_sleep('a', strafetime)
-            elif i == 3 or (morews and (i>10 and i<=15)):
+            elif i == 3 or (morews and (i>=10 and i<=15)):
                 sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
                 self.hold_and_release_sleep('w', strafetime*1.4)
                 sleep(random.uniform(0.3, 1.1) * random.uniform(0.3, 1.1))
