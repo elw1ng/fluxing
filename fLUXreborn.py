@@ -32,9 +32,9 @@ class ClassName(BaseScript):  # Название класса (должен от
             n = random.randint(1, 2)
             dt = self.t / n
             for _ in range(n):
-                tm = random.uniform(0.2, dt - 0.7)
+                tm = random.uniform(0.2, dt - 0.8)
 
-                strtime = random.uniform(0.1, 0.3)
+                strtime = random.uniform(0.07, 0.25)
                 tdel = random.uniform(0.15, dt - tm - 2 * strtime)
                 str1 = ('a', tm, strtime)
                 str2 = ('d', tdel, strtime)
@@ -217,8 +217,8 @@ class ClassName(BaseScript):  # Название класса (должен от
             d = d1
         else:
             d = d2
-        while random.randint( 0, 2) > 0:
-            delta = random.randint(-abs(int(d/7)),abs(int(d/7)))
+        while random.randint( 0, 1) > 0:
+            delta = random.randint(-abs(int(d/5)),abs(int(d/5)))
             deltas.append(delta)
             d -= delta
 
@@ -299,6 +299,10 @@ class ClassName(BaseScript):  # Название класса (должен от
                 k,dly,t = strafe
                 sleep(dly)
                 self.hold_and_release_sleep(k,t)
+            self.x += turn.x
+            self.y += turn.y
+            self.mover.join()
+            sleep(random.uniform(0.3, 1))
 
 
     def maketurnw(self, turn):
