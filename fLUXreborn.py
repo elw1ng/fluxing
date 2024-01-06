@@ -1761,11 +1761,11 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                 self.strafe = True
                 if self.mover is None:
-                    self.mover = Thread(target=self.strafing, args=(True, 35,False,True,))
+                    self.mover = Thread(target=self.strafing, args=(True, 39,False,True,))
                     self.mover.start()
                 else:
                     self.mover.join()
-                    self.mover = Thread(target=self.strafing, args=(True, 35,False,True,))
+                    self.mover = Thread(target=self.strafing, args=(True, 39,False,True,))
                     self.mover.start()
                 self.BallLoop(firsttime=firsttime, maxnoballtimer=1)
                 self.strafe = False
