@@ -250,7 +250,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             return False
 
     def generateturn(self):
-        type = random.randint(0,4)
+        type = random.randint(1,4)
         if type <4:
             beta = random.randint(-int(self.pi / 2.87), int(self.pi / 2.87))
             rads = self.to_rad(beta)
