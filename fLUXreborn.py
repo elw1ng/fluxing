@@ -39,7 +39,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 str1 = ('a', tm, strtime)
                 str2 = ('d', tdel, strtime)
                 self.timings.append(str1)
-                self.append(str2)
+                self.timings.append(str2)
         def __init__(self, alp, beta, t, avgd,strafes = False):
             self.pi = 6858
             self.alp = alp
