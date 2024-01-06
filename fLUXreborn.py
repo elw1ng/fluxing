@@ -32,10 +32,10 @@ class ClassName(BaseScript):  # Название класса (должен от
             n = random.randint(1, 2)
             dt = self.t / n
             for _ in range(n):
-                tm = random.uniform(0.2, dt - 0.8)
+                tm = random.uniform(0.15, dt - 0.82)
 
-                strtime = random.uniform(0.07, 0.25)
-                tdel = random.uniform(0.15, dt - tm - 2 * strtime)
+                strtime = random.uniform(0.06, 0.2)
+                tdel = random.uniform(0.11, dt - tm - 2 * strtime-0.1)
                 str1 = ('a', tm, strtime)
                 str2 = ('d', tdel, strtime)
                 self.timings.append(str1)
@@ -270,7 +270,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             print(f"alp {alp}")
 
             mult = random.uniform(0.95, 1.03)
-            t = 2.15*mult
+            t = 2.25*mult
             d = d * mult
             return self.Turn(alp, beta, t, d,strafes=True)
 
@@ -282,11 +282,12 @@ class ClassName(BaseScript):  # Название класса (должен от
         if self.mover is not None:
             self.mover.join()
             self.mover = Thread(target=self.hold_and_release_sleep, args=('s', turn.t,))
-            self.mover.start()
+
         else:
             self.mover = Thread(target=self.hold_and_release_sleep, args=('s', turn.t,))
-            self.mover.start()
+
         if not turn.strafes:
+            self.mover.start()
             sleep(0.6)
             print("rotate")
             self.mousemove(turn.beta, 0, limiter=turn.limiter)
@@ -297,6 +298,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.mover.join()
             sleep(random.uniform(0.22,0.66))
         else:
+            self.mover.start()
             for strafe in turn.timings:
                 k,dly,t = strafe
                 sleep(dly)
