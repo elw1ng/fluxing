@@ -1609,7 +1609,7 @@ class ClassName(BaseScript):  # Название класса (должен от
     def strafing(self, jump=False, imax=11, mousemovement=False,morews = False):
         strafingtime = time()
         while self.strafe and time() - strafingtime < 5:
-            strafetime = random.uniform(0.15, 0.58) * random.uniform(0.15, 0.58)
+            strafetime = random.uniform(0.07, 0.58) * random.uniform(0.15, 0.58)
             i = random.randint(1, imax)
             if i == 1:
                 sleep(random.uniform(0.2, 0.9) * random.uniform(0.2, 0.9))
