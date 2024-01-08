@@ -138,7 +138,7 @@ class ClassName(fLUXreborn.ClassName):  # Название класса (дол�
                     self.mover.join()
                     self.mover = Thread(target=self.strafing, args=(True, 66, False, True,))
                     self.mover.start()
-                self.BallLoop(firsttime=firsttime, maxnoballtimer=1)
+                self.BallLoop(firsttime=firsttime, maxnoballtimer=1.7)
                 self.strafe = False
                 if self.mover is not None:
                     self.mover.join()

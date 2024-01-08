@@ -1773,7 +1773,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     self.mover.join()
                     self.mover = Thread(target=self.strafing, args=(True,61,False,True,))
                     self.mover.start()
-                self.BallLoop(firsttime=firsttime, maxnoballtimer=1)
+                self.BallLoop(firsttime=firsttime, maxnoballtimer=1.7)
                 self.strafe = False
                 if self.mover is not None:
                     self.mover.join()
