@@ -300,7 +300,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.x += turn.x
             self.y += turn.y
             self.mover.join()
-            sleep(random.uniform(0.15,0.44))
+            sleep(random.uniform(0.10,0.21))
         else:
             self.mover.start()
             for strafe in turn.timings:
@@ -310,7 +310,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.x += turn.x
             self.y += turn.y
             self.mover.join()
-            sleep(random.uniform(0.15, 0.44))
+            sleep(random.uniform(0.10, 0.21))
 
 
     def maketurnw(self, turn):
@@ -1176,14 +1176,14 @@ class ClassName(BaseScript):  # Название класса (должен от
 
             self.getNextFrame()
 
-            Prediction = self.model.predict(source=self.img, device=0, conf=0.3, iou=0.3)
+            Prediction = self.model.predict(source=self.img, device=0, conf=0.2, iou=0.3)
             detected_boxes = Prediction[0].boxes
 
             if len(detected_boxes) >= 1:
                 results = self.getBestBox(detected_boxes, 0)
                 if (not results is None):
                     best_box, nospirittime = results
-                    result = self.confirmExisting(best_box, conf=0.3, precision=0.99, i=2)
+                    result = self.confirmExisting(best_box, conf=0.2, precision=0.99, i=2)
                     confirmed = result[0]
                     best_box = result[1]
 
