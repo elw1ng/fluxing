@@ -1621,12 +1621,12 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.hold_and_release_sleep('d', strafetime)
                 sleep(random.uniform(0.2, 0.9) * random.uniform(0.2, 0.9))
                 self.hold_and_release_sleep('a', strafetime)
-            elif i == 3 or (morews and (i>=10 and i<=15)):
+            elif i == 3 or (morews and (i>=10 and i<=17)):
                 sleep(random.uniform(0.2, 0.9) * random.uniform(0.2, 0.9))
                 self.hold_and_release_sleep('w', strafetime*1.4)
                 sleep(random.uniform(0.2, 0.9) * random.uniform(0.2, 0.9))
                 self.hold_and_release_sleep('s', strafetime*1.4)
-            elif i == 4 or (morews and (i>15 and i<=20)):
+            elif i == 4 or (morews and (i>17 and i<=23)):
                 sleep(random.uniform(0.2, 0.9) * random.uniform(0.2, 0.9))
                 self.hold_and_release_sleep('s', strafetime*1.4)
                 sleep(random.uniform(0.2, 0.9) * random.uniform(0.2, 0.9))
@@ -1646,7 +1646,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.mousereturn[0] = 0
                 self.mousereturn[1] = 0
             else:
-                sleep(random.uniform(0.33, 0.66))
+                sleep(random.uniform(0.44, 0.88))
 
     def custom(self):
         sleep(1)
@@ -1763,11 +1763,11 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                 self.strafe = True
                 if self.mover is None:
-                    self.mover = Thread(target=self.strafing, args=(True, 42,False,True,))
+                    self.mover = Thread(target=self.strafing, args=(True,46,False,True,))
                     self.mover.start()
                 else:
                     self.mover.join()
-                    self.mover = Thread(target=self.strafing, args=(True, 42,False,True,))
+                    self.mover = Thread(target=self.strafing, args=(True,46,False,True,))
                     self.mover.start()
                 self.BallLoop(firsttime=firsttime, maxnoballtimer=1)
                 self.strafe = False
