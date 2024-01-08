@@ -191,10 +191,14 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.strafe = False
 
         # gps
-        self.R = 14
+        self.R = 14.0
         self.x = 0
         self.y = 0.01
-        self.yelipse = 1
+        self.yelipse = 1.0
+        if "R" in sys.argv:
+            self.R = float(sys.argv[sys.argv.index("R") + 1])
+        if "e" in sys.argv:
+            self.yelipse = float(sys.argv[sys.argv.index("e") + 1])
         self.alp = 0
         self.pi = 6858
         self.turns = []
