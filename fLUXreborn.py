@@ -134,7 +134,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.USER1_ID = self.keys['key17']['value']
         self.USER2_ID = self.keys['key18']['value']
         self.TOKEN = self.keys['key19']['value']
-        self.target_fps = 55
+        self.target_fps = 52
         if "fps" in sys.argv:
             self.target_fps = int(sys.argv[sys.argv.index("fps") + 1])
         self.savemovetimer = 2.5
@@ -1499,7 +1499,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         gmcheck = time()
         gmsent = False
         while True:
-            sleep(0.8)
+            sleep(1.2)
             try:
                 command = self.client_socket.recv(1)
                 command = command.decode()
