@@ -1650,7 +1650,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.mousereturn[0] = 0
                 self.mousereturn[1] = 0
             else:
-                sleep(random.uniform(0.44, 0.88))
+                sleep(random.uniform(0.6, 0.9))
 
     def custom(self):
         sleep(1)
