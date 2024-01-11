@@ -137,6 +137,9 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.target_fps = 52
         if "fps" in sys.argv:
             self.target_fps = int(sys.argv[sys.argv.index("fps") + 1])
+        self.barrier = False
+        if "bar" in sys.argv:
+            self.barrier = True
         self.savemovetimer = 2.5
         self.savedelay = 69
         self.bot = telega.Telega(self.USER1_ID, self.USER2_ID, self.TOKEN)
@@ -1786,6 +1789,35 @@ class ClassName(BaseScript):  # Название класса (должен от
                 print(f"alp {self.turn.alp}")
                 self.movetoalp(self.turn.alp)
                 sleep(random.uniform(0.5,1.2))
+                if self.barrier and (time() - timer60 > 47.5 - extrabarriertime):
+                    if self.nospiritRow > 20:
+                        sleep(90)
+                        self.AFKtime += 90
+                        continue
+                    while (time() - timer60 < 60.05):
+                        sleep(0.1)
+                        self.getNextFrame()
+                        if not self.checker.is_alive() or self.ban or self.mainmenu or self.blackscreen:
+                            self.checker.join()
+                            if self.ban:
+                                if self.mover is not None:
+                                    self.mover.join()
+                                self.logout()
+                            elif not self.mainmenu:
+                                self.send_message_telega("BANISHED on trying to summon")
+                            sys.exit()
+
+                        if self.lowmana:
+                            print("LOWMANA")
+                            self.restart = True
+                            self.gosave()
+                    rebuffed = True
+                    if self.lvling:
+                        self.press(1)
+                        sleep(13)
+                    timer60 = time()
+                    self.fastselfcast(self.barrier, 4)
+
                 self.fastselfcast(self.summon, 6.2,strafe=True)
                 if self.mover is not None:
                     self.mover.join()
