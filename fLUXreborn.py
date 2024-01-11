@@ -485,13 +485,12 @@ class ClassName(BaseScript):  # Название класса (должен от
                 # timestep = timer / n
                 timespent = 0
 
-                k=-1
+
                 for i in range(n):
-                    if i >= int(n/2)*2:
-                        k=0
-                    k*=-1
+
+
                     self.mousemovetimer = time()
-                    win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, xstep+k*deltax, ystep+k*deltay, 0, 0)
+                    win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, xstep, ystep, 0, 0)
                     delay = time() - self.mousemovetimer
                     if (delay < timer):
                         sleep(timer - (delay))
