@@ -513,7 +513,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 if (delay < lasttimer):
                     sleep(lasttimer - (delay))
 
-    def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=1200):
+    def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=1200,changealp=False):
         # Check Closest
 
         at = 0
@@ -541,6 +541,10 @@ class ClassName(BaseScript):  # Название класса (должен от
         #print(r1,r2)
         x = int(self.from_rad(r1))  # 2.8 UE 5
         y = int(self.from_rad(r2))
+        if changealp:
+            self.movetoalp(self.alp+x)
+            x = 0
+            sleep(0.03)
         #print(x,y)
         if x == 0 and y == 0:
             return False, currentMousemove
@@ -1186,7 +1190,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 results = self.getBestBox(detected_boxes, 0)
                 if (not results is None):
                     best_box, nospirittime = results
-                    result = self.confirmExisting(best_box, conf=0.2, precision=0.99, i=2)
+                    result = self.confirmExisting(best_box, conf=0.2, precision=0.99, i=3)
                     confirmed = result[0]
                     best_box = result[1]
 
@@ -1198,7 +1202,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                         self.lkmpress()
                         print("trying to move")
-                        result = self.MouseMove(best_box, currentMousemove=maxmousemove, limit=1450)
+                        result = self.MouseMove(best_box, currentMousemove=maxmousemove, limit=1450,changealp = True)
                         maxmousemove = result[1]
                         # sleep(0.11)
                         if self.checkDistance(best_box) < 25:
