@@ -165,6 +165,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.ultrasavereturning = False
         self.ultrasavecounter = 0
         self.earlydamagesave = True
+
         self.hwnd = win32gui.FindWindow(None, 'Mortal Online 2  ')
         # hwnd = win32gui.FinwdWindow("UnrealWindow", None) # Fortnite
         self.rect = win32gui.GetWindowRect(self.hwnd)
@@ -1691,6 +1692,17 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.mousereturn[1] = 0
             else:
                 sleep(random.uniform(0.6, 0.9))
+    def activatestrafe(self,i=61):
+        self.strafe = True
+        sleep(1)
+        if self.mover is None:
+            self.mover = Thread(target=self.strafing, args=(True, i, False, True,))
+            self.mover.start()
+        else:
+            self.mover.join()
+            self.mover = Thread(target=self.strafing, args=(True, i, False, True,))
+            self.mover.start()
+
 
     def custom(self):
         sleep(1)
@@ -1805,15 +1817,11 @@ class ClassName(BaseScript):  # Название класса (должен от
                 if self.stop:
                     break
 
-                self.strafe = True
-                if self.mover is None:
-                    self.mover = Thread(target=self.strafing, args=(True,61,False,True,))
-                    self.mover.start()
-                else:
-                    self.mover.join()
-                    self.mover = Thread(target=self.strafing, args=(True,61,False,True,))
-                    self.mover.start()
+                thread = Thread(target=self.activatestrafe, args=(61,))
+                thread.start()
+
                 self.BallLoop(firsttime=firsttime, maxnoballtimer=1.7)
+                thread.join()
                 self.strafe = False
                 if self.mover is not None:
                     self.mover.join()
