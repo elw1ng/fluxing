@@ -985,10 +985,12 @@ class ClassName(BaseScript):  # Название класса (должен от
 
     def SpiritLoop(self, worktime=None):
         win32gui.SetForegroundWindow(self.hwnd)
+        nodetectcounter =0
         starttime = time()
         spirit_loop = True
         nospirittime = starttime
         predictedtime = nospirittime
+        extramove = False
         maxmousemove = [0, 0]
         detected = False
         while (spirit_loop):
@@ -1064,6 +1066,19 @@ class ClassName(BaseScript):  # Название класса (должен от
                                         self.lkmspam = False
                                         lkmspamer.join()
                                         return False
+                            if not extramove:
+                                if len(detected_boxes) >= 1:
+                                    results = self.getBestBox(detected_boxes, 0)
+                                    if not results is None:
+                                        bestbox, _ = results
+                                        result = self.confirmExisting(bestbox, conf=0.15, i=1, precision=0.99)
+                                        confirmed = result[0]
+                                        if confirmed and (result[1].xyxy[0][2] - result[1].xyxy[0][0])<60:
+                                            t= random.uniform(0.6,0.8)
+                                            turn = self.Turn(self.alp-self.pi,0,t,self.Dt(t))
+                                            self.maketurnw(turn)
+                                            sleep(0.3)
+                                            extramove = True
                             if self.blackscreen:
                                 self.blackscreen_event.wait()
                                 self.checker.join()
@@ -1094,6 +1109,10 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
                 self.mousereturn[0] = 0
                 self.mousereturn[1] = 0
+                nodetectcounter+=1
+                if nodetectcounter >10:
+                    self.hold_and_release_sleep('space',0.1)
+                    nodetectcounter = -100
             if time() - predictedtime > 8 and detected:
                 spirit_loop = False
             if time() - nospirittime > 7.5 and detected:
