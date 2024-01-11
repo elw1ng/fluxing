@@ -284,7 +284,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
     def maketurn(self, turn):
         self.movetoalp(turn.alp)
-        sleep(0.04)
+        sleep(0.02)
         if self.mover is not None:
             self.mover.join()
             self.mover = Thread(target=self.hold_and_release_sleep, args=('s', turn.t,))
@@ -317,7 +317,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
     def maketurnw(self, turn):
         self.movetoalp(turn.alp+self.pi)
-        sleep(0.04)
+        sleep(0.02)
         if self.mover is not None:
             self.mover.join()
             self.mover = Thread(target=self.hold_and_release_sleep, args=('w', turn.t,))
