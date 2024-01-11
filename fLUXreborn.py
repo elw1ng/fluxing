@@ -1487,7 +1487,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         while extramove == max:
             d= random.uniform(2.8, 8.5)
             t = self.Td(d)
-            turn = self.Turn(self.alp+self.pi+random.randint(int(-self.pi/6),int(self.pi/6)), random.randint(int(-self.pi/10),int(self.pi/10)), t, d)
+            turn = self.Turn(self.alp+random.randint(int(-self.pi/6),int(self.pi/6)), random.randint(int(-self.pi/10),int(self.pi/10)), t, d)
             self.movetoalp(turn.alp+self.pi)
             sleep(random.uniform(0.5, 1.4))
             if self.checkturn(turn):
