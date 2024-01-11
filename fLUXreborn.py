@@ -1074,6 +1074,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                         result = self.confirmExisting(bestbox, conf=0.15, i=1, precision=0.99)
                                         confirmed = result[0]
                                         if confirmed and (result[1].xyxy[0][2] - result[1].xyxy[0][0])<60:
+                                            sleep(random.uniform(0.5,2.5))
                                             t= random.uniform(0.6,0.8)
                                             turn = self.Turn(self.alp-self.pi,0,t,self.Dt(t))
                                             self.maketurnw(turn)
