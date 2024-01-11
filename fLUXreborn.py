@@ -189,7 +189,6 @@ class ClassName(BaseScript):  # Название класса (должен от
         sleep(1)
         self.inittimer = time()
         self.strafe = False
-
         # gps
         self.R = 14.0
         self.x = 0
@@ -1488,7 +1487,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         while extramove == max:
             d= random.uniform(2.8, 8.5)
             t = self.Td(d)
-            turn = self.Turn(self.fromcenteralp(), random.randint(int(-self.pi/10),int(self.pi/10)), t, d)
+            turn = self.Turn(self.alp+self.pi+random.randint(int(-self.pi/6),int(self.pi/6)), random.randint(int(-self.pi/10),int(self.pi/10)), t, d)
             self.movetoalp(turn.alp+self.pi)
             sleep(random.uniform(0.5, 1.4))
             if self.checkturn(turn):
@@ -1784,9 +1783,9 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.strafe = False
                 if self.mover is not None:
                     self.mover.join()
-                max = 2
+                max = 4
                 extramove = random.randint(0, max)
-                if extramove == max:
+                if self.turn.t > 2.1 or extramove:
                     d = random.uniform(2.2, 4.8)
                     t = self.Td(d)
                     turn = self.Turn(self.alp-self.pi, 0, t, d)
