@@ -240,7 +240,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         return (alp * math.pi / self.pi)
 
     def from_rad(self, rad):
-        return (rad * self.pi / math.pi)
+        return int(rad * self.pi / math.pi)
 
     def Dt(self, t):
         if t >= 0.5:
@@ -257,8 +257,9 @@ class ClassName(BaseScript):  # Название класса (должен от
     def generateturn(self):
         type = random.randint(1,4)
         if type <4:
-            rads = random.uniform(-math.pi / 3.1 / type, math.pi / 3.1 / type)
-            beta = self.from_rad(rads)
+
+            beta = random.randint(int(-math.pi / 3.1 / type), int(math.pi / 3.1 / type))
+            rads = self.from_rad(beta)
             alp = self.fromcenteralp()
             d = 13.4
             print(f"alp {alp}")
