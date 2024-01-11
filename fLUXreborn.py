@@ -1728,6 +1728,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         k = 0
         timer60 = time() - 60
         while (True):
+            rebuffed = False
             pererva = (time() - self.inittimer) / 2200
             if pererva-int(pererva) < 0.02 and pererva > 1:
                 print("PERERVA")
@@ -1900,7 +1901,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     timer60power = time()
                     self.fastselfcast(self.power, 4.6)
 
-                else:
+                elif not rebuffed:
                     # sleep(0.07)
                     self.fastselfcast(self.kau, 3.8)
                 print("\n\nSPIRITLOOP\n\n")
