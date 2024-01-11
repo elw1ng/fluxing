@@ -1173,7 +1173,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                         self.turner = None
                         released = True
                     sleep(0.1)
-                    self.movetoalp(self.alp - int(self.turn.beta / 2))
+                    self.movetoalp(self.alp - int(self.turn.beta / 3.5))
                     sleep(0.01)
                     break
 
