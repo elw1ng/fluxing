@@ -258,7 +258,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         type = random.randint(1,4)
         if type <4:
 
-            beta = random.randint(int(-self.pi / 3.1 / type), int(self.pi / 3.1 / type))
+            beta = random.randint(int(-self.pi/ 3.1 / type), int(self.pi/ 3.1 / type))
             rads = self.from_rad(beta)
             alp = self.fromcenteralp()
             d = 13.4
