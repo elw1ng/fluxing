@@ -1818,7 +1818,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     self.mover.join()
                 max = 4
                 extramove = random.randint(0, max)
-                if self.turn.t > 2.1 or extramove:
+                if self.turn.t > 2.2 or extramove:
                     d = random.uniform(2.2, 4.8)
                     t = self.Td(d)
                     turn = self.Turn(self.alp-self.pi, 0, t, d)
