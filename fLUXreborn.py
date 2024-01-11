@@ -257,8 +257,8 @@ class ClassName(BaseScript):  # Название класса (должен от
     def generateturn(self):
         type = random.randint(1,4)
         if type <4:
-            beta = random.randint(-int(self.pi / 3.1/type), int(self.pi / 3.1/type))
-            rads = self.to_rad(beta)
+            rads = random.uniform(-int(self.pi / 3.1 / type), int(self.pi / 3.1 / type))
+            beta = self.from_rad(rads)
             alp = self.fromcenteralp()
             d = 13.4
             print(f"alp {alp}")
@@ -1484,7 +1484,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         while extramove == max:
             d= random.uniform(2.8, 8.5)
             t = self.Td(d)
-            turn = self.Turn(self.fromcenteralp(), random.uniform(-self.pi/10,self.pi/10), t, d)
+            turn = self.Turn(self.fromcenteralp(), self.from_rad( random.uniform(-self.pi/10,self.pi/10)), t, d)
             self.movetoalp(turn.alp+self.pi)
             sleep(random.uniform(0.5, 1.4))
             if self.checkturn(turn):
