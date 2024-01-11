@@ -1225,6 +1225,19 @@ class ClassName(BaseScript):  # Название класса (должен от
                         maxmousemove = result[1]
                         # sleep(0.11)
                         if self.checkDistance(best_box) < 25:
+                            if best_box.xyxy[0][2] - best_box.xyxy[0][0] < 40:
+
+                                t = random.uniform(0.51, 0.61)
+                                turn = self.Turn(self.alp - self.pi, 0, t, self.Dt(t))
+                                if self.turner is None:
+                                    self.turner = Thread(target=self.maketurnw, args=(turn,))
+                                    self.turner.start()
+                                else:
+                                    self.turner.join()
+                                    self.turner = Thread(target=self.maketurnw, args=(turn,))
+                                    self.turner.start()
+
+
                             return True
             '''
             if self.ultrasave and released and (time() - nospirittime > 5):
