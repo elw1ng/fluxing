@@ -203,6 +203,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.pi = 6858
         self.turns = []
         self.turn = None
+        self.startextramove = False
 
     def movetoalp(self, alp):
         if alp >= 2 * self.pi:
@@ -1237,7 +1238,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                     self.turner = Thread(target=self.maketurnw, args=(turn,))
                                     self.turner.start()
 
-
+                                self.startextramove= True
                             return True
             '''
             if self.ultrasave and released and (time() - nospirittime > 5):
@@ -1818,7 +1819,8 @@ class ClassName(BaseScript):  # Название класса (должен от
                     self.mover.join()
                 max = 4
                 extramove = random.randint(0, max)
-                if self.turn.t > 2.2 or extramove:
+                if (self.turn.t > 2.2 or extramove) and not self.startextramove:
+                    self.startextramove =False
                     d = random.uniform(2.2, 4.8)
                     t = self.Td(d)
                     turn = self.Turn(self.alp-self.pi, 0, t, d)
