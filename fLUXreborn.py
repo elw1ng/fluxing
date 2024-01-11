@@ -137,9 +137,9 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.target_fps = 52
         if "fps" in sys.argv:
             self.target_fps = int(sys.argv[sys.argv.index("fps") + 1])
-        self.barrier = False
+        self.bar = False
         if "bar" in sys.argv:
-            self.barrier = True
+            self.bar = True
         self.savemovetimer = 2.5
         self.savedelay = 69
         self.bot = telega.Telega(self.USER1_ID, self.USER2_ID, self.TOKEN)
@@ -1789,7 +1789,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 print(f"alp {self.turn.alp}")
                 self.movetoalp(self.turn.alp)
                 sleep(random.uniform(0.5,1.2))
-                if self.barrier and (time() - timer60 > 47.5 - extrabarriertime):
+                if self.bar and (time() - timer60 > 47.5 - extrabarriertime):
                     if self.nospiritRow > 20:
                         sleep(90)
                         self.AFKtime += 90
