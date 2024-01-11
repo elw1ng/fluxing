@@ -275,8 +275,8 @@ class ClassName(BaseScript):  # Название класса (должен от
             d = 13.4
             print(f"alp {alp}")
 
-            mult = random.uniform(0.95, 1.03)
-            t = 2.25*mult
+            mult = random.uniform(0.95, 1.02)
+            t = 2.14*mult
             d = d * mult
             return self.Turn(alp, beta, t, d,strafes=True)
 
