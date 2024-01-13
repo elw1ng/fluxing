@@ -1123,6 +1123,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     sleep(0.05)
                 if nodetectcounter == 450:
                     self.movetoalp(self.alp + int(2*self.pi / 3))
+                    sleep(0.05)
 
 
             if time() - predictedtime > 8 and detected:
