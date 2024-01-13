@@ -1118,7 +1118,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 nodetectcounter+=1
                 if nodetectcounter >10:
                     self.hold_and_release_sleep('space',0.1)
-                    nodetectcounter = -100
+                    nodetectcounter = random.randint(-900,-100)
             if time() - predictedtime > 8 and detected:
                 spirit_loop = False
             if time() - nospirittime > 7.5 and detected:
