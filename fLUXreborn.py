@@ -1119,10 +1119,10 @@ class ClassName(BaseScript):  # Название класса (должен от
                 if nodetectcounter ==10:
                     self.hold_and_release_sleep('space',0.1)
                 if nodetectcounter == 150:
-                    self.movetoalp(self.alp - self.pi/3)
+                    self.movetoalp(self.alp - int(self.pi/3))
                     sleep(0.05)
                 if nodetectcounter == 450:
-                    self.movetoalp(self.alp + 2*self.pi / 3)
+                    self.movetoalp(self.alp + int(2*self.pi / 3))
 
 
             if time() - predictedtime > 8 and detected:
