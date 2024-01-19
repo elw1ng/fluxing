@@ -55,4 +55,5 @@ omegaconf
 telebot
 points
 pyTelegramBotAPI
+ultralytics
 
