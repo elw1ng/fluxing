@@ -392,6 +392,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
     def videocamera(self):
         while True:
+            self.arduino.__command_complete.wait()
             print("1")
             delta = time() - self.fpstimer
             print("2")
