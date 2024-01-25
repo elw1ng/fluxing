@@ -17,13 +17,13 @@ import fLUXreborn
 class ClassName(fLUXreborn.ClassName):
     def custom(self):
 
-        self.mousemove(2*self.pi,0)
+        self.mousemove(self.pi,1000)
         sleep(2)
-        self.mousemove(2 * self.pi, 0)
+        self.mousemove(-self.pi, -1000)
         sleep(2)
-        self.mousemove(2 * self.pi, 0)
+        self.mousemove(self.pi, 1000)
         sleep(2)
-        self.mousemove(2 * self.pi, 0)
+        self.mousemove(-self.pi, -1000)
         sleep(2)
 
         sleep(63)
