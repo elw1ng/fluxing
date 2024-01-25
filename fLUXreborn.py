@@ -556,7 +556,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 for _ in range(n):
 
                     self.mousemovetimer = time()
-                    win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, xstep, ystep, 0, 0)
+                    self.arduino.move(xstep, ystep)
                     delay = time() - self.mousemovetimer
                     if (delay < timer):
                         sleep(timer - (delay))
@@ -567,7 +567,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 #print(f"avgtimespentfor cycle = {timespent/n}")
 
                 self.mousemovetimer = time()
-                win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, xlast, ylast, 0, 0)
+                self.arduino.move(xlast, ylast)
                 delay = time() - self.mousemovetimer
                 lasttimer= timer*(lengthlast/ limiter)
                 if (delay < lasttimer):
@@ -575,7 +575,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
             else:
                 self.mousemovetimer = time()
-                win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, x, y, 0, 0)
+                self.arduino.move(x, y)
                 delay = time() - self.mousemovetimer
                 lasttimer = timer * (length / limiter)
                 if (delay < lasttimer):
