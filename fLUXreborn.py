@@ -713,7 +713,7 @@ class ClassName(BaseScript):  # Название класса (должен от
     def lkmpress(self):
         sleep(0.001)
         if not self.lkmpressed:
-            self.press()
+            self.arduino.press()
             self.lkmpressed = True
             return True
         return False
