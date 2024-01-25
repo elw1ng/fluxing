@@ -483,11 +483,16 @@ class ClassName(BaseScript):  # Название класса (должен от
         ny = int(abs(y) / limiter)
         if abs(x) > 0 or abs(y) > 0:
             if nx or ny  > 0:
-
-                #xstep = int(limiter * x / length)
-                #ystep = int(limiter * y / length)
-                xlast = x - limiter * nx
-                ylast = y - limiter * ny
+                if x<0:
+                    xstep = -limiter
+                else:
+                    xstep = limiter
+                if y < 0:
+                    ystep = -limiter
+                else:
+                    ystep = limiter
+                xlast = x - xstep * nx
+                ylast = y - ystep * ny
                 lengthlast = abs(xlast)+abs(ylast)
                 # timestep = timer / n
                 timespent = 0
@@ -499,11 +504,11 @@ class ClassName(BaseScript):  # Название класса (должен от
                     decide= random.uniform(0.0,1.0)
                     if ky == ny or decide < ((nx-kx)/(nx+ny-kx-ky+1)):
                         self.mousemovetimer = time()
-                        self.arduino.move(limiter, 0)
+                        self.arduino.move(xstep, 0)
                         kx += 1
                     else:
                         self.mousemovetimer = time()
-                        self.arduino.move(0,limiter)
+                        self.arduino.move(0,ystep)
                         ky += 1
 
 
