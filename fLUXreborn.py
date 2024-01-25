@@ -1236,7 +1236,9 @@ class ClassName(BaseScript):  # Название класса (должен от
                         self.turner = None
                         released = True
                     sleep(0.1)
+                    print("1")
                     self.movetoalp(self.alp - int(self.turn.beta / 3.5))
+                    print("2")
                     sleep(0.01)
                     break
 
@@ -1266,15 +1268,17 @@ class ClassName(BaseScript):  # Название класса (должен от
                 released = True
 
             self.getNextFrame()
-
+            print("3")
             Prediction = self.model.predict(source=self.img, device=0, conf=0.2, iou=0.3)
             detected_boxes = Prediction[0].boxes
-
+            print("4")
             if len(detected_boxes) >= 1:
                 results = self.getBestBox(detected_boxes, 0)
                 if (not results is None):
                     best_box, nospirittime = results
+                    print("5")
                     result = self.confirmExisting(best_box, conf=0.2, precision=0.99, i=3)
+                    print("6")
                     confirmed = result[0]
                     best_box = result[1]
 
