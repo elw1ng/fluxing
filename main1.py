@@ -174,7 +174,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.ultrasavecounter = 0
         self.earlydamagesave = True
 
-        self.hwnd = win32gui.FindWindow(None, 'Proxifier')
+        self.hwnd = win32gui.FindWindow(None, 'HDClone 6 Enterprise Edition')
         # hwnd = win32gui.FinwdWindow("UnrealWindow", None) # Fortnite
         self.rect = win32gui.GetWindowRect(self.hwnd)
         # region = rect[0], rect[1], rect[2] - rect[0], rect[3] - rect[1]
