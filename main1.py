@@ -117,7 +117,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         #win32gui.SetForegroundWindow(self.hwnd)
         self.region = 1, 2, 3 - 4, 5 - 6
         # initialize the WindowCapture class
-        self.camera = dxcam.create()
+        #self.camera = dxcam.create()
         self.restart = False
         self.selfcast = self.keys['key1']['value']
         self.moveback = self.keys['key2']['value']
@@ -192,8 +192,8 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.ban = False
         self.mousemovetimer = time()
         self.camerastop = False
-        self.c = Thread(target=self.videocamera, args=())
-        self.c.start()
+        #self.c = Thread(target=self.videocamera, args=())
+        #self.c.start()
         self.reconnection = False
         sleep(1)
         self.inittimer = time()
@@ -1752,9 +1752,9 @@ class ClassName(BaseScript):  # Название класса (должен от
     def custom(self):
         sleep(1)
 
-        #if self.checker is None:
-        #    self.checker = Thread(target=self.checkers, args=())
-        #    self.checker.start()
+        if self.checker is None:
+            self.checker = Thread(target=self.checkers, args=())
+            self.checker.start()
         while True:
             for i in range(1111):
                 sleep(0.001)
