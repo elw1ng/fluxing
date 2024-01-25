@@ -16,21 +16,22 @@ import pyautogui
 import fLUXreborn
 class ClassName(fLUXreborn.ClassName):
     def custom(self):
+
+        self.mousemove(2*self.pi,0)
+        sleep(63)
         sleep(2)
         for i in range(65):
             sleep(2.5)
-            print(f"move f{10*i}")
-            self.arduino.move(10*i, 0)
+            print(f"move f{10 * i}")
+            self.arduino.move(10 * i, 0)
             sleep(0.7)
             print(f"move f{-10 * i}")
-            self.arduino.move(-10*i, 0)
+            self.arduino.move(-10 * i, 0)
         sleep(4)
         for i in range(10):
             sleep(0.4)
-            self.arduino.move(int(2*self.pi/10),0)
+            self.arduino.move(int(2 * self.pi / 10), 0)
         sleep(2)
-        self.mousemove(-2*self.pi,0)
-        sleep(63)
         '''
         beta = 1500
         rads = 0
