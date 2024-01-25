@@ -1,14 +1,4 @@
-from pyduino_mk.constants import *
-from pyduino_mk import Arduino
-print(1231/1)
 
-
-while True:
-    print("asdw")
-    for i in range(1111):
-        arduino.move(55,0)
-    for i in range(1111):
-        arduino.move(-55,0)
 import threading
 import sys
 from scripts.base import BaseScript  # обязательный импорт для наследования
