@@ -477,7 +477,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.lkmrelease()
         sleep(0.1)
 
-    def mousemove(self, x, y, timer=0.006, limiter=100,deltax=21,deltay=4):
+    def mousemove(self, x, y, timer=0.005, limiter=100,deltax=21,deltay=4):
         # limiter = 235
         length = abs(x) + abs(y)
         n = int(length / limiter)  # 35 UE5
@@ -493,12 +493,18 @@ class ClassName(BaseScript):  # Название класса (должен от
                 # timestep = timer / n
                 timespent = 0
 
-
-                for i in range(n):
-
-
-                    self.mousemovetimer = time()
-                    self.arduino.move(xstep, ystep)
+                kx = 0
+                ky = 0
+                for i in range(2*n):
+                    decide= random.uniform(0.0,1.0)
+                    if decide <= ((n-kx)/(2*n-kx-ky)):
+                        self.mousemovetimer = time()
+                        self.arduino.move(xstep, 0)
+                        kx += 1
+                    else:
+                        self.mousemovetimer = time()
+                        self.arduino.move(0,ystep)
+                        ky += 1
                     delay = time() - self.mousemovetimer
                     if (delay < timer):
                         sleep(timer - (delay))
