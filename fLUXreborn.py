@@ -1287,7 +1287,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                         self.lkmpress()
                         print("trying to move")
                         result = self.MouseMove(best_box, currentMousemove=maxmousemove, limit=1450,changealp = True)
-                        #maxmousemove = result[1]
+                        maxmousemove = result[1]
                         # sleep(0.11)
                         if self.checkDistance(best_box) < 25:
                             if best_box.xyxy[0][2] - best_box.xyxy[0][0] < 40:
