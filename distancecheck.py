@@ -18,7 +18,9 @@ class ClassName(fLUXreborn.ClassName):
     def custom(self):
         sleep(2)
         for i in range(15):
+            sleep(1)
             self.arduino.move(-100*i, 0)
+            sleep(0.4)
             self.arduino.move(100*i, 0)
         sleep(4)
         for i in range(10):
