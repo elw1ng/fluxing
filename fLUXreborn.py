@@ -17,7 +17,7 @@ import copy
 from pyduino_mk.constants import *
 from pyduino_mk import Arduino
 
-arduino = Arduino(port = 'COM3')
+
 
 class ClassName(BaseScript):  # Название класса (должен отличаться от других названий скриптов)
     class Turn():
@@ -498,7 +498,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
 
                     self.mousemovetimer = time()
-                    arduino.move(xstep, ystep)
+                    self.arduino.move(xstep, ystep)
                     delay = time() - self.mousemovetimer
                     if (delay < timer):
                         sleep(timer - (delay))
@@ -507,7 +507,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 # print(f"avgtimespentfor cycle = {timespent/n}")
 
                 self.mousemovetimer = time()
-                arduino.move(xlast, ylast)
+                self.arduino.move(xlast, ylast)
                 delay = time() - self.mousemovetimer
                 lasttimer = timer * (lengthlast / limiter)
                 if (delay < lasttimer):
@@ -515,7 +515,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
             else:
                 self.mousemovetimer = time()
-                arduino.move(x, y)
+                self.arduino.move(x, y)
                 delay = time() - self.mousemovetimer
                 lasttimer = timer * (length / limiter)
                 if (delay < lasttimer):
@@ -698,7 +698,7 @@ class ClassName(BaseScript):  # Название класса (должен от
     def lkmpress(self):
         sleep(0.001)
         if not self.lkmpressed:
-            arduino.press()
+            self.press()
             self.lkmpressed = True
             return True
         return False
@@ -706,7 +706,7 @@ class ClassName(BaseScript):  # Название класса (должен от
     def lkmrelease(self):
         sleep(0.001)
         if self.lkmpressed:
-            arduino.release()
+            self.arduino.release()
             self.lkmpressed = False
             return True
         return False

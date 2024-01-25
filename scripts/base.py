@@ -6,7 +6,7 @@ import tools.jsonOper
 from pyduino_mk.constants import *
 from pyduino_mk import Arduino
 
-arduino = Arduino(port = 'COM3')
+
 class BaseScript:
 
     def __init__(self):
@@ -19,6 +19,7 @@ class BaseScript:
         self.isStop = False
         self.loop = True
         self.debug = True
+        self.arduino = Arduino(port='COM3')
 
     def _debug(self, value: str, debug_show=True):
         if self.debug:
@@ -109,15 +110,15 @@ class BaseScript:
 
     def press(self, key):
         self._debug(f"pressed {key} key...")
-        arduino.write('key')
+        self.arduino.write('key')
 
     def hold(self, key):
         self._debug(f"holding {key} key...")
-        arduino.press('key')
+        self.arduino.press('key')
 
     def release(self, key):
         self._debug(f"released {key} key...")
-        arduino.release('key')
+        self.arduino.release('key')
 
 
 
