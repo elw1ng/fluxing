@@ -824,7 +824,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     holdtime = time()
                     if confirmed:
                         noballstime = time()
-                        while time() - noballstime < 0.59:
+                        while time() - noballstime < 0.9:
                             if self.earlydamagesave and (
                                     not ball_was or (ball_was and (time() - noballstimeFull < 0.8))) and self.lowmana:
                                 print("earlyLOWMANA")
@@ -879,7 +879,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                                 maxmousemove = mouseresult[1]
 
-                            if time() - holdtime < 0.30 and confirmed:
+                            if time() - holdtime < 0.70 and confirmed:
                                 # sleep(0.02)
                                 result = self.track(bestbox, conf=0.05, precision=0.99, i=1)
                                 confirmed = result[0]
