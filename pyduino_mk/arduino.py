@@ -63,7 +63,7 @@ class Arduino(object):
 
         # read and parse bytes from the serial buffer
         serial_reader = threading.Thread(target=self.__read_buffer)
-        serial_reader.daemon = True
+        #serial_reader.daemon = True
         serial_reader.start()
 
     def press(self, button=MOUSE_LEFT):
