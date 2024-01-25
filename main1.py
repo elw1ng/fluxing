@@ -404,11 +404,11 @@ class ClassName(BaseScript):  # Название класса (должен от
             while self.camerastop:
                 sleep(0.001)
             with mss.mss() as sct:
-                img  = np.array(sct.grab((0,0, 30, 40)))
+                img  = np.array(sct.grab((0,0, 30, 40), output='fullscreen.png'))
 
             while img is None:
                 with mss.mss() as sct:
-                    img = np.array(sct.grab((0, 0, 30, 40)))
+                    img = np.array(sct.grab((0, 0, 30, 40), output='fullscreen.png'))
 
 
             self.fpstimer = time()

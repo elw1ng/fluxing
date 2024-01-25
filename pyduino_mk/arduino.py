@@ -236,14 +236,14 @@ class Arduino(object):
 
     def __read_buffer(self):
         while True:
-            print("A")
+
             byte = ord(self.serial.read())
-            print("B")
+
             if byte == COMMAND_COMPLETE:
-                print("C")
+
                 self.__command_complete.set()
                 self.__command_complete.clear()
-                print("D")
+
 
 
 
