@@ -19,7 +19,7 @@ class ClassName(fLUXreborn.ClassName):
         sleep(2)
         for i in range(10):
             sleep(0.4)
-            self.arduino.move(-int(2*self.pi/10),0)
+            self.arduino.move(int(2*self.pi/10),0)
         sleep(2)
         self.mousemove(2*self.pi,0)
         sleep(63)
