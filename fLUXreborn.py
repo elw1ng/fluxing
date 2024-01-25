@@ -477,7 +477,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.lkmrelease()
         sleep(0.1)
 
-    def mousemove(self, x, y, timer=0.023, limiter=500,deltax=21,deltay=4):
+    def mousemove(self, x, y, timer=0.023, limiter=1500,deltax=21,deltay=4):
         # limiter = 235
         length = abs(x) + abs(y)
         n = int(length / limiter)  # 35 UE5
