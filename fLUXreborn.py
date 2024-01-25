@@ -1283,9 +1283,9 @@ class ClassName(BaseScript):  # Название класса (должен от
                         #     self.release(self.moveback)
                         #     self.looptime = time()
                         #     #sleep(0.3)
-
-                        self.lkmpress()
                         print("trying to move")
+                        self.lkmpress()
+                        print("trying to move2")
                         result = self.MouseMove(best_box, currentMousemove=maxmousemove, limit=1450,changealp = True)
                         maxmousemove = result[1]
                         # sleep(0.11)
