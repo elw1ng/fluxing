@@ -16,7 +16,9 @@ import pyautogui
 import fLUXreborn
 class ClassName(fLUXreborn.ClassName):
     def custom(self):
-        sleep(1)
+        sleep(2)
+        self.mousemove(2*self.pi,0)
+        sleep(63)
         '''
         beta = 1500
         rads = 0
