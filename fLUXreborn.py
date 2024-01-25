@@ -18,7 +18,7 @@ from pyduino_mk.constants import *
 from pyduino_mk import Arduino
 import mss
 import numpy as np
-
+from PIL import ImageGrab
 
 class ClassName(BaseScript):  # Название класса (должен отличаться от других названий скриптов)
     class Turn():
@@ -403,16 +403,16 @@ class ClassName(BaseScript):  # Название класса (должен от
 
             while self.camerastop:
                 sleep(0.001)
-            with mss.mss() as sct:
-                img  = sct.grab((8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31))
-                mss.tools.to_png(img.rgb, img.size, output='out.png')
-                img =np.array(img)
+
+            img = ImageGrab.grab((8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31))
+
+
 
             while img is None:
-                with mss.mss() as sct:
-                    img = sct.grab((8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31))
-                    mss.tools.to_png(img.rgb, img.size, output='out.png')
-                    img = np.array(img)
+
+                img = ImageGrab.grab((8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31))
+
+
 
 
             self.fpstimer = time()
