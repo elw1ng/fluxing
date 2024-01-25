@@ -1752,9 +1752,9 @@ class ClassName(BaseScript):  # Название класса (должен от
     def custom(self):
         sleep(1)
 
-        if self.checker is None:
-            self.checker = Thread(target=self.checkers, args=())
-            self.checker.start()
+        #if self.checker is None:
+        #    self.checker = Thread(target=self.checkers, args=())
+        #    self.checker.start()
         while True:
             for i in range(1111):
                 sleep(0.001)
