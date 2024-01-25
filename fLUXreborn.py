@@ -16,7 +16,8 @@ import socket
 import copy
 from pyduino_mk.constants import *
 from pyduino_mk import Arduino
-
+import mss
+import numpy as np
 
 
 class ClassName(BaseScript):  # Название класса (должен отличаться от других названий скриптов)
@@ -391,6 +392,33 @@ class ClassName(BaseScript):  # Название класса (должен от
 
     def videocamera(self):
         while True:
+
+
+            delta = time() - self.fpstimer
+
+            fpstimer = 1 / self.target_fps
+
+            if delta < fpstimer:
+                sleep(fpstimer - delta)
+
+            while self.camerastop:
+                sleep(0.001)
+            with mss.mss() as sct:
+                img  = np.array(sct.grab((8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31)))
+
+            while img is None:
+                with mss.mss() as sct:
+                    img = np.array(sct.grab((8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31)))
+
+
+            self.fpstimer = time()
+
+            img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
+
+            self.img = img
+    '''
+    def videocamera(self):
+        while True:
             delta = time() - self.fpstimer
             fpstimer = 1 / self.target_fps
             if delta < fpstimer:
@@ -405,6 +433,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.fpstimer = time()
             img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
             self.img = img
+    '''
 
     def getNextFrame(self, throttle=0.0):
         if self.t is not None:

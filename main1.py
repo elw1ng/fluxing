@@ -13,12 +13,12 @@ import math
 from tools import telega
 from threading import Thread
 import socket
-#import pyautogui
+import pyautogui
 import copy
 from pyduino_mk.constants import *
 from pyduino_mk import Arduino
-
-
+import mss
+import numpy as np
 
 class ClassName(BaseScript):  # Название класса (должен отличаться от других названий скриптов)
     class Turn():
@@ -117,7 +117,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         #win32gui.SetForegroundWindow(self.hwnd)
         self.region = 1, 2, 3 - 4, 5 - 6
         # initialize the WindowCapture class
-        self.camera = dxcam.create()
+        #self.camera = dxcam.create()
         self.restart = False
         self.selfcast = self.keys['key1']['value']
         self.moveback = self.keys['key2']['value']
@@ -392,32 +392,31 @@ class ClassName(BaseScript):  # Название класса (должен от
 
     def videocamera(self):
         while True:
-            self.arduino.__command_complete.wait()
-            print("1")
+
+
             delta = time() - self.fpstimer
-            print("2")
+
             fpstimer = 1 / self.target_fps
-            print("3")
+
             if delta < fpstimer:
                 sleep(fpstimer - delta)
-            print("4")
+
             while self.camerastop:
                 sleep(0.001)
-            print("5")
-            img = self.camera.grab(
-                region=(8 + 1, 31 + 3, 640 + 5 + 8, 640 + 6 + 31))
-            print("6")
-            while img is None:
-                img = self.camera.grab(
-                    region=(8 + 1, 31 + 2, 640 + 1 + 8, 640 + 2 + 31))
+            with mss.mss() as sct:
+                img  = np.array(sct.grab((0,0, 30, 40)))
 
-            print("7")
+            while img is None:
+                with mss.mss() as sct:
+                    img = np.array(sct.grab((0, 0, 30, 40)))
+
+
             self.fpstimer = time()
-            print("8")
+
             img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
-            print("9")
+
             self.img = img
-            print("10")
+
 
     def getNextFrame(self, throttle=0.0):
         if self.t is not None:

@@ -63,7 +63,7 @@ class Arduino(object):
 
         # read and parse bytes from the serial buffer
         serial_reader = threading.Thread(target=self.__read_buffer)
-        #serial_reader.daemon = True
+        serial_reader.daemon = True
         serial_reader.start()
 
     def press(self, button=MOUSE_LEFT):
@@ -236,11 +236,14 @@ class Arduino(object):
 
     def __read_buffer(self):
         while True:
+            print("A")
             byte = ord(self.serial.read())
-
+            print("B")
             if byte == COMMAND_COMPLETE:
+                print("C")
                 self.__command_complete.set()
                 self.__command_complete.clear()
+                print("D")
 
 
 
