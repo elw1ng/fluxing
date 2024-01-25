@@ -392,20 +392,31 @@ class ClassName(BaseScript):  # Название класса (должен от
 
     def videocamera(self):
         while True:
+            print("1")
             delta = time() - self.fpstimer
+            print("2")
             fpstimer = 1 / self.target_fps
+            print("3")
             if delta < fpstimer:
                 sleep(fpstimer - delta)
+            print("4")
             while self.camerastop:
                 sleep(0.001)
+            print("5")
             img = self.camera.grab(
                 region=(8 + 1, 31 + 3, 640 + 5 + 8, 640 + 6 + 31))
+            print("6")
             while img is None:
                 img = self.camera.grab(
                     region=(8 + 1, 31 + 2, 640 + 1 + 8, 640 + 2 + 31))
+
+            print("7")
             self.fpstimer = time()
+            print("8")
             img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
+            print("9")
             self.img = img
+            print("10")
 
     def getNextFrame(self, throttle=0.0):
         if self.t is not None:
