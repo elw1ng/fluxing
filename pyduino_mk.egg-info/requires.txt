@@ -1,6 +1,0 @@
-pyserial
-pywin32
-
-[dev]
-isort
-black
