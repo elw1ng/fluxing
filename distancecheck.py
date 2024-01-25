@@ -20,10 +20,10 @@ class ClassName(fLUXreborn.ClassName):
         for i in range(15):
             sleep(2.5)
             print(f"move f{10*i}")
-            self.arduino.move(100*i, 0)
+            self.arduino.move(10*i, 0)
             sleep(0.7)
             print(f"move f{-10 * i}")
-            self.arduino.move(-100*i, 0)
+            self.arduino.move(-10*i, 0)
         sleep(4)
         for i in range(10):
             sleep(0.4)
