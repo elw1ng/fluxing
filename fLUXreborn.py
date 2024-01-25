@@ -479,32 +479,31 @@ class ClassName(BaseScript):  # Название класса (должен от
 
     def mousemove(self, x, y, timer=0.003, limiter=60,deltax=21,deltay=4):
         # limiter = 235
-        length = abs(x) + abs(y)
-        n = int(length / limiter)  # 35 UE5
-
+        nx = int(abs(x) / limiter)  # 35 UE5
+        ny = int(abs(y) / limiter)
         if abs(x) > 0 or abs(y) > 0:
-            if n > 0:
+            if nx or ny  > 0:
 
-                xstep = int(limiter * x / length)
-                ystep = int(limiter * y / length)
-                xlast = x - xstep * n
-                ylast = y - ystep * n
-                lengthlast = xlast + ylast
+                #xstep = int(limiter * x / length)
+                #ystep = int(limiter * y / length)
+                xlast = x - limiter * nx
+                ylast = y - limiter * ny
+
                 # timestep = timer / n
                 timespent = 0
 
                 kx = 0
                 ky = 0
-                for i in range(2*n):
+                for i in range(nx+ny):
 
                     decide= random.uniform(0.0,1.0)
-                    if ky == n or decide < ((n-kx)/(2*n-kx-ky+1)):
+                    if ky == ny or decide < ((nx-kx)/(nx+ny-kx-ky+1)):
                         self.mousemovetimer = time()
-                        self.arduino.move(xstep, 0)
+                        self.arduino.move(limiter, 0)
                         kx += 1
                     else:
                         self.mousemovetimer = time()
-                        self.arduino.move(0,ystep)
+                        self.arduino.move(0,limiter)
                         ky += 1
 
 
