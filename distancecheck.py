@@ -16,6 +16,9 @@ import pyautogui
 import fLUXreborn
 class ClassName(fLUXreborn.ClassName):
     def custom(self):
+        for i in range(15):
+            self.arduino.move(-100*i, 0)
+            self.arduino.move(100*i, 0)
         sleep(2)
         for i in range(10):
             sleep(0.4)
