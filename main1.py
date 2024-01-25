@@ -1758,10 +1758,14 @@ class ClassName(BaseScript):  # Название класса (должен от
         while True:
             for i in range(1111):
                 sleep(0.001)
+                print('movestart')
                 self.arduino.move(55,0)
+                print('moveend')
             for i in range(1111):
                 sleep(0.001)
+                print('movestart')
                 self.arduino.move(-55,0)
+                print('moveend')
         # self.camera.start(region=(8+self.rect[0], 31+self.rect[1], 640+self.rect[0]-8, 640+self.rect[1]-31), target_fps=self.target_fps)
         extrabarriertime = 0
         if self.ultrasave and self.ultrasavereturning:
