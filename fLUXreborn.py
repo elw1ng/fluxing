@@ -505,12 +505,14 @@ class ClassName(BaseScript):  # Название класса (должен от
                     chance = (nx-kx)/(nx+ny-kx-ky+1)
                     print(f"decide {decide} <? chance {chance} nx,kx {nx,kx}   ny ky {ny,ky}")
                     if ky == ny or decide < chance:
-                        self.mousemovetimer = time()
+
                         self.arduino.move(xstep, 0)
+                        self.mousemovetimer = time()
                         kx += 1
                     else:
-                        self.mousemovetimer = time()
+
                         self.arduino.move(0,ystep)
+                        self.mousemovetimer = time()
                         ky += 1
 
 
@@ -521,16 +523,18 @@ class ClassName(BaseScript):  # Название класса (должен от
                     # timespent+= time()-starttime
                 # print(f"avgtimespentfor cycle = {timespent/n}")
 
-                self.mousemovetimer = time()
+
                 self.arduino.move(xlast, ylast)
+                self.mousemovetimer = time()
                 delay = time() - self.mousemovetimer
                 lasttimer = timer * (lengthlast / limiter)
                 if (delay < lasttimer):
                     sleep(lasttimer - (delay))
 
             else:
-                self.mousemovetimer = time()
+
                 self.arduino.move(x, y)
+                self.mousemovetimer = time()
                 delay = time() - self.mousemovetimer
                 lasttimer = timer * ((abs(x)+abs(y)) / limiter)
                 if (delay < lasttimer):
