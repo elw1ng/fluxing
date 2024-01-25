@@ -111,11 +111,11 @@ class ClassName(BaseScript):  # Название класса (должен от
         # self.model = YOLO("bestOUTDOORnew.pt")  # load a pretrained YOLOv8n model
 
         # Get rect of Window
-        self.hwnd = win32gui.FindWindow(None, 'Mortal Online 2  ')
+        #self.hwnd = win32gui.FindWindow(None, 'Mortal Online 2  ')
         # hwnd = win32gui.FindWindow("UnrealWindow", None) # Fortnite
-        self.rect = win32gui.GetWindowRect(self.hwnd)
-        win32gui.SetForegroundWindow(self.hwnd)
-        self.region = self.rect[0], self.rect[1], self.rect[2] - self.rect[0], self.rect[3] - self.rect[1]
+        #self.rect = win32gui.GetWindowRect(self.hwnd)
+        #win32gui.SetForegroundWindow(self.hwnd)
+        self.region = 1, 2, 3 - 4, 5 - 6
         # initialize the WindowCapture class
         self.camera = dxcam.create()
         self.restart = False
