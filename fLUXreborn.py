@@ -501,8 +501,10 @@ class ClassName(BaseScript):  # Название класса (должен от
                 ky = 0
                 for i in range(nx+ny):
 
-                    decide= random.uniform(0.0,1.0)
-                    if ky == ny or decide < ((nx-kx)/(nx+ny-kx-ky+1)):
+                    decide = random.uniform(0.0,1.0)
+                    chance = (nx-kx)/(nx+ny-kx-ky+1)
+                    print(f"decide {decide} <? chance {chance}")
+                    if ky == ny or decide < chance:
                         self.mousemovetimer = time()
                         self.arduino.move(xstep, 0)
                         kx += 1
