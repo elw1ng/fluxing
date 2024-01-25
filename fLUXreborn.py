@@ -404,13 +404,13 @@ class ClassName(BaseScript):  # Название класса (должен от
             while self.camerastop:
                 sleep(0.001)
 
-            img = ImageGrab.grab((8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31))
+            img = np.array(ImageGrab.grab((8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31)))
 
 
 
             while img is None:
 
-                img = ImageGrab.grab((8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31))
+                img = np.array(ImageGrab.grab((8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31)))
 
 
 
