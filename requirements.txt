@@ -56,4 +56,5 @@ telebot
 points
 pyTelegramBotAPI
 ultralytics
+pyduino_mk
 
