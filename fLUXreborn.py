@@ -477,7 +477,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.lkmrelease()
         sleep(0.1)
 
-    def mousemove(self, x, y, timer=0.005, limiter=60,deltax=21,deltay=4):
+    def mousemove(self, x, y, timer=0.023, limiter=60,deltax=21,deltay=4):
         # limiter = 235
         nx = int(abs(x) / limiter)  # 35 UE5
         ny = int(abs(y) / limiter)
@@ -505,14 +505,12 @@ class ClassName(BaseScript):  # Название класса (должен от
                     chance = (nx-kx)/(nx+ny-kx-ky+1)
                     print(f"decide {decide} <? chance {chance} nx,kx {nx,kx}   ny ky {ny,ky}")
                     if ky == ny or decide < chance:
-
-                        self.arduino.move(xstep, 0)
                         self.mousemovetimer = time()
+                        self.arduino.move(xstep, 0)
                         kx += 1
                     else:
-
-                        self.arduino.move(0,ystep)
                         self.mousemovetimer = time()
+                        self.arduino.move(0,ystep)
                         ky += 1
 
 
@@ -523,18 +521,16 @@ class ClassName(BaseScript):  # Название класса (должен от
                     # timespent+= time()-starttime
                 # print(f"avgtimespentfor cycle = {timespent/n}")
 
-
-                self.arduino.move(xlast, ylast)
                 self.mousemovetimer = time()
+                self.arduino.move(xlast, ylast)
                 delay = time() - self.mousemovetimer
                 lasttimer = timer * (lengthlast / limiter)
                 if (delay < lasttimer):
                     sleep(lasttimer - (delay))
 
             else:
-
-                self.arduino.move(x, y)
                 self.mousemovetimer = time()
+                self.arduino.move(x, y)
                 delay = time() - self.mousemovetimer
                 lasttimer = timer * ((abs(x)+abs(y)) / limiter)
                 if (delay < lasttimer):
