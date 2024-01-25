@@ -1271,7 +1271,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             print("3")
             Prediction = self.model.predict(source=self.img, device=0, conf=0.2, iou=0.3)
             detected_boxes = Prediction[0].boxes
-            print("4")
+            print(len(detected_boxes))
             if len(detected_boxes) >= 1:
                 results = self.getBestBox(detected_boxes, 0)
                 if (not results is None):
