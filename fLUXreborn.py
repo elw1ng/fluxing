@@ -12,8 +12,12 @@ import math
 from tools import telega
 from threading import Thread
 import socket
-import pyautogui
+#import pyautogui
 import copy
+from pyduino_mk.constants import *
+from pyduino_mk import Arduino
+
+arduino = Arduino(port = 'COM3')
 
 class ClassName(BaseScript):  # Название класса (должен отличаться от других названий скриптов)
     class Turn():
@@ -494,7 +498,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
 
                     self.mousemovetimer = time()
-                    win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, xstep, ystep, 0, 0)
+                    arduino.move(xstep, ystep)
                     delay = time() - self.mousemovetimer
                     if (delay < timer):
                         sleep(timer - (delay))
@@ -503,7 +507,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 # print(f"avgtimespentfor cycle = {timespent/n}")
 
                 self.mousemovetimer = time()
-                win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, xlast, ylast, 0, 0)
+                arduino.move(xlast, ylast)
                 delay = time() - self.mousemovetimer
                 lasttimer = timer * (lengthlast / limiter)
                 if (delay < lasttimer):
@@ -511,7 +515,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
             else:
                 self.mousemovetimer = time()
-                win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, x, y, 0, 0)
+                arduino.move(x, y)
                 delay = time() - self.mousemovetimer
                 lasttimer = timer * (length / limiter)
                 if (delay < lasttimer):
@@ -694,7 +698,7 @@ class ClassName(BaseScript):  # Название класса (должен от
     def lkmpress(self):
         sleep(0.001)
         if not self.lkmpressed:
-            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
+            arduino.press()
             self.lkmpressed = True
             return True
         return False
@@ -702,7 +706,7 @@ class ClassName(BaseScript):  # Название класса (должен от
     def lkmrelease(self):
         sleep(0.001)
         if self.lkmpressed:
-            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
+            arduino.release()
             self.lkmpressed = False
             return True
         return False
@@ -728,7 +732,7 @@ class ClassName(BaseScript):  # Название класса (должен от
     def BallLoop(self, firsttime=True, maxnoballtimer=2.6):
         if not firsttime:
             sleep(0.3)
-        win32gui.SetForegroundWindow(self.hwnd)
+
         self.lkmrelease()
         self.lkmpress()
         ball_loop = True
@@ -989,7 +993,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.lkmrelease()
 
     def SpiritLoop(self, worktime=None):
-        win32gui.SetForegroundWindow(self.hwnd)
+
         nodetectcounter =0
         starttime = time()
         spirit_loop = True
@@ -1117,7 +1121,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.mousereturn[1] = 0
                 nodetectcounter+=1
                 if nodetectcounter ==10:
-                    self.hold_and_release_sleep('space',0.1)
+                    self.hold_and_release_sleep(' ',0.1)
                 if nodetectcounter == 150:
                     self.movetoalp(self.alp - int(self.pi/3))
                     sleep(0.05)
@@ -1136,7 +1140,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         return True
 
     def startLoop(self):
-        win32gui.SetForegroundWindow(self.hwnd)
+
         start_loop = True
         startp = self.looptime
         nospirittime = time()
@@ -1284,6 +1288,20 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         x_angle = math.atan((x_pos - 0.5) * 2 * math.tan(fov[0] / 2))
         y_angle = math.atan((y_pos - 0.5) * 2 * math.tan(fov[1] / 2))
+
+        phi = self.to_rad( self.mousereturn[1])
+        if phi != 0:
+            cosd = math.cos(phi) * math.cos(x_angle)
+            d = math.acos(cosd)
+            sinalp = math.sin(x_angle) / math.sin(d)
+            alp = math.asin(sinalp)
+            if phi > 0:
+                y_angle += math.asin(math.cos(alp) * math.sin(d)) - phi
+            else:
+                y_angle += -math.asin(math.cos(alp) * math.sin(d)) - phi
+            x_angle = math.atan(sinalp*math.tan(d))
+
+
 
         return ((x_angle), (y_angle))
 
@@ -1610,7 +1628,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 while self.blackScreenDetect():
                     sleep(1)
                     self.getNextFrame()
-                    self.press('space')
+                    self.press(' ')
                 sleep(2)
                 if self.menuDetect():
                     self.send_message_telega("MAIN MENU")
@@ -1688,7 +1706,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.hold_and_release_sleep('w', strafetime*1.4)
             elif i == 5 and jump:
                 sleep(0.2)
-                self.hold_and_release_sleep("space", 0.1)
+                self.hold_and_release_sleep(' ', 0.1)
                 sleep(1.7)
             elif (i >= 6 and i <= 10) and mousemovement:
                 x = random.randint(-1200, 1200)
