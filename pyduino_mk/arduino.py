@@ -59,10 +59,9 @@ class Arduino(object):
 
         # this flag denoting whether a command is has been completed
         # all module calls are blocking until the Arduino command is complete
-        self.__command_complete = threading.Event()
 
         # read and parse bytes from the serial buffer
-        serial_reader = threading.Thread(target=self.__read_buffer)
+        serial_reader = self.__read_buffer()
         serial_reader.daemon = True
         serial_reader.start()
 
@@ -238,13 +237,7 @@ class Arduino(object):
         while True:
             byte = ord(self.serial.read())
 
-            if byte == MOUSE_CALIBRATE:
-                self.__calibrate_mouse()
-
-            elif byte == SCREEN_CALIBRATE:
-                self.__calibrate_screen()
-
-            elif byte == COMMAND_COMPLETE:
+            if byte == COMMAND_COMPLETE:
                 self.__command_complete.set()
                 self.__command_complete.clear()
 
