@@ -110,15 +110,15 @@ class BaseScript:
 
     def press(self, key):
         self._debug(f"pressed {key} key...")
-        self.arduino.write('key')
+        self.arduino.write(key)
 
     def hold(self, key):
         self._debug(f"holding {key} key...")
-        self.arduino.press('key')
+        self.arduino.press(key)
 
     def release(self, key):
         self._debug(f"released {key} key...")
-        self.arduino.release('key')
+        self.arduino.release(key)
 
 
 
