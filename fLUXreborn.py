@@ -582,7 +582,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         c_x = ((x2 - x1) / 2) + x1
         c_y = ((y2 - y1) / 2) + y1
         centers.append((c_x, c_y))
-        dist = math.sqrt(math.pow(img_w / 2 - c_x, 2) + math.pow(img_h / 2 - c_y, 2))
+        #dist = math.sqrt(math.pow(img_w / 2 - c_x, 2) + math.pow(img_h / 2 - c_y, 2))
 
         # Pixel difference between crosshair(center) and the closest object
         x = centers[at][0] - img_w / 2
@@ -1236,9 +1236,9 @@ class ClassName(BaseScript):  # Название класса (должен от
                         self.turner = None
                         released = True
                     sleep(0.1)
-                    print("1")
+
                     self.movetoalp(self.alp - int(self.turn.beta / 3.5))
-                    print("2")
+
                     sleep(0.01)
                     break
 
@@ -1268,7 +1268,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 released = True
 
             self.getNextFrame()
-            print("3")
+
             Prediction = self.model.predict(source=self.img, device=0, conf=0.2, iou=0.3)
             detected_boxes = Prediction[0].boxes
             print(len(detected_boxes))
@@ -1276,9 +1276,9 @@ class ClassName(BaseScript):  # Название класса (должен от
                 results = self.getBestBox(detected_boxes, 0)
                 if (not results is None):
                     best_box, nospirittime = results
-                    print("5")
+
                     result = self.confirmExisting(best_box, conf=0.2, precision=0.99, i=3)
-                    print("6")
+
                     confirmed = result[0]
                     best_box = result[1]
 
@@ -1287,9 +1287,9 @@ class ClassName(BaseScript):  # Название класса (должен от
                         #     self.release(self.moveback)
                         #     self.looptime = time()
                         #     #sleep(0.3)
-                        print("trying to move")
+
                         self.lkmpress()
-                        print("trying to move2")
+
                         result = self.MouseMove(best_box, currentMousemove=maxmousemove, limit=1450,changealp = True)
                         maxmousemove = result[1]
                         # sleep(0.11)
