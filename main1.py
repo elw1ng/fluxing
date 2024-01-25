@@ -399,10 +399,10 @@ class ClassName(BaseScript):  # Название класса (должен от
             while self.camerastop:
                 sleep(0.001)
             img = self.camera.grab(
-                region=(8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31))
+                region=(8 + 1, 31 + 3, 640 + 5 + 8, 640 + 6 + 31))
             while img is None:
                 img = self.camera.grab(
-                    region=(8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31))
+                    region=(8 + 1, 31 + 2, 640 + 1 + 8, 640 + 2 + 31))
             self.fpstimer = time()
             img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
             self.img = img
