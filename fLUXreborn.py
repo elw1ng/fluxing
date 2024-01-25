@@ -1056,8 +1056,8 @@ class ClassName(BaseScript):  # Название класса (должен от
                     if self.spiritdetect():
                         self.lkmspam = True
 
-                        lkmspamer = Thread(target=self.lkmspamer, args=())
-                        lkmspamer.start()
+                        #lkmspamer = Thread(target=self.lkmspamer, args=())
+                        #lkmspamer.start()
                         nospirittime = time()
                         # print("click")
                         detected = True
@@ -1066,7 +1066,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                         while self.spiritdetect():
                             if worktime is not None and time() - starttime >= worktime:
                                 self.lkmspam = False
-                                lkmspamer.join()
+                                #lkmspamer.join()
                                 self.lkmrelease()
                                 return True
 
@@ -1088,7 +1088,8 @@ class ClassName(BaseScript):  # Название класса (должен от
                                     confirmed = result[0]
                                     if confirmed:
                                         self.lkmspam = False
-                                        lkmspamer.join()
+                                        self.lkmrelease()
+                                        #lkmspamer.join()
                                         return False
                             if not extramove:
                                 if len(detected_boxes) >= 1:
@@ -1115,10 +1116,10 @@ class ClassName(BaseScript):  # Название класса (должен от
                                 self.restart = True
                                 self.gosave()
                                 self.lkmspam = False
-                                lkmspamer.join()
+                                self.lkmrelease()
                                 return False
                         self.lkmspam = False
-                        lkmspamer.join()
+
                         # print("release")
                         self.lkmrelease()
 
