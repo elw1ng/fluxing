@@ -488,7 +488,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 #ystep = int(limiter * y / length)
                 xlast = x - limiter * nx
                 ylast = y - limiter * ny
-
+                lengthlast = abs(xlast)+abs(ylast)
                 # timestep = timer / n
                 timespent = 0
 
@@ -525,7 +525,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.mousemovetimer = time()
                 self.arduino.move(x, y)
                 delay = time() - self.mousemovetimer
-                lasttimer = timer * (length / limiter)
+                lasttimer = timer * ((abs(x)+abs(y)) / limiter)
                 if (delay < lasttimer):
                     sleep(lasttimer - (delay))
 
