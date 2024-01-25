@@ -17,7 +17,7 @@ import copy
 from pyduino_mk.constants import *
 from pyduino_mk import Arduino
 
-arduino = Arduino(port = 'COM3')
+arduino = Arduino()
 
 class ClassName(BaseScript):  # Название класса (должен отличаться от других названий скриптов)
     class Turn():
