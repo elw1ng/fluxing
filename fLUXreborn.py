@@ -611,6 +611,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.mousereturn[1] += y
                 currentMousemove[0] += x
                 currentMousemove[1] += y
+                self.t.join()
                 self.t = Thread(target=self.mousemove, args=(x, y))
                 self.t.start()
                 return True, currentMousemove
@@ -619,6 +620,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         else:
             self.mousereturn[0] += x
             self.mousereturn[1] += y
+            self.t.join()
             self.t = Thread(target=self.mousemove, args=(x, y))
             self.t.start()
             return True, None
