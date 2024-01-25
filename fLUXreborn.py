@@ -417,7 +417,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
             self.fpstimer = time()
 
-            #img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
+            img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
 
             self.img = img
     '''
