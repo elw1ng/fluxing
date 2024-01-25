@@ -59,9 +59,10 @@ class Arduino(object):
 
         # this flag denoting whether a command is has been completed
         # all module calls are blocking until the Arduino command is complete
+        self.__command_complete = threading.Event()
 
         # read and parse bytes from the serial buffer
-        serial_reader = self.__read_buffer()
+        serial_reader = threading.Thread(target=self.__read_buffer)
         serial_reader.daemon = True
         serial_reader.start()
 
