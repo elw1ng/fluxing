@@ -18,6 +18,14 @@ class ClassName(fLUXreborn.ClassName):
     def custom(self):
 
         self.mousemove(2*self.pi,0)
+        sleep(2)
+        self.mousemove(2 * self.pi, 0)
+        sleep(2)
+        self.mousemove(2 * self.pi, 0)
+        sleep(2)
+        self.mousemove(2 * self.pi, 0)
+        sleep(2)
+
         sleep(63)
         sleep(2)
         for i in range(65):
