@@ -476,7 +476,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         sleep(0.1)
         self.lkmrelease()
         sleep(0.1)
-    '''
+
     def mousemove(self, x, y, timer=0.023, limiter=60,deltax=21,deltay=4):
         # limiter = 235
         nx = int(abs(x) / limiter)  # 35 UE5
@@ -535,51 +535,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 lasttimer = timer * ((abs(x)+abs(y)) / limiter)
                 if (delay < lasttimer):
                     sleep(lasttimer - (delay))
-    '''
-    def mousemove(self, x, y, timer=0.023,limiter = 100 ):
-        #limiter = 235
-        length = abs(x) + abs(y)
-        n = int( length / limiter)  #35 UE5
 
-
-        if abs(x) > 0 or abs(y) > 0:
-            if n > 0:
-
-
-                xstep = int(limiter * x / length)
-                ystep = int(limiter * y / length)
-                xlast = x - xstep*n
-                ylast = y - ystep*n
-                lengthlast = xlast+ylast
-                #timestep = timer / n
-                timespent = 0
-                for _ in range(n):
-
-                    self.mousemovetimer = time()
-                    self.arduino.move(xstep, ystep)
-                    delay = time() - self.mousemovetimer
-                    if (delay < timer):
-                        sleep(timer - (delay))
-
-
-
-                    #timespent+= time()-starttime
-                #print(f"avgtimespentfor cycle = {timespent/n}")
-
-                self.mousemovetimer = time()
-                self.arduino.move(xlast, ylast)
-                delay = time() - self.mousemovetimer
-                lasttimer= timer*(lengthlast/ limiter)
-                if (delay < lasttimer):
-                    sleep(lasttimer - (delay))
-
-            else:
-                self.mousemovetimer = time()
-                self.arduino.move(x, y)
-                delay = time() - self.mousemovetimer
-                lasttimer = timer * (length / limiter)
-                if (delay < lasttimer):
-                    sleep(lasttimer - (delay))
     def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=1200,changealp=False):
         # Check Closest
 
