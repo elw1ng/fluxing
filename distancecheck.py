@@ -17,7 +17,7 @@ import fLUXreborn
 class ClassName(fLUXreborn.ClassName):
     def custom(self):
         sleep(2)
-        for i in range(15):
+        for i in range(65):
             sleep(2.5)
             print(f"move f{10*i}")
             self.arduino.move(10*i, 0)
