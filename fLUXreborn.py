@@ -205,7 +205,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.y = 0.01
         self.yelipse = 1.0
         self.overload = 0
-        self.aftermovedelay = 1/22
+        self.aftermovedelay = 1/26
         if "R" in sys.argv:
             self.R = float(sys.argv[sys.argv.index("R") + 1])
         if "e" in sys.argv:
@@ -449,7 +449,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.camerastop = True
             sleep(self.aftermovedelay)
             self.camerastop = False
-        while time() - self.fpstimer > 1 / 180:
+        while time() - self.fpstimer > 1 / 240:
             sleep(0.0005)
         '''
         while time() - self.fpstimer < (1 / self.target_fps):
