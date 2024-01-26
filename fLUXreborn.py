@@ -725,7 +725,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     sizeDiff = abs(box.xyxy[0][2] - box.xyxy[0][0] - checkbox.xyxy[0][2] + checkbox.xyxy[0][0])
                     XDiff = abs(box.xyxy[0][0] - checkbox.xyxy[0][0])
                     YDiff = abs(box.xyxy[0][1] - checkbox.xyxy[0][1])
-                    if sizeDiff < 45 and XDiff < 450 and YDiff < 100:
+                    if sizeDiff < 35 and XDiff < 450 and YDiff < 100:
                         if not found:
                             newbox = box
                             newbox_XDiff = XDiff
