@@ -725,7 +725,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     sizeDiff = abs(box.xyxy[0][2] - box.xyxy[0][0] - checkbox.xyxy[0][2] + checkbox.xyxy[0][0])
                     XDiff = abs(box.xyxy[0][0] - checkbox.xyxy[0][0])
                     YDiff = abs(box.xyxy[0][1] - checkbox.xyxy[0][1])
-                    if sizeDiff < 35 and XDiff < 450 and YDiff < 100:
+                    if sizeDiff < 35 and XDiff < 350 and YDiff < 90:
                         if not found:
                             newbox = box
                             newbox_XDiff = XDiff
@@ -735,13 +735,13 @@ class ClassName(BaseScript):  # Название класса (должен от
                             # dist1 = self.checkDistance(checkbox)
                             # dist2 = self.checkDistance(box)
 
-                            if XDiff * XDiff + YDiff * YDiff >= 650 and \
+                            if XDiff * XDiff + YDiff * YDiff >= 600 and \
                                     (
-                                            newbox.conf < box.conf or newbox_XDiff * newbox_XDiff + newbox_YDiff * newbox_YDiff < 650):
+                                            newbox.conf < box.conf or newbox_XDiff * newbox_XDiff + newbox_YDiff * newbox_YDiff < 600):
                                 newbox = box
                                 newbox_XDiff = XDiff
                                 newbox_YDiff = YDiff
-                        if newbox.conf > 0.4 and newbox_XDiff * newbox_XDiff + newbox_YDiff * newbox_YDiff >= 650:
+                        if newbox.conf > 0.6 and newbox_XDiff * newbox_XDiff + newbox_YDiff * newbox_YDiff >= 600:
                             return True, newbox
         if found:
             return True, newbox
