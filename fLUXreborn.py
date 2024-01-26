@@ -696,8 +696,8 @@ class ClassName(BaseScript):  # Название класса (должен от
                         xyxy[0][1] += 160
                         xyxy[0][2] += 160
                         xyxy[0][3] += 160
-                        box.xyxy = torch.Tensor(xyxy,device = torch.device('cuda:0'))
-
+                        t = torch.Tensor(xyxy)
+                        box.xyxy = t.to(torch.device("cuda:0"))
                         sizeDiff = abs(box.xyxy[0][2] - box.xyxy[0][0] - checkbox.xyxy[0][2] + checkbox.xyxy[0][0])
                         dist = self.checkDistance(box)
                         if sizeDiff < 6 and dist < 6*(j+1):
