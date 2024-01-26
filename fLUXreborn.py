@@ -1112,7 +1112,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             if len(detected_boxes) >= 1:
                 results = self.getBestBox(detected_boxes, 0)
                 if not results is None:
-                    predictedtime = time()
+
                     best_box = results[0]
                     result = self.MouseMove(best_box, currentMousemove=maxmousemove, limit=1450)
                     maxmousemove = result[1]
@@ -1128,6 +1128,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                         self.lkmpress()
 
                         while self.spiritdetect():
+                            nospirittime = time()
                             if worktime is not None and time() - starttime >= worktime:
                                 self.lkmspam = False
                                 #lkmspamer.join()
@@ -1196,7 +1197,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                         #     nospirittime = time()
                         # if (time() - holdtime > 26.0):
                         #     break;
-            if time() - nospirittime > 21:
+            if time() - nospirittime > 24:
                 spirit_loop = False
             if time() - nospirittime > 4.5 and not detected:
                 self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
@@ -1213,9 +1214,9 @@ class ClassName(BaseScript):  # Название класса (должен от
                     sleep(0.05)
 
 
-            if time() - predictedtime > 12 and detected:
+            if time() - predictedtime > 21 and detected:
                 spirit_loop = False
-            if time() - nospirittime > 7.5 and detected:
+            if time() - nospirittime > 6 and detected:
                 spirit_loop = False
 
         self.spiritCounter += 1
