@@ -715,7 +715,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
 
             if found:
-                if time()-self.holdtime > 0.2 and newboxdist*2.2 > (newbox.xyxy[0][2] - newbox.xyxy[0][0]):
+                if time()-self.holdtime > 0.21 and newboxdist*2.2 > (newbox.xyxy[0][2] - newbox.xyxy[0][0]):
                     return False, None
                 return True, newbox
 
