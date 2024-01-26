@@ -510,7 +510,11 @@ class ClassName(BaseScript):  # Название класса (должен от
         sleep(0.1)
         self.lkmrelease()
         sleep(0.1)
+    def mousemove(self, x, y, timer=0.007, limiter=124):
+        self.arduino.move(x, y, limiter)
+        self.mousemovetimer = time()
 
+    '''
     def mousemove(self, x, y, timer=0.007, limiter=124):
         # limiter = 235
         nx = int(abs(x) / limiter)  # 35 UE5
@@ -568,7 +572,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 lasttimer = timer * ((abs(x)+abs(y)) / limiter)
                 if (delay < lasttimer):
                     sleep(lasttimer - (delay))
-
+    '''
     def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=1200,changealp=False):
         # Check Closest
 

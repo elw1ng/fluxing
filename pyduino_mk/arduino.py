@@ -208,7 +208,7 @@ class Arduino(object):
             sleep(0.001)
         self.commandcomplete = False
 
-    def move(self, dest_x, dest_y):
+    def move(self, dest_x, dest_y,limiter):
         if not isinstance(dest_x, (int, float)) and not isinstance(
             dest_y, (int, float)
         ):
@@ -220,7 +220,7 @@ class Arduino(object):
         self.__write_byte(MOUSE_MOVE)
         self.__write_short(dest_x+1920)
         self.__write_short(dest_y+1920)
-
+        self.__write_short(limiter)
         while not self.commandcomplete:
             sleep(0.001)
         self.commandcomplete = False
