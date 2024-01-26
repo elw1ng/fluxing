@@ -1908,9 +1908,9 @@ class ClassName(BaseScript):  # Название класса (должен от
                         self.press(1)
                         sleep(13)
                     timer60 = time()
-                    self.fastselfcast(self.barrier, 4)
+                    self.fastselfcast(self.barrier, 4.1)
 
-                self.fastselfcast(self.summon, 6.2,strafe=True)
+                self.fastselfcast(self.summon, 6.25,strafe=True)
                 if self.mover is not None:
                     self.mover.join()
                 sleep(0.3)
@@ -1994,7 +1994,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                 elif not rebuffed:
                     # sleep(0.07)
-                    self.fastselfcast(self.kau, 3.8)
+                    self.fastselfcast(self.kau, 3.9)
                 print("\n\nSPIRITLOOP\n\n")
                 if self.stop:
                     break
