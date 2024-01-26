@@ -1962,11 +1962,11 @@ class ClassName(BaseScript):  # Название класса (должен от
                 if self.stop:
                     break
 
-                thread = Thread(target=self.activatestrafe, args=(161,))
-                thread.start()
+                #thread = Thread(target=self.activatestrafe, args=(161,))
+                #thread.start()
 
                 self.BallLoop(firsttime=firsttime, maxnoballtimer=1.7)
-                thread.join()
+                #thread.join()
                 self.strafe = False
                 if self.mover is not None:
                     self.mover.join()
