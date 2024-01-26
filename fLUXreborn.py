@@ -692,10 +692,10 @@ class ClassName(BaseScript):  # Название класса (должен от
                 for box in detected_boxes:
                     if (box.cls == checkbox.cls):
                         xyxy = np.array(box.xyxy.cpu())
+                        xyxy[0][0] += 160
                         xyxy[0][1] += 160
                         xyxy[0][2] += 160
                         xyxy[0][3] += 160
-                        xyxy[0][4] += 160
                         box.xyxy = torch.Tensor(xyxy,device = torch.device('cuda:0'))
 
                         sizeDiff = abs(box.xyxy[0][2] - box.xyxy[0][0] - checkbox.xyxy[0][2] + checkbox.xyxy[0][0])
