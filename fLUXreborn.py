@@ -1359,8 +1359,8 @@ class ClassName(BaseScript):  # Название класса (должен от
         phi = self.to_rad( self.mousereturn[1])
         
         if phi != 0:
-            x_angle*=(1+abs(math.tan(phi)))
-            y_angle*=(1- math.sin(phi))
+            x_angle*=(1+0.1*abs(math.tan(phi)))
+            y_angle*=(1- 0.1*math.sin(phi))
             '''
             cosd = math.cos(phi) * math.cos(x_angle)
             d = math.acos(cosd)
