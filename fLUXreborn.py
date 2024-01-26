@@ -681,7 +681,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         newbox = None
         newboxdist = None
         counter = 0
-        for _ in range(i):
+        for j in range(i):
             found = False
             # sleep(1 / 60)
             self.getNextFrame()
@@ -692,7 +692,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     if (box.cls == checkbox.cls):
                         sizeDiff = abs(box.xyxy[0][2] - box.xyxy[0][0] - checkbox.xyxy[0][2] + checkbox.xyxy[0][0])
                         dist = self.checkDistance(box)
-                        if sizeDiff < 10 and dist < 15*i:
+                        if sizeDiff < 10 and dist < 15*(j+1):
                             if not found:
                                 newbox = box
                                 newboxdist = dist
@@ -701,7 +701,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                 if dist < newboxdist:
                                     newbox = box
                                     newboxdist = dist
-                            if newbox.conf > 0.5 and dist < 4*i:
+                            if newbox.conf > 0.5 and dist < 4*(j+1):
 
                                 return True, newbox
 
