@@ -59,12 +59,12 @@ class Arduino(object):
 
         # this flag denoting whether a command is has been completed
         # all module calls are blocking until the Arduino command is complete
-        self.__command_complete = threading.Event()
+        #self.__command_complete = threading.Event()
 
         # read and parse bytes from the serial buffer
-        serial_reader = threading.Thread(target=self.__read_buffer)
-        serial_reader.daemon = True
-        serial_reader.start()
+        #serial_reader = threading.Thread(target=self.__read_buffer)
+        #serial_reader.daemon = True
+        #serial_reader.start()
 
     def press(self, button=MOUSE_LEFT):
         if button in MOUSE_BUTTONS:
@@ -85,7 +85,7 @@ class Arduino(object):
         else:
             raise ValueError("Not a valid mouse or keyboard button.")
 
-        self.__command_complete.wait()
+        self.__read_buffer()
 
     def release(self, button=MOUSE_LEFT):
         if button in MOUSE_BUTTONS:
@@ -106,13 +106,13 @@ class Arduino(object):
         else:
             raise ValueError("Not a valid mouse or keyboard button.")
 
-        self.__command_complete.wait()
+        self.__read_buffer()
 
     def release_all(self):
         self.__write_byte(KEYBOARD_CMD)
         self.__write_byte(KEYBOARD_RELEASE_ALL)
 
-        self.__command_complete.wait()
+        self.__read_buffer()
 
     def write(self, keys, endl=False):
         if isinstance(keys, int):
@@ -141,7 +141,7 @@ class Arduino(object):
                 + "Must be type `int` or `char` or `str`."
             )
 
-        self.__command_complete.wait()
+        self.__read_buffer()
 
     def type(self, message, wpm=80, mistakes=True, accuracy=96):
         if not isinstance(message, str):
@@ -168,7 +168,7 @@ class Arduino(object):
         self.__write_byte(mistakes)
         self.__write_byte(accuracy)
 
-        self.__command_complete.wait()
+        self.__read_buffer()
 
     def click(self, button=MOUSE_LEFT):
         if button not in MOUSE_BUTTONS:
@@ -178,7 +178,7 @@ class Arduino(object):
         self.__write_byte(MOUSE_CLICK)
         self.__write_byte(button)
 
-        self.__command_complete.wait()
+        self.__read_buffer()
 
     def fast_click(self, button):
         if button not in MOUSE_BUTTONS:
@@ -188,7 +188,7 @@ class Arduino(object):
         self.__write_byte(MOUSE_FAST_CLICK)
         self.__write_byte(button)
 
-        self.__command_complete.wait()
+        self.__read_buffer()
 
     def move(self, dest_x, dest_y):
         if not isinstance(dest_x, (int, float)) and not isinstance(
@@ -203,7 +203,7 @@ class Arduino(object):
         self.__write_short(dest_x+1920)
         self.__write_short(dest_y+1920)
 
-        self.__command_complete.wait()
+        self.__read_buffer()
 
     def bezier_move(self, dest_x, dest_y):
         if not isinstance(dest_x, (int, float)) and not isinstance(
@@ -218,7 +218,7 @@ class Arduino(object):
         self.__write_short(dest_x)
         self.__write_short(dest_y)
 
-        self.__command_complete.wait()
+        self.__read_buffer()
 
     def close(self):
         self.serial.close()
@@ -240,9 +240,9 @@ class Arduino(object):
             byte = ord(self.serial.read())
 
             if byte == COMMAND_COMPLETE:
-
-                self.__command_complete.set()
-                self.__command_complete.clear()
+                return True
+                #self.__command_complete.set()
+                #self.__command_complete.clear()
 
 
 

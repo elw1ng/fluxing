@@ -117,7 +117,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         #win32gui.SetForegroundWindow(self.hwnd)
         self.region = 1, 2, 3 - 4, 5 - 6
         # initialize the WindowCapture class
-        #self.camera = dxcam.create()
+        self.camera = dxcam.create()
         self.restart = False
         self.selfcast = self.keys['key1']['value']
         self.moveback = self.keys['key2']['value']
@@ -177,7 +177,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         #self.hwnd = win32gui.FindWindow(None, 'HDClone 6 Enterprise Edition ')
         # hwnd = win32gui.FinwdWindow("UnrealWindow", None) # Fortnite
         #self.rect = win32gui.GetWindowRect(self.hwnd)
-        region = 1, 2, 3 - 4, 5 - 6
+        self.rect = [1, 2, 3 - 4, 5 - 6]
         #print(self.rect[0], self.rect[1], self.rect[2], self.rect[3])
 
         self.img = None
@@ -392,29 +392,19 @@ class ClassName(BaseScript):  # Название класса (должен от
 
     def videocamera(self):
         while True:
-
-
             delta = time() - self.fpstimer
-
             fpstimer = 1 / self.target_fps
-
             if delta < fpstimer:
                 sleep(fpstimer - delta)
-
             while self.camerastop:
                 sleep(0.001)
-            with mss.mss() as sct:
-                img  = np.array(sct.grab((0,0, 30, 40), output='fullscreen.png'))
-
+            img = self.camera.grab(
+                region=(8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31))
             while img is None:
-                with mss.mss() as sct:
-                    img = np.array(sct.grab((0, 0, 30, 40), output='fullscreen.png'))
-
-
+                img = self.camera.grab(
+                    region=(8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31))
             self.fpstimer = time()
-
             img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
-
             self.img = img
 
 

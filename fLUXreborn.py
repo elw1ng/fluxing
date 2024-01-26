@@ -390,6 +390,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         print(f"alp {alp}")
         return alp + random.randint(int(-self.pi / 2), int(self.pi / 2))
 
+    '''
     def videocamera(self):
         while True:
 
@@ -437,7 +438,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.fpstimer = time()
             img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
             self.img = img
-    '''
+
 
     def getNextFrame(self, throttle=0.0):
         if self.t is not None:
@@ -510,7 +511,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.lkmrelease()
         sleep(0.1)
 
-    def mousemove(self, x, y, timer=0.03, limiter=60,deltax=21,deltay=4):
+    def mousemove(self, x, y, timer=0.05, limiter=100):
         # limiter = 235
         nx = int(abs(x) / limiter)  # 35 UE5
         ny = int(abs(y) / limiter)
@@ -527,8 +528,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 xlast = x - xstep * nx
                 ylast = y - ystep * ny
                 lengthlast = abs(xlast)+abs(ylast)
-                # timestep = timer / n
-                timespent = 0
+
 
                 kx = 0
                 ky = 0
@@ -536,7 +536,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                     decide = random.uniform(0.0,1.0)
                     chance = (nx-kx)/(nx+ny-kx-ky+1)
-                    print(f"decide {decide} <? chance {chance} nx,kx {nx,kx}   ny ky {ny,ky}")
+
                     if ky == ny or decide < chance:
                         self.mousemovetimer = time()
                         self.arduino.move(xstep, 0)
