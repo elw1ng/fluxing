@@ -1129,7 +1129,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                 results = self.getBestBox(detected_boxes, 1)
                                 if not results is None:
                                     bestbox, _ = results
-                                    result = self.confirmExisting(bestbox, conf=0.85, i=3, precision=0.99)
+                                    result = self.confirmExisting(bestbox, conf=0.61, i=6, precision=0.99)
                                     confirmed = result[0]
                                     if confirmed:
                                         self.lkmspam = False
