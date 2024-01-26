@@ -1150,7 +1150,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                         bestbox, _ = results
                                         result = self.confirmExisting(bestbox, conf=0.15, i=1, precision=0.99)
                                         confirmed = result[0]
-                                        if confirmed and (result[1].xyxy[0][2] - result[1].xyxy[0][0])<56 and  240<result[1].xyxy[0][0]<400:
+                                        if confirmed and (result[1].xyxy[0][2] - result[1].xyxy[0][0])<45 and  240<result[1].xyxy[0][0]<400:
                                             sleep(random.uniform(0.5,2.5))
                                             t= random.uniform(0.6,0.8)
                                             turn = self.Turn(self.alp-self.pi,0,t,self.Dt(t))
@@ -1318,7 +1318,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                         maxmousemove = result[1]
                         # sleep(0.11)
                         if self.checkDistance(best_box) < 25:
-                            if best_box.xyxy[0][2] - best_box.xyxy[0][0] < 40:
+                            if best_box.xyxy[0][2] - best_box.xyxy[0][0] < 35:
 
                                 t = random.uniform(0.51, 0.61)
                                 turn = self.Turn(self.alp - self.pi, 0, t, self.Dt(t))
@@ -1331,6 +1331,16 @@ class ClassName(BaseScript):  # Название класса (должен от
                                     self.turner.start()
 
                                 self.startextramove= True
+                            elif best_box.xyxy[0][2] - best_box.xyxy[0][0] > 46:
+                                t = random.uniform(0.51, 0.61)
+                                turn = self.Turn(self.alp, 0, t, self.Dt(t))
+                                if self.turner is None:
+                                    self.turner = Thread(target=self.maketurn, args=(turn,))
+                                    self.turner.start()
+                                else:
+                                    self.turner.join()
+                                    self.turner = Thread(target=self.maketurn, args=(turn,))
+                                    self.turner.start()
                             return True
             '''
             if self.ultrasave and released and (time() - nospirittime > 5):
@@ -1970,7 +1980,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.strafe = False
                 if self.mover is not None:
                     self.mover.join()
-                max = 4
+                max = 5
                 extramove = random.randint(0, max)
                 if (self.turn.t > 2.2 or extramove) and not self.startextramove:
                     self.startextramove =False
