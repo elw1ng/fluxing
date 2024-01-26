@@ -1992,7 +1992,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 if checkrebuff:
                     # sleep(0.07)
                     timer60power = time()
-                    self.fastselfcast(self.power, 5.0)
+                    self.fastselfcast(self.power, 5.2)
 
                 elif not rebuffed:
                     # sleep(0.07)
