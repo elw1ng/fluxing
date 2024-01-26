@@ -79,28 +79,31 @@ class Arduino(object):
             self.__write_byte(MOUSE_CMD)
             self.__write_byte(MOUSE_PRESS)
             self.__write_byte(button)
-            self.writequeue = False
+
             while not self.mousecommandcomplete:
                 sleep(0.001)
             self.mousecommandcomplete = False
+            self.writequeue = False
 
         elif isinstance(button, int):
             self.__write_byte(KEYBOARD_CMD)
             self.__write_byte(KEYBOARD_PRESS)
             self.__write_byte(button)
-            self.writequeue = False
+
             while not self.keyboardcommandcomplete:
                 sleep(0.001)
             self.keyboardcommandcomplete = False
+            self.writequeue = False
 
         elif isinstance(button, str) and len(button) == 1:
             self.__write_byte(KEYBOARD_CMD)
             self.__write_byte(KEYBOARD_PRESS)
             self.__write_byte(ord(button))
-            self.writequeue = False
+
             while not self.keyboardcommandcomplete:
                 sleep(0.001)
             self.keyboardcommandcomplete = False
+            self.writequeue = False
 
         else:
             raise ValueError("Not a valid mouse or keyboard button.")
@@ -117,28 +120,31 @@ class Arduino(object):
             self.__write_byte(MOUSE_CMD)
             self.__write_byte(MOUSE_RELEASE)
             self.__write_byte(button)
-            self.writequeue = False
+
             while not self.mousecommandcomplete:
                 sleep(0.001)
             self.mousecommandcomplete = False
+            self.writequeue = False
 
         elif isinstance(button, int):
             self.__write_byte(KEYBOARD_CMD)
             self.__write_byte(KEYBOARD_RELEASE)
             self.__write_byte(button)
-            self.writequeue = False
+
             while not self.keyboardcommandcomplete:
                 sleep(0.001)
             self.keyboardcommandcomplete = False
+            self.writequeue = False
 
         elif isinstance(button, str) and len(button) == 1:
             self.__write_byte(KEYBOARD_CMD)
             self.__write_byte(KEYBOARD_RELEASE)
             self.__write_byte(ord(button))
-            self.writequeue = False
+
             while not self.keyboardcommandcomplete:
                 sleep(0.001)
             self.keyboardcommandcomplete = False
+            self.writequeue = False
 
         else:
             raise ValueError("Not a valid mouse or keyboard button.")
@@ -187,11 +193,11 @@ class Arduino(object):
                 "Not a valid keyboard keystroke. "
                 + "Must be type `int` or `char` or `str`."
             )
-        self.writequeue = False
+
         while not self.keyboardcommandcomplete:
             sleep(0.001)
         self.keyboardcommandcomplete = False
-
+        self.writequeue = False
 
     def type(self, message, wpm=80, mistakes=True, accuracy=96):
         while self.writequeue:
@@ -220,11 +226,11 @@ class Arduino(object):
         self.__write_byte(wpm)
         self.__write_byte(mistakes)
         self.__write_byte(accuracy)
-        self.writequeue = False
+
         while not self.keyboardcommandcomplete:
             sleep(0.001)
         self.keyboardcommandcomplete = False
-
+        self.writequeue = False
 
 
     def click(self, button=MOUSE_LEFT):
@@ -277,10 +283,11 @@ class Arduino(object):
         self.__write_short(dest_x+15000)
         self.__write_short(dest_y+15000)
         self.__write_short(limiter)
-        self.writequeue = False
+
         while not self.mousecommandcomplete:
             sleep(0.001)
         self.mousecommandcomplete = False
+        self.writequeue = False
 
 
     def bezier_move(self, dest_x, dest_y):
