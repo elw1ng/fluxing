@@ -1355,10 +1355,12 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         x_angle = math.atan((x_pos - 0.5) * 2 * math.tan(fov[0] / 2))
         y_angle = math.atan((y_pos - 0.5) * 2 * math.tan(fov[1] / 2))
-        '''
+
         phi = self.to_rad( self.mousereturn[1])
         
         if phi != 0:
+            x_angle*=(1+abs(math.tan(phi)))
+            '''
             cosd = math.cos(phi) * math.cos(x_angle)
             d = math.acos(cosd)
             sinalp = math.sin(x_angle) / math.sin(d)
@@ -1368,7 +1370,8 @@ class ClassName(BaseScript):  # Название класса (должен от
             else:
                 y_angle += -math.asin(math.cos(alp) * math.sin(d)) - phi
             x_angle = math.atan(sinalp*math.tan(d))
-        '''
+            '''
+
 
 
         return ((x_angle), (y_angle))
