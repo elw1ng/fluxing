@@ -692,7 +692,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     if (box.cls == checkbox.cls):
                         sizeDiff = abs(box.xyxy[0][2] - box.xyxy[0][0] - checkbox.xyxy[0][2] + checkbox.xyxy[0][0])
                         dist = self.checkDistance(box)
-                        if sizeDiff < 9 and dist < 14:
+                        if sizeDiff < 10 and dist < 15:
                             if not found:
                                 newbox = box
                                 newboxdist = dist
@@ -705,13 +705,9 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                                 return True, newbox
 
+
             if found:
-                checkbox = newbox
-                counter += 1
-
-        if float(counter) / i >= precision:
-
-            return True, checkbox
+                return True, checkbox
 
         return False, None
 
@@ -940,7 +936,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                             if time() - holdtime < 0.80 and confirmed:
                                 # sleep(0.02)
-                                result = self.track(bestbox, conf=0.05, precision=0.99, i=1)
+                                result = self.track(bestbox, conf=0.05, precision=0.99, i=2)
                                 confirmed = result[0]
                                 if confirmed:
                                     noballstime = time()
