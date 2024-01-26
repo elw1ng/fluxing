@@ -692,7 +692,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     if (box.cls == checkbox.cls):
                         sizeDiff = abs(box.xyxy[0][2] - box.xyxy[0][0] - checkbox.xyxy[0][2] + checkbox.xyxy[0][0])
                         dist = self.checkDistance(box)
-                        if sizeDiff < 10 and dist < 15:
+                        if sizeDiff < 10 and dist < 15*i:
                             if not found:
                                 newbox = box
                                 newboxdist = dist
@@ -701,7 +701,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                 if dist < newboxdist:
                                     newbox = box
                                     newboxdist = dist
-                            if newbox.conf > 0.5 and dist < 4:
+                            if newbox.conf > 0.5 and dist < 4*i:
 
                                 return True, newbox
 
