@@ -56,7 +56,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.avgd = avgd
             self.x = self.avgd * math.sin(self.to_rad(self.gamma))
             self.y = self.avgd * math.cos(self.to_rad(self.gamma))
-            self.limiter = random.randint(60, 100)
+            self.limiter = random.randint(40, 60)
             self.strafes = strafes
             self.timings = []
 
@@ -238,10 +238,10 @@ class ClassName(BaseScript):  # Название класса (должен от
             d -= delta
             chance *= 0.6
 
-        self.mousemove(d, 0,limiter = random.randint(255,510))
+        self.mousemove(d, 0,limiter = random.randint(55,99))
         for delta in deltas:
             sleep(random.uniform(0.05 , 0.12))
-            self.mousemove(delta, 0, limiter=random.randint(255, 510))
+            self.mousemove(delta, 0, limiter=random.randint(55, 99))
 
         self.alp = alp
 
@@ -1772,7 +1772,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.mousereturn[0] += x
                 self.mousereturn[1] += y
                 sleep(random.uniform(0.3 , 0.7))
-                self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]),limiter=random.randint(177,511))
+                self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]),limiter=random.randint(66,88))
                 self.mousereturn[0] = 0
                 self.mousereturn[1] = 0
             else:
@@ -2005,9 +2005,9 @@ class ClassName(BaseScript):  # Название класса (должен от
                 sleep(4)
                 x= random.randint(-222,222)
                 y= random.randint(-666,666)
-                self.mousemove(x,y,limiter=random.randint(216,511))
+                self.mousemove(x,y,limiter=random.randint(77,99))
                 sleep(11)
-                self.mousemove(-x, -y, limiter=random.randint(216, 511))
+                self.mousemove(-x, -y, limiter=random.randint(77, 99))
                 sleep(3)
             elif sl>18:
                 sleep(3.5)
