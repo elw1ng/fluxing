@@ -68,9 +68,13 @@ class Arduino(object):
         serialreader = threading.Thread(target=self.__read_buffer,args=())
         self.mousecommandcomplete = False
         self.keyboardcommandcomplete = False
+        self.writequeue=False
         serialreader.start()
 
     def press(self, button=MOUSE_LEFT):
+        while self.writequeue:
+            sleep(0.001)
+        self.writequeue=True
         if button in MOUSE_BUTTONS:
             self.__write_byte(MOUSE_CMD)
             self.__write_byte(MOUSE_PRESS)
@@ -97,11 +101,15 @@ class Arduino(object):
 
         else:
             raise ValueError("Not a valid mouse or keyboard button.")
+        self.writequeue = False
 
 
 
 
     def release(self, button=MOUSE_LEFT):
+        while self.writequeue:
+            sleep(0.001)
+        self.writequeue = True
         if button in MOUSE_BUTTONS:
             self.__write_byte(MOUSE_CMD)
             self.__write_byte(MOUSE_RELEASE)
@@ -128,10 +136,13 @@ class Arduino(object):
 
         else:
             raise ValueError("Not a valid mouse or keyboard button.")
-
+        self.writequeue=False
 
 
     def release_all(self):
+        while self.writequeue:
+            sleep(0.001)
+        self.writequeue=True
         self.__write_byte(KEYBOARD_CMD)
         self.__write_byte(KEYBOARD_RELEASE_ALL)
 
@@ -139,7 +150,12 @@ class Arduino(object):
             sleep(0.001)
         self.keyboardcommandcomplete = False
 
+        self.writequeue=False
+
     def write(self, keys, endl=False):
+        while self.writequeue:
+            sleep(0.001)
+        self.writequeue=True
         if isinstance(keys, int):
             self.__write_byte(KEYBOARD_CMD)
             self.__write_byte(KEYBOARD_WRITE)
@@ -169,8 +185,12 @@ class Arduino(object):
         while not self.keyboardcommandcomplete:
             sleep(0.001)
         self.keyboardcommandcomplete = False
+        self.writequeue=False
 
     def type(self, message, wpm=80, mistakes=True, accuracy=96):
+        while self.writequeue:
+            sleep(0.001)
+        self.writequeue=True
         if not isinstance(message, str):
             raise ValueError("Invalid keyboard message. " + "Must be type `str`.")
 
@@ -199,7 +219,12 @@ class Arduino(object):
             sleep(0.001)
         self.keyboardcommandcomplete = False
 
+        self.writequeue=False
+
     def click(self, button=MOUSE_LEFT):
+        while self.writequeue:
+            sleep(0.001)
+        self.writequeue=True
         if button not in MOUSE_BUTTONS:
             raise ValueError("Not a valid mouse button.")
 
@@ -210,8 +235,14 @@ class Arduino(object):
         while not self.mousecommandcomplete:
             sleep(0.001)
         self.mousecommandcomplete = False
+        while self.writequeue:
+            sleep(0.001)
+        self.writequeue=False
 
     def fast_click(self, button):
+        while self.writequeue:
+            sleep(0.001)
+        self.writequeue=True
         if button not in MOUSE_BUTTONS:
             raise ValueError("Not a valid mouse button.")
 
@@ -223,7 +254,12 @@ class Arduino(object):
             sleep(0.001)
         self.mousecommandcomplete = False
 
+        self.writequeue=False
+
     def move(self, dest_x, dest_y,limiter):
+        while self.writequeue:
+            sleep(0.001)
+        self.writequeue=True
         if not isinstance(dest_x, (int, float)) and not isinstance(
             dest_y, (int, float)
         ):
@@ -239,8 +275,12 @@ class Arduino(object):
         while not self.mousecommandcomplete:
             sleep(0.001)
         self.mousecommandcomplete = False
+        self.writequeue=False
 
     def bezier_move(self, dest_x, dest_y):
+        while self.writequeue:
+            sleep(0.001)
+        self.writequeue=True
         if not isinstance(dest_x, (int, float)) and not isinstance(
             dest_y, (int, float)
         ):
@@ -255,6 +295,7 @@ class Arduino(object):
         while not self.mousecommandcomplete:
             sleep(0.001)
         self.mousecommandcomplete = False
+        self.writequeue=False
 
         '''
         if not self.__read_buffer():
