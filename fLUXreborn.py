@@ -1150,6 +1150,8 @@ class ClassName(BaseScript):  # Название класса (должен от
                                             self.maketurnw(turn)
                                             sleep(0.3)
                                             extramove = True
+                                            self.lkmrelease()
+                            self.lkmpress()
                             if self.blackscreen:
                                 self.blackscreen_event.wait()
                                 self.checker.join()
@@ -1990,7 +1992,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 if checkrebuff:
                     # sleep(0.07)
                     timer60power = time()
-                    self.fastselfcast(self.power, 4.9)
+                    self.fastselfcast(self.power, 5.0)
 
                 elif not rebuffed:
                     # sleep(0.07)
