@@ -140,6 +140,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.USER2_ID = self.keys['key18']['value']
         self.TOKEN = self.keys['key19']['value']
         self.target_fps = 50
+        self.holdtime = time()
         if "fps" in sys.argv:
             self.target_fps = int(sys.argv[sys.argv.index("fps") + 1])
         self.bar = False
@@ -697,7 +698,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                         #box.xyxy[0][3] += 160
                         sizeDiff = abs(box.xyxy[0][2] - box.xyxy[0][0] - checkbox.xyxy[0][2] + checkbox.xyxy[0][0])
                         dist = self.checkDistance(box)
-                        if sizeDiff < 6 and dist < 6*(j+1):
+                        if sizeDiff < 6 and dist < 10*(j+1):
                             if not found:
                                 newbox = box
                                 newboxdist = dist
@@ -712,6 +713,8 @@ class ClassName(BaseScript):  # Название класса (должен от
 
 
             if found:
+                if newboxdist*2.2 > (newbox.xyxy[0][2] - newbox.xyxy[0][0]):
+                    self.holdtime=time()
                 return True, newbox
 
         return False, None
@@ -884,7 +887,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     bestbox = result[1]
                     scale = 1
                     # if confirmed:
-                    holdtime = time()
+                    self.holdtime = time()
                     if confirmed:
                         noballstime = time()
                         while time() - noballstime < 0.9:
@@ -945,9 +948,9 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                                 maxmousemove = mouseresult[1]
 
-                            if time() - holdtime < 0.68 and confirmed:
+                            if time() - self.holdtime < 0.68 and confirmed:
                                 # sleep(0.02)
-                                result = self.track(bestbox, conf=0.05, precision=0.99, i=2)
+                                result = self.track(bestbox, conf=0.05, precision=0.99, i=3)
                                 confirmed = result[0]
                                 if confirmed:
                                     noballstime = time()
@@ -958,7 +961,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                     if confirmed:
                                         noballstime = time()
                                         bestbox = result[1]
-                                        holdtime = time()
+                                        self.holdtime = time()
                             else:
                                 # sleep(0.02)
                                 result = self.nextTarget(bestbox, conf=0.05)
@@ -966,7 +969,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                 if confirmed:
                                     noballstime = time()
                                     bestbox = result[1]
-                                    holdtime = time()
+                                    self.holdtime = time()
 
                     # print("Otpusk")
                     # if pressed:
