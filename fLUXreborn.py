@@ -1010,7 +1010,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 # distFactor = self.checkDistance(box)
                 Y = self.checkDistanceY(box)
                 # X = self.checkDistanceX(box)
-                if -150 < Y < 210:
+                if -200 < Y < 210 and (cls==0 or Y>-90):
                     if not ballexist:
 
                         result = self.confirmExisting(box)
