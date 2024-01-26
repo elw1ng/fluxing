@@ -53,7 +53,7 @@ class Arduino(object):
         if port is None:
             port = self.__detect_port()
 
-        self.serial = serial.Serial(port, baudrate)
+        self.serial = serial.Serial(port, baudrate, writeTimeout = 0)
         if not self.serial.isOpen():
             raise serial.SerialException("Arduino device not found.")
 
