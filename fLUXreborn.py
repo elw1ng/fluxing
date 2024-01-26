@@ -56,7 +56,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.avgd = avgd
             self.x = self.avgd * math.sin(self.to_rad(self.gamma))
             self.y = self.avgd * math.cos(self.to_rad(self.gamma))
-            self.limiter = random.randint(40, 60)
+            self.limiter = random.randint(20, 35)
             self.strafes = strafes
             self.timings = []
 
@@ -511,7 +511,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.lkmrelease()
         sleep(0.1)
 
-    def mousemove(self, x, y, timer=0.005, limiter=70):
+    def mousemove(self, x, y, timer=0.006, limiter=70):
         # limiter = 235
         nx = int(abs(x) / limiter)  # 35 UE5
         ny = int(abs(y) / limiter)
