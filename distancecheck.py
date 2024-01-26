@@ -19,9 +19,8 @@ class ClassName(fLUXreborn.ClassName):
         while True:
 
             sleep(2)
-            self.mousemove(self.pi,1000)
-            sleep(2)
-            self.mousemove(-self.pi, -1000)
+            self.mousemove(2*self.pi,0)
+
 
 
         sleep(63)
