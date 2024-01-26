@@ -707,7 +707,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
 
             if found:
-                return True, checkbox
+                return True, newbox
 
         return False, None
 
