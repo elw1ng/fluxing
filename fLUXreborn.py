@@ -269,7 +269,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         type = random.randint(1,4)
         if type <4:
 
-            beta = random.randint(int(-self.pi/ 3.1 / type), int(self.pi/ 3.1 / type))
+            beta = random.randint(int(-self.pi/ 3.3 / type), int(self.pi/ 3.3 / type))
             rads = self.to_rad(beta)
             alp = self.fromcenteralp()
             d = 13.4
@@ -702,7 +702,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                         #box.xyxy[0][3] += 160
                         sizeDiff = abs(box.xyxy[0][2] - box.xyxy[0][0] - checkbox.xyxy[0][2] + checkbox.xyxy[0][0])
                         dist = self.checkDistance(box)
-                        if sizeDiff < 6 and dist < 10*(j+1):
+                        if sizeDiff < 10 and dist < 12*(j+1):
                             if not found:
                                 newbox = box
                                 newboxdist = dist
@@ -711,14 +711,14 @@ class ClassName(BaseScript):  # Название класса (должен от
                                 if dist < newboxdist:
                                     newbox = box
                                     newboxdist = dist
-                            if newbox.conf > 0.6 and dist < 3*(j+1):
+                            if newbox.conf > 0.15 and dist < 3*(j+1):
 
                                 return True, newbox
 
 
             if found:
                 if newboxdist*2.2 > (newbox.xyxy[0][2] - newbox.xyxy[0][0]):
-                    if time() - self.holdtime > 0.3:
+                    if time() - self.holdtime > 0.33:
                         return False, None
                     else:
                         self.holdtime = time()
@@ -956,7 +956,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                                 maxmousemove = mouseresult[1]
 
-                            if time() - self.holdtime < 0.7 and confirmed:
+                            if time() - self.holdtime < 0.67 and confirmed:
                                 # sleep(0.02)
                                 result = self.track(bestbox, conf=0.05, precision=0.99, i=2)
                                 confirmed = result[0]
@@ -1396,7 +1396,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         
         if phi != 0:
             x_angle=x_angle/math.cos(phi)
-            y_angle*=(1- x_angle*math.sin(phi))
+            y_angle*=(1- x_angle*math.sin(phi)/self.Prefire)
             '''
             cosd = math.cos(phi) * math.cos(x_angle)
             d = math.acos(cosd)
