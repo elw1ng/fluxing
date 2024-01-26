@@ -511,7 +511,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.lkmrelease()
         sleep(0.1)
 
-    def mousemove(self, x, y, timer=0.05, limiter=100):
+    def mousemove(self, x, y, timer=0.02, limiter=100):
         # limiter = 235
         nx = int(abs(x) / limiter)  # 35 UE5
         ny = int(abs(y) / limiter)
