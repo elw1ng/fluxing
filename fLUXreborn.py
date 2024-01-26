@@ -1129,7 +1129,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                 results = self.getBestBox(detected_boxes, 1)
                                 if not results is None:
                                     bestbox, _ = results
-                                    result = self.confirmExisting(bestbox, conf=0.15, i=3, precision=0.99)
+                                    result = self.confirmExisting(bestbox, conf=0.55, i=3, precision=0.99)
                                     confirmed = result[0]
                                     if confirmed:
                                         self.lkmspam = False
@@ -1359,8 +1359,8 @@ class ClassName(BaseScript):  # Название класса (должен от
         phi = self.to_rad( self.mousereturn[1])
         
         if phi != 0:
-            x_angle=x_angle/math.cos(phi)
-            y_angle*=(1- 0.5*x_angle*math.sin(phi))
+            x_angle=x_angle/math.cos(0.9*phi)
+            y_angle*=(1- 0.6*x_angle*math.sin(phi))
             '''
             cosd = math.cos(phi) * math.cos(x_angle)
             d = math.acos(cosd)
