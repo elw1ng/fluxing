@@ -1166,7 +1166,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                         #     nospirittime = time()
                         # if (time() - holdtime > 26.0):
                         #     break;
-            if time() - nospirittime > 14:
+            if time() - nospirittime > 21:
                 spirit_loop = False
             if time() - nospirittime > 4.5 and not detected:
                 self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
@@ -1183,7 +1183,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     sleep(0.05)
 
 
-            if time() - predictedtime > 8 and detected:
+            if time() - predictedtime > 12 and detected:
                 spirit_loop = False
             if time() - nospirittime > 7.5 and detected:
                 spirit_loop = False
