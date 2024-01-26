@@ -964,7 +964,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             # print("OTPUSK")
             if ball_was and (time() - noballstime > 0.3):
                 self.strafe = False
-            if (ball_was) and (time() - noballstime > 0.5) and (self.mousereturn[0] > 30 or self.mousereturn[1] > 30):
+            if (ball_was) and (time() - noballstime > 1.1) and (self.mousereturn[0] > 30 or self.mousereturn[1] > 30):
                 self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
                 self.mousereturn[0] = 0
                 self.mousereturn[1] = 0
