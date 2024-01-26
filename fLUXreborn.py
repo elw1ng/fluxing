@@ -934,7 +934,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                                 maxmousemove = mouseresult[1]
 
-                            if time() - holdtime < 0.80 and confirmed:
+                            if time() - holdtime < 0.75 and confirmed:
                                 # sleep(0.02)
                                 result = self.track(bestbox, conf=0.05, precision=0.99, i=2)
                                 confirmed = result[0]
@@ -1936,7 +1936,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 if self.stop:
                     break
 
-                thread = Thread(target=self.activatestrafe, args=(61,))
+                thread = Thread(target=self.activatestrafe, args=(161,))
                 thread.start()
 
                 self.BallLoop(firsttime=firsttime, maxnoballtimer=1.7)
