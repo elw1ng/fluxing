@@ -681,13 +681,13 @@ class ClassName(BaseScript):  # Название класса (должен от
             found = False
             # sleep(1 / 60)
             self.getNextFrame()
-            Prediction = self.model.predict(source= self.img[0:600][0:600], device=0, conf=conf, iou=0.3,imgsz = 600)
+            Prediction = self.model.predict(source= self.img[192:448][192:448], device=0, conf=conf, iou=0.3,imgsz = 128)
             detected_boxes = Prediction[0].boxes
             if len(detected_boxes) >= 1:
                 for box in detected_boxes:
                     if (box.cls == checkbox.cls):
                         sizeDiff = abs(box.xyxy[0][2] - box.xyxy[0][0] - checkbox.xyxy[0][2] + checkbox.xyxy[0][0])
-                        dist = self.checkDistance(box)
+                        dist = self.checkDistance(box,img_w=128,img_h=128)
                         if sizeDiff < 8 and dist < 12:
                             if not found:
                                 newbox = box
