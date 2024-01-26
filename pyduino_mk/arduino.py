@@ -66,7 +66,8 @@ class Arduino(object):
         #serial_reader.daemon = True
         #serial_reader.start()
         serialreader = threading.Thread(target=self.__read_buffer,args=())
-        self.commandcomplete = False
+        self.mousecommandcomplete = False
+        self.keyboardcommandcomplete = False
         serialreader.start()
 
     def press(self, button=MOUSE_LEFT):
@@ -74,23 +75,30 @@ class Arduino(object):
             self.__write_byte(MOUSE_CMD)
             self.__write_byte(MOUSE_PRESS)
             self.__write_byte(button)
+            while not self.mousecommandcomplete:
+                sleep(0.001)
+            self.mousecommandcomplete = False
 
         elif isinstance(button, int):
             self.__write_byte(KEYBOARD_CMD)
             self.__write_byte(KEYBOARD_PRESS)
             self.__write_byte(button)
+            while not self.keyboardcommandcomplete:
+                sleep(0.001)
+            self.keyboardcommandcomplete = False
 
         elif isinstance(button, str) and len(button) == 1:
             self.__write_byte(KEYBOARD_CMD)
             self.__write_byte(KEYBOARD_PRESS)
             self.__write_byte(ord(button))
+            while not self.keyboardcommandcomplete:
+                sleep(0.001)
+            self.keyboardcommandcomplete = False
 
         else:
             raise ValueError("Not a valid mouse or keyboard button.")
 
-        while not self.commandcomplete:
-            sleep(0.001)
-        self.commandcomplete = False
+
 
 
     def release(self, button=MOUSE_LEFT):
@@ -98,31 +106,38 @@ class Arduino(object):
             self.__write_byte(MOUSE_CMD)
             self.__write_byte(MOUSE_RELEASE)
             self.__write_byte(button)
+            while not self.mousecommandcomplete:
+                sleep(0.001)
+            self.mousecommandcomplete = False
 
         elif isinstance(button, int):
             self.__write_byte(KEYBOARD_CMD)
             self.__write_byte(KEYBOARD_RELEASE)
             self.__write_byte(button)
+            while not self.keyboardcommandcomplete:
+                sleep(0.001)
+            self.keyboardcommandcomplete = False
 
         elif isinstance(button, str) and len(button) == 1:
             self.__write_byte(KEYBOARD_CMD)
             self.__write_byte(KEYBOARD_RELEASE)
             self.__write_byte(ord(button))
+            while not self.keyboardcommandcomplete:
+                sleep(0.001)
+            self.keyboardcommandcomplete = False
 
         else:
             raise ValueError("Not a valid mouse or keyboard button.")
 
-        while not self.commandcomplete:
-            sleep(0.001)
-        self.commandcomplete = False
+
 
     def release_all(self):
         self.__write_byte(KEYBOARD_CMD)
         self.__write_byte(KEYBOARD_RELEASE_ALL)
 
-        if not self.__read_buffer():
-            print("arduino timeout")
-            self.release_all()
+        while not self.keyboardcommandcomplete:
+            sleep(0.001)
+        self.keyboardcommandcomplete = False
 
     def write(self, keys, endl=False):
         if isinstance(keys, int):
@@ -151,9 +166,9 @@ class Arduino(object):
                 + "Must be type `int` or `char` or `str`."
             )
 
-        while not self.commandcomplete:
+        while not self.keyboardcommandcomplete:
             sleep(0.001)
-        self.commandcomplete = False
+        self.keyboardcommandcomplete = False
 
     def type(self, message, wpm=80, mistakes=True, accuracy=96):
         if not isinstance(message, str):
@@ -180,9 +195,9 @@ class Arduino(object):
         self.__write_byte(mistakes)
         self.__write_byte(accuracy)
 
-        while not self.commandcomplete:
+        while not self.keyboardcommandcomplete:
             sleep(0.001)
-        self.commandcomplete = False
+        self.keyboardcommandcomplete = False
 
     def click(self, button=MOUSE_LEFT):
         if button not in MOUSE_BUTTONS:
@@ -192,9 +207,9 @@ class Arduino(object):
         self.__write_byte(MOUSE_CLICK)
         self.__write_byte(button)
 
-        while not self.commandcomplete:
+        while not self.mousecommandcomplete:
             sleep(0.001)
-        self.commandcomplete = False
+        self.mousecommandcomplete = False
 
     def fast_click(self, button):
         if button not in MOUSE_BUTTONS:
@@ -204,9 +219,9 @@ class Arduino(object):
         self.__write_byte(MOUSE_FAST_CLICK)
         self.__write_byte(button)
 
-        while not self.commandcomplete:
+        while not self.mousecommandcomplete:
             sleep(0.001)
-        self.commandcomplete = False
+        self.mousecommandcomplete = False
 
     def move(self, dest_x, dest_y,limiter):
         if not isinstance(dest_x, (int, float)) and not isinstance(
@@ -218,12 +233,12 @@ class Arduino(object):
 
         self.__write_byte(MOUSE_CMD)
         self.__write_byte(MOUSE_MOVE)
-        self.__write_short(dest_x+1920)
-        self.__write_short(dest_y+1920)
+        self.__write_short(dest_x+15000)
+        self.__write_short(dest_y+15000)
         self.__write_short(limiter)
-        while not self.commandcomplete:
+        while not self.mousecommandcomplete:
             sleep(0.001)
-        self.commandcomplete = False
+        self.mousecommandcomplete = False
 
     def bezier_move(self, dest_x, dest_y):
         if not isinstance(dest_x, (int, float)) and not isinstance(
@@ -237,9 +252,9 @@ class Arduino(object):
         self.__write_byte(MOUSE_BEZIER)
         self.__write_short(dest_x + 1920)
         self.__write_short(dest_y + 1920)
-        while not self.commandcomplete:
+        while not self.mousecommandcomplete:
             sleep(0.001)
-        self.commandcomplete = False
+        self.mousecommandcomplete = False
 
         '''
         if not self.__read_buffer():
@@ -267,8 +282,10 @@ class Arduino(object):
 
             byte = ord(self.serial.read())
 
-            if byte == COMMAND_COMPLETE:
-                self.commandcomplete = True
+            if byte == MOUSE_COMMAND_COMPLETE:
+                self.mousecommandcomplete = True
+            elif byte == KEYBOARD_COMMAND_COMPLETE:
+                self.keyboardcommandcomplete = True
             #if time()-starttime > 1:
                 #return False
                 #self.__command_complete.set()
