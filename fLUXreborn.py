@@ -580,8 +580,8 @@ class ClassName(BaseScript):  # Название класса (должен от
         centers = []
 
         x1, y1, x2, y2 = box.xyxy[0]
-        if box.cls == 0 and (2 * (x2 - x1) < (y2 - y1)):
-            y2 = y2 - random.uniform(0.3, 0.6) * ((y2 - y1) - (x2 - x1))
+        if box.cls == 0 and ((x2 - x1) < (y2 - y1)):
+            y2 = y2 - random.uniform(0.25, 0.4) * ((y2 - y1))
             # print("move upper")
         c_x = ((x2 - x1) / 2) + x1
         c_y = ((y2 - y1) / 2) + y1
@@ -843,12 +843,14 @@ class ClassName(BaseScript):  # Название класса (должен от
 
             if (not ball_was):
                 noballstime = time()
+            '''
             if self.earlydamagesave and (
                     not ball_was or (ball_was and (time() - noballstimeFull < 1.1))) and self.lowmana:
                 print("earlyLOWMANA")
                 self.restart = True
                 self.gosave()
                 return False
+            '''
             # sleep(1 / 60)
             self.getNextFrame()
             if self.blackscreen:
@@ -860,12 +862,13 @@ class ClassName(BaseScript):  # Название класса (должен от
 
             Prediction = self.model.predict(source=self.img, device=0, conf=0.07)
             detected_boxes = Prediction[0].boxes
-
+            '''
             if self.lowmana:
                 print("LOWMANA")
                 self.restart = True
                 self.gosave()
                 return False
+            '''
             # debug the loop rate
             # print('FPS {}'.format(1 / (time() - loop_time)))
             # loop_time = time()
@@ -885,12 +888,15 @@ class ClassName(BaseScript):  # Название класса (должен от
                     if confirmed:
                         noballstime = time()
                         while time() - noballstime < 0.9:
+                            '''
                             if self.earlydamagesave and (
                                     not ball_was or (ball_was and (time() - noballstimeFull < 0.8))) and self.lowmana:
                                 print("earlyLOWMANA")
                                 self.restart = True
                                 self.gosave()
                                 return False
+                            '''
+
                             '''
                             if self.safeMode and (time() - noballstimeFull > 2):
                                 if (time() - noballstimeFull > 6.5) and self.checklowmana(percentage=0.08):
@@ -1053,7 +1059,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.lkmrelease()
 
     def SpiritLoop(self, worktime=None):
-
+        ballscounter=0
         nodetectcounter =0
         starttime = time()
         spirit_loop = True
@@ -1068,11 +1074,13 @@ class ClassName(BaseScript):  # Название класса (должен от
                 return True
 
             self.getNextFrame()
+            '''
             if self.lowmana:
                 print("LOWMANA")
                 self.restart = True
                 self.gosave()
                 return False
+            '''
             if self.blackscreen:
                 self.blackscreen_event.wait()
                 self.checker.join()
@@ -1125,17 +1133,16 @@ class ClassName(BaseScript):  # Название класса (должен от
                             # print('FPS {}'.format(1 / (time() - loop_time)))
                             # loop_time = time()
                             # print("i will check")
-                            if len(detected_boxes) >= 1:
-                                results = self.getBestBox(detected_boxes, 1)
-                                if not results is None:
-                                    bestbox, _ = results
-                                    result = self.confirmExisting(bestbox, conf=0.61, i=6, precision=0.99)
-                                    confirmed = result[0]
-                                    if confirmed:
-                                        self.lkmspam = False
-                                        self.lkmrelease()
-                                        #lkmspamer.join()
-                                        return False
+                            if len(detected_boxes) >= 3:
+                                ballscounter += 1
+
+                                if ballscounter > 9:
+                                    self.lkmspam = False
+                                    self.lkmrelease()
+                                    #lkmspamer.join()
+                                    return False
+                            else:
+                                ballscounter=0
                             if not extramove:
                                 if len(detected_boxes) >= 1:
                                     results = self.getBestBox(detected_boxes, 0)
@@ -1158,6 +1165,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                 if not self.ban and not self.mainmenu:
                                     self.send_message_telega(f"BANISHED spiritloop")
                                 sys.exit()
+                            '''
                             if self.lowmana:
                                 print("LOWMANA")
                                 self.restart = True
@@ -1165,6 +1173,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                 self.lkmspam = False
                                 self.lkmrelease()
                                 return False
+                            '''
                         self.lkmspam = False
 
                         # print("release")
@@ -1267,12 +1276,13 @@ class ClassName(BaseScript):  # Название класса (должен от
                         released = True
                     sleep(0.2)
                     return False
-
+                '''
                 if self.lowmana:
                     print("LOWMANA")
                     self.restart = True
                     self.gosave()
                     return False
+                '''
 
                 self.getNextFrame()
 
@@ -1340,11 +1350,13 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.restart = True
                 self.gosave()
                 return False
+            '''
             if self.lowmana:
                 print("LOWMANA")
                 self.restart = True
                 self.gosave()
                 return False
+            '''
         return True
 
     def get_angles(self, aim_target, window_size=[640, 640], fov=(60, 60)):
@@ -1722,11 +1734,13 @@ class ClassName(BaseScript):  # Название класса (должен от
                     self.blackscreen = False
                     self.blackscreen_event.clear()
                     break
+            '''
             if self.checklowmana():
                 print("LOWMANA")
                 self.lowmana = True
             else:
                 self.lowmana = False
+            '''
             if self.checkGM():
                 pass
             else:
@@ -1904,11 +1918,12 @@ class ClassName(BaseScript):  # Название класса (должен от
                             elif not self.mainmenu:
                                 self.send_message_telega("BANISHED on trying to summon")
                             sys.exit()
-
+                        '''
                         if self.lowmana:
                             print("LOWMANA")
                             self.restart = True
                             self.gosave()
+                        '''
                     rebuffed = True
                     if self.lvling:
                         self.press(1)
@@ -1987,11 +2002,12 @@ class ClassName(BaseScript):  # Название класса (должен от
                             elif not self.mainmenu:
                                 self.send_message_telega("BANISHED before expel")
                             sys.exit()
-
+                        '''
                         if self.lowmana:
                             print("LOWMANA")
                             self.restart = True
                             self.gosave()
+                        '''
                         print("wait until 4 sec of expel")
                 if checkrebuff:
                     # sleep(0.07)
