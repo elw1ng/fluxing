@@ -581,7 +581,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         x1, y1, x2, y2 = box.xyxy[0]
         if box.cls == 0 and (2 * (x2 - x1) < (y2 - y1)):
-            y2 = y2 - random.uniform(0.1, 0.4) * ((y2 - y1) - (x2 - x1))
+            y2 = y2 - random.uniform(0.3, 0.6) * ((y2 - y1) - (x2 - x1))
             # print("move upper")
         c_x = ((x2 - x1) / 2) + x1
         c_y = ((y2 - y1) / 2) + y1
@@ -1359,8 +1359,8 @@ class ClassName(BaseScript):  # Название класса (должен от
         phi = self.to_rad( self.mousereturn[1])
         
         if phi != 0:
-            x_angle*=(1+0.1*abs(math.tan(phi)))
-            y_angle*=(1- 0.1*math.sin(phi))
+            x_angle=x_angle/math.cos(phi)
+            y_angle*=(1- 0.5*x_angle*math.sin(phi))
             '''
             cosd = math.cos(phi) * math.cos(x_angle)
             d = math.acos(cosd)
