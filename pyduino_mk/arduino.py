@@ -67,6 +67,7 @@ class Arduino(object):
         #serial_reader.start()
         serialreader = threading.Thread(target=self.__read_buffer)
         self.commandcomplete = False
+        serialreader.start()
 
     def press(self, button=MOUSE_LEFT):
         if button in MOUSE_BUTTONS:
