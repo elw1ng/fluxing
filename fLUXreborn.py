@@ -205,7 +205,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.y = 0.01
         self.yelipse = 1.0
         self.overload = 0
-        self.aftermovedelay = 1/20
+        self.aftermovedelay = 1/21
         if "R" in sys.argv:
             self.R = float(sys.argv[sys.argv.index("R") + 1])
         if "e" in sys.argv:
@@ -449,7 +449,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.camerastop = True
             sleep(self.aftermovedelay)
             self.camerastop = False
-        while time() - self.fpstimer > 1 / 60:
+        while time() - self.fpstimer > 1 / 180:
             sleep(0.0005)
         '''
         while time() - self.fpstimer < (1 / self.target_fps):
@@ -514,9 +514,9 @@ class ClassName(BaseScript):  # Название класса (должен от
         sleep(0.1)
     def mousemove(self, x, y, timer=0.007, limiter=120):
         self.arduino.move(x, y, limiter)
-        self.aftermovedelay= 0.05+0.015*(abs(x)+abs(y))/120
-        if self.aftermovedelay > 0.08:
-            self.aftermovedelay = 0.08
+        #self.aftermovedelay= 0.05+0.015*(abs(x)+abs(y))/120
+        #if self.aftermovedelay > 0.08:
+        #    self.aftermovedelay = 0.08
         self.mousemovetimer = time()
 
     '''
