@@ -688,7 +688,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     if (box.cls == checkbox.cls):
                         sizeDiff = abs(box.xyxy[0][2] - box.xyxy[0][0] - checkbox.xyxy[0][2] + checkbox.xyxy[0][0])
                         dist = self.checkDistance(box,img_w=256,img_h=256)
-                        if sizeDiff < 8 and dist < 12:
+                        if sizeDiff < 9 and dist < 14:
                             if not found:
                                 newbox = box
                                 newboxdist = dist
@@ -698,6 +698,10 @@ class ClassName(BaseScript):  # Название класса (должен от
                                     newbox = box
                                     newboxdist = dist
                             if newbox.conf > 0.5 and dist < 4:
+                                newbox.xyxy[0][1] += 192
+                                newbox.xyxy[0][2] += 192
+                                newbox.xyxy[0][3] += 192
+                                newbox.xyxy[0][4] += 192
                                 return True, newbox
 
             if found:
@@ -705,6 +709,10 @@ class ClassName(BaseScript):  # Название класса (должен от
                 counter += 1
 
         if float(counter) / i >= precision:
+            checkbox.xyxy[0][1] += 192
+            checkbox.xyxy[0][2] += 192
+            checkbox.xyxy[0][3] += 192
+            checkbox.xyxy[0][4] += 192
             return True, checkbox
 
         return False, None
@@ -717,11 +725,15 @@ class ClassName(BaseScript):  # Название класса (должен от
         found = False
         # sleep(1 / 60)
         self.getNextFrame()
-        Prediction = self.model.predict(source=self.img, device=0, conf=conf, iou=0.3)
+        Prediction = self.model.predict(source=self.img[160:480][160:480], device=0, conf=conf, iou=0.3,imgsz=320)
         detected_boxes = Prediction[0].boxes
         if len(detected_boxes) >= 1:
             for box in detected_boxes:
                 if (box.cls == checkbox.cls):
+                    box.xyxy[0][1] += 160
+                    box.xyxy[0][2] += 160
+                    box.xyxy[0][3] += 160
+                    box.xyxy[0][4] += 160
                     sizeDiff = abs(box.xyxy[0][2] - box.xyxy[0][0] - checkbox.xyxy[0][2] + checkbox.xyxy[0][0])
                     XDiff = abs(box.xyxy[0][0] - checkbox.xyxy[0][0])
                     YDiff = abs(box.xyxy[0][1] - checkbox.xyxy[0][1])
