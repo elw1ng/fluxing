@@ -687,11 +687,11 @@ class ClassName(BaseScript):  # Название класса (должен от
             # sleep(1 / 60)
             self.getNextFrame()
             Prediction = self.model.predict(source= self.img[160:480][160:480], device=0, conf=conf, iou=0.3,imgsz=320)
-            detected_boxes = np.array(Prediction[0].boxes.cpu())
+            detected_boxes = Prediction[0].boxes
             if len(detected_boxes) >= 1:
                 for box in detected_boxes:
                     if (box.cls == checkbox.cls):
-
+                        box = np.array(box.cpu())
                         box.xyxy[0][0] += 160
                         box.xyxy[0][1] += 160
                         box.xyxy[0][2] += 160
