@@ -17,9 +17,8 @@ import socket
 import copy
 from pyduino_mk.constants import *
 from pyduino_mk import Arduino
-import mss
 import numpy as np
-from PIL import ImageGrab
+
 
 class ClassName(BaseScript):  # Название класса (должен отличаться от других названий скриптов)
     class Turn():
