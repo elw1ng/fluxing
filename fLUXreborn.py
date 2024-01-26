@@ -514,7 +514,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         sleep(0.1)
     def mousemove(self, x, y, timer=0.007, limiter=120):
         self.arduino.move(x, y, limiter)
-        self.aftermovedelay= 0.015+0.015*(abs(x)+abs(y))/120
+        self.aftermovedelay= 0.025+0.015*(abs(x)+abs(y))/120
         if self.aftermovedelay > 0.06:
             self.aftermovedelay = 0.06
         self.mousemovetimer = time()
