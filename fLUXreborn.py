@@ -2015,7 +2015,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 sleep(3)
             elif sl>18:
                 sleep(3.5)
-                self.hold_and_release_sleep('space',0.1)
+                self.hold_and_release_sleep(' ',0.1)
                 sleep(3.5)
             elif sl>14:
                 sleep(7.5)
