@@ -945,7 +945,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                                 maxmousemove = mouseresult[1]
 
-                            if time() - holdtime < 0.675 and confirmed:
+                            if time() - holdtime < 0.66 and confirmed:
                                 # sleep(0.02)
                                 result = self.track(bestbox, conf=0.05, precision=0.99, i=2)
                                 confirmed = result[0]
@@ -1318,7 +1318,8 @@ class ClassName(BaseScript):  # Название класса (должен от
                         maxmousemove = result[1]
                         # sleep(0.11)
                         if self.checkDistance(best_box) < 25:
-                            if best_box.xyxy[0][2] - best_box.xyxy[0][0] < 35:
+                            ssize = best_box.xyxy[0][2] - best_box.xyxy[0][0]
+                            if  ssize < 35:
 
                                 t = random.uniform(0.51, 0.61)
                                 turn = self.Turn(self.alp - self.pi, 0, t, self.Dt(t))
@@ -1331,8 +1332,9 @@ class ClassName(BaseScript):  # Название класса (должен от
                                     self.turner.start()
 
                                 self.startextramove= True
-                            elif best_box.xyxy[0][2] - best_box.xyxy[0][0] > 46:
-                                t = random.uniform(0.51, 0.61)
+                            elif ssize > 43:
+                                t = random.uniform(0.55, 0.63)
+                                t += (ssize-43)/50
                                 turn = self.Turn(self.alp, 0, t, self.Dt(t))
                                 if self.turner is None:
                                     self.turner = Thread(target=self.maketurn, args=(turn,))
