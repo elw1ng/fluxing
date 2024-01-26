@@ -65,7 +65,7 @@ class Arduino(object):
         #serial_reader = threading.Thread(target=self.__read_buffer)
         #serial_reader.daemon = True
         #serial_reader.start()
-        serialreader = threading.Thread(target=self.__read_buffer)
+        serialreader = threading.Thread(target=self.__read_buffer,args=())
         self.commandcomplete = False
         serialreader.start()
 
