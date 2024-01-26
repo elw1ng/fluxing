@@ -205,7 +205,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.y = 0.01
         self.yelipse = 1.0
         self.overload = 0
-        self.aftermovedelay = 1/21
+        self.aftermovedelay = 1/22
         if "R" in sys.argv:
             self.R = float(sys.argv[sys.argv.index("R") + 1])
         if "e" in sys.argv:
@@ -958,7 +958,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                             if time() - self.holdtime < 0.7 and confirmed:
                                 # sleep(0.02)
-                                result = self.track(bestbox, conf=0.05, precision=0.99, i=1)
+                                result = self.track(bestbox, conf=0.05, precision=0.99, i=2)
                                 confirmed = result[0]
                                 if confirmed:
                                     noballstime = time()
