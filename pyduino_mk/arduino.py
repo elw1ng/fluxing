@@ -25,7 +25,7 @@ import threading
 
 import serial
 import serial.tools.list_ports
-from time import time
+from time import time,sleep
 from .constants import *
 
 
@@ -65,6 +65,8 @@ class Arduino(object):
         #serial_reader = threading.Thread(target=self.__read_buffer)
         #serial_reader.daemon = True
         #serial_reader.start()
+        serialreader = threading.Thread(target=self.__read_buffer)
+        self.commandcomplete = False
 
     def press(self, button=MOUSE_LEFT):
         if button in MOUSE_BUTTONS:
@@ -85,9 +87,9 @@ class Arduino(object):
         else:
             raise ValueError("Not a valid mouse or keyboard button.")
 
-        if not self.__read_buffer():
-            print("press arduino timeout")
-            self.press(button)
+        while not self.commandcomplete:
+            sleep(0.001)
+        self.commandcomplete = False
 
 
     def release(self, button=MOUSE_LEFT):
@@ -109,9 +111,9 @@ class Arduino(object):
         else:
             raise ValueError("Not a valid mouse or keyboard button.")
 
-        if not self.__read_buffer():
-            print("release arduino timeout")
-            self.release(button)
+        while not self.commandcomplete:
+            sleep(0.001)
+        self.commandcomplete = False
 
     def release_all(self):
         self.__write_byte(KEYBOARD_CMD)
@@ -148,9 +150,9 @@ class Arduino(object):
                 + "Must be type `int` or `char` or `str`."
             )
 
-        if not self.__read_buffer():
-            print("wrtie arduino timeout")
-            self.write(keys, endl)
+        while not self.commandcomplete:
+            sleep(0.001)
+        self.commandcomplete = False
 
     def type(self, message, wpm=80, mistakes=True, accuracy=96):
         if not isinstance(message, str):
@@ -177,9 +179,9 @@ class Arduino(object):
         self.__write_byte(mistakes)
         self.__write_byte(accuracy)
 
-        if not self.__read_buffer():
-            print("type arduino timeout")
-            self.type(message, wpm, mistakes, accuracy)
+        while not self.commandcomplete:
+            sleep(0.001)
+        self.commandcomplete = False
 
     def click(self, button=MOUSE_LEFT):
         if button not in MOUSE_BUTTONS:
@@ -189,9 +191,9 @@ class Arduino(object):
         self.__write_byte(MOUSE_CLICK)
         self.__write_byte(button)
 
-        if not self.__read_buffer():
-            print("click arduino timeout")
-            self.click(button)
+        while not self.commandcomplete:
+            sleep(0.001)
+        self.commandcomplete = False
 
     def fast_click(self, button):
         if button not in MOUSE_BUTTONS:
@@ -201,9 +203,9 @@ class Arduino(object):
         self.__write_byte(MOUSE_FAST_CLICK)
         self.__write_byte(button)
 
-        if not self.__read_buffer():
-            print("  fast click arduino timeout")
-            self.fast_click(button)
+        while not self.commandcomplete:
+            sleep(0.001)
+        self.commandcomplete = False
 
     def move(self, dest_x, dest_y):
         if not isinstance(dest_x, (int, float)) and not isinstance(
@@ -218,9 +220,9 @@ class Arduino(object):
         self.__write_short(dest_x+1920)
         self.__write_short(dest_y+1920)
 
-        if not self.__read_buffer():
-            print("arduino move timeout")
-            self.move(dest_x-1920, dest_y-1920)
+        while not self.commandcomplete:
+            sleep(0.001)
+        self.commandcomplete = False
 
     def bezier_move(self, dest_x, dest_y):
         if not isinstance(dest_x, (int, float)) and not isinstance(
@@ -234,10 +236,15 @@ class Arduino(object):
         self.__write_byte(MOUSE_BEZIER)
         self.__write_short(dest_x + 1920)
         self.__write_short(dest_y + 1920)
+        while not self.commandcomplete:
+            sleep(0.001)
+        self.commandcomplete = False
 
+        '''
         if not self.__read_buffer():
             print("arduino bez move timeout")
             self.bezier_move(dest_x - 1920, dest_y - 1920)
+        '''
 
     def close(self):
         self.serial.close()
@@ -254,15 +261,15 @@ class Arduino(object):
         return arduino_port
 
     def __read_buffer(self):
-        starttime = time()
+        #starttime = time()
         while True:
 
             byte = ord(self.serial.read())
 
             if byte == COMMAND_COMPLETE:
-                return True
-            if time()-starttime > 1:
-                return False
+                self.commandcomplete = True
+            #if time()-starttime > 1:
+                #return False
                 #self.__command_complete.set()
                 #self.__command_complete.clear()
 
