@@ -1360,6 +1360,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         
         if phi != 0:
             x_angle*=(1+abs(math.tan(phi)))
+            y_angle*=(1- math.sin(phi))
             '''
             cosd = math.cos(phi) * math.cos(x_angle)
             d = math.acos(cosd)
