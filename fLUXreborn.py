@@ -711,7 +711,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                 if dist < newboxdist:
                                     newbox = box
                                     newboxdist = dist
-                            if newbox.conf > 0.15 and dist < 3*(j+1):
+                            if newbox.conf > 0.13 and dist < 3*(j+1):
 
                                 return True, newbox
 
