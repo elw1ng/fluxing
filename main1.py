@@ -139,7 +139,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.USER1_ID = self.keys['key17']['value']
         self.USER2_ID = self.keys['key18']['value']
         self.TOKEN = self.keys['key19']['value']
-        self.target_fps = 52
+        self.target_fps = 41
         if "fps" in sys.argv:
             self.target_fps = int(sys.argv[sys.argv.index("fps") + 1])
         self.bar = False
@@ -177,7 +177,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         #self.hwnd = win32gui.FindWindow(None, 'HDClone 6 Enterprise Edition ')
         # hwnd = win32gui.FinwdWindow("UnrealWindow", None) # Fortnite
         #self.rect = win32gui.GetWindowRect(self.hwnd)
-        self.rect = [1, 2, 3 - 4, 5 - 6]
+        self.rect = [0, 0, 640, 640]
         #print(self.rect[0], self.rect[1], self.rect[2], self.rect[3])
 
         self.img = None
@@ -192,8 +192,10 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.ban = False
         self.mousemovetimer = time()
         self.camerastop = False
+        self.camera.start(region=self.rect, target_fps=60)
         self.c = Thread(target=self.videocamera, args=())
         self.c.start()
+
         self.reconnection = False
         sleep(1)
         self.inittimer = time()
@@ -390,6 +392,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         print(f"alp {alp}")
         return alp + random.randint(int(-self.pi / 2), int(self.pi / 2))
 
+    '''
     def videocamera(self):
         while True:
             delta = time() - self.fpstimer
@@ -406,17 +409,35 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.fpstimer = time()
             img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
             self.img = img
+    '''
+    def videocamera(self):
+        while True:
 
+
+            while self.camerastop:
+                sleep(0.001)
+            img = self.camera.get_latest_frame()
+            #self.fpstimer = time()
+            img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
+            self.img = img
 
     def getNextFrame(self, throttle=0.0):
+        self.camerastop = True
         if self.t is not None:
             self.t.join()
             self.t = None
-            self.camerastop = True
-            sleep(1 / 20)
-            self.camerastop = False
-        while time() - self.fpstimer > 1 / 60:
-            sleep(0.0005)
+
+            sleep(self.aftermovedelay-0.005)
+
+            #print("asdasd")
+        #print("asdasd1")
+        sleep(0.005)
+        img = self.camera.get_latest_frame()
+        #self.fpstimer = time()
+        img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
+        self.img = img
+        self.camerastop = False
+
         '''
         while time() - self.fpstimer < (1 / self.target_fps):
             sleep(0.001)
@@ -479,43 +500,25 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.lkmrelease()
         sleep(0.1)
 
-    def mousemove(self, x, y, timer=0.03, limiter=60,deltax=21,deltay=4):
+    def mousemove(self, x, y, timer=0.023, limiter=510):
         # limiter = 235
-        nx = int(abs(x) / limiter)  # 35 UE5
-        ny = int(abs(y) / limiter)
+        length = abs(x) + abs(y)
+        n = int(length / limiter)  # 35 UE5
+
         if abs(x) > 0 or abs(y) > 0:
-            if nx or ny  > 0:
-                if x<0:
-                    xstep = -limiter
-                else:
-                    xstep = limiter
-                if y < 0:
-                    ystep = -limiter
-                else:
-                    ystep = limiter
-                xlast = x - xstep * nx
-                ylast = y - ystep * ny
-                lengthlast = abs(xlast)+abs(ylast)
+            if n > 0:
+
+                xstep = int(limiter * x / length)
+                ystep = int(limiter * y / length)
+                xlast = x - xstep * n
+                ylast = y - ystep * n
+                lengthlast = xlast + ylast
                 # timestep = timer / n
                 timespent = 0
+                for _ in range(n):
 
-                kx = 0
-                ky = 0
-                for i in range(nx+ny):
-
-                    decide = random.uniform(0.0,1.0)
-                    chance = (nx-kx)/(nx+ny-kx-ky+1)
-                    print(f"decide {decide} <? chance {chance} nx,kx {nx,kx}   ny ky {ny,ky}")
-                    if ky == ny or decide < chance:
-                        self.mousemovetimer = time()
-                        self.arduino.move(xstep, 0)
-                        kx += 1
-                    else:
-                        self.mousemovetimer = time()
-                        self.arduino.move(0,ystep)
-                        ky += 1
-
-
+                    self.mousemovetimer = time()
+                    win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, xstep, ystep, 0, 0)
                     delay = time() - self.mousemovetimer
                     if (delay < timer):
                         sleep(timer - (delay))
@@ -524,7 +527,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 # print(f"avgtimespentfor cycle = {timespent/n}")
 
                 self.mousemovetimer = time()
-                self.arduino.move(xlast, ylast)
+                win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, xlast, ylast, 0, 0)
                 delay = time() - self.mousemovetimer
                 lasttimer = timer * (lengthlast / limiter)
                 if (delay < lasttimer):
@@ -532,11 +535,11 @@ class ClassName(BaseScript):  # Название класса (должен от
 
             else:
                 self.mousemovetimer = time()
-                self.arduino.move(x, y)
+                win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, x, y, 0, 0)
                 delay = time() - self.mousemovetimer
-                lasttimer = timer * ((abs(x)+abs(y)) / limiter)
-                if (delay < lasttimer):
-                    sleep(lasttimer - (delay))
+                lasttimer = timer * (length / limiter)
+                #if (delay < lasttimer):
+                    #sleep(lasttimer - (delay))
 
     def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=1200,changealp=False):
         # Check Closest
@@ -1512,7 +1515,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         # Read the images from the file
 
-        img = self.img[20:70, 20:100]
+        img = self.img[200:210, 200:210]
         small_image = cv.imread("white.png")
         # cv.imshow("asdasd",small_image)
 
@@ -1586,7 +1589,6 @@ class ClassName(BaseScript):  # Название класса (должен от
         gmcheck = time()
         gmsent = False
         while True:
-            sleep(1.2)
             try:
                 command = self.client_socket.recv(1)
                 command = command.decode()
@@ -1751,11 +1753,22 @@ class ClassName(BaseScript):  # Название класса (должен от
 
 
     def custom(self):
-        sleep(1)
 
-        if self.checker is None:
-            self.checker = Thread(target=self.checkers, args=())
-            self.checker.start()
+        sleep(3)
+
+        if self.blackScreenDetect():
+            print("too early")
+        self.getNextFrame()
+        self.mousemove(41,0)
+        timerstart = time()
+        self.getNextFrame()
+
+        while not self.blackScreenDetect():
+            self.getNextFrame()
+            #sleep(0.001)
+        print(f"input lag {time()-timerstart}")
+        sleep(1111)
+
         while True:
             for i in range(1111):
                 sleep(0.001)
