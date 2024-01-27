@@ -139,7 +139,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.USER1_ID = self.keys['key17']['value']
         self.USER2_ID = self.keys['key18']['value']
         self.TOKEN = self.keys['key19']['value']
-        self.target_fps = 50
+        self.target_fps = 56
         self.holdtime = time()
         if "fps" in sys.argv:
             self.target_fps = int(sys.argv[sys.argv.index("fps") + 1])
@@ -193,7 +193,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.ban = False
         self.mousemovetimer = time()
         self.camerastop = False
-        self.camera.start(region=(8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31), target_fps=self.target_fps,video_mode=True)
+        self.camera.start(region=(8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31), target_fps=self.target_fps)
         self.c = Thread(target=self.videocamera, args=())
         self.c.start()
         self.reconnection = False
@@ -446,28 +446,29 @@ class ClassName(BaseScript):  # Название класса (должен от
         while True:
 
 
-            while self.camerastop:
-                sleep(0.001)
+            #while self.camerastop:
+                #sleep(0.001)
             img = self.camera.get_latest_frame()
             #self.fpstimer = time()
             img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
             self.img = img
 
     def getNextFrame(self, throttle=0.0):
-        self.camerastop = True
+        # self.camerastop = True
         if self.t is not None:
             self.t.join()
             self.t = None
 
-            sleep(self.aftermovedelay - 0.005)
+            sleep(self.aftermovedelay - 1 / self.target_fps)
 
-
-        sleep(0.005)
-        img = self.camera.get_latest_frame()
+            # print("asdasd")
+        # print("asdasd1")
+        sleep(1 / self.target_fps)
+        # img = self.camera.get_latest_frame()
         # self.fpstimer = time()
-        img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
-        self.img = img
-        self.camerastop = False
+        # img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
+        # self.img = img
+        # self.camerastop = False
         '''
         while time() - self.fpstimer < (1 / self.target_fps):
             sleep(0.001)
