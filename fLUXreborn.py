@@ -717,8 +717,8 @@ class ClassName(BaseScript):  # Название класса (должен от
 
 
             if found:
-                if newboxdist*2.2 > (newbox.xyxy[0][2] - newbox.xyxy[0][0]):
-                    if time() - self.holdtime > 0.33:
+                if newboxdist*2.3 > (newbox.xyxy[0][2] - newbox.xyxy[0][0]):
+                    if time() - self.holdtime > 0.28:
                         return False, None
                     else:
                         self.holdtime = time()
@@ -956,7 +956,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                                 maxmousemove = mouseresult[1]
 
-                            if time() - self.holdtime < 0.67 and confirmed:
+                            if time() - self.holdtime < 0.69 and confirmed:
                                 # sleep(0.02)
                                 result = self.track(bestbox, conf=0.05, precision=0.99, i=2)
                                 confirmed = result[0]
