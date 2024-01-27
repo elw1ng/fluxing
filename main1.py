@@ -192,7 +192,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.ban = False
         self.mousemovetimer = time()
         self.camerastop = False
-        self.camera.start(region=self.rect, target_fps=60)
+        self.camera.start(region=self.rect, target_fps=56)
         self.c = Thread(target=self.videocamera, args=())
         self.c.start()
 
@@ -434,21 +434,21 @@ class ClassName(BaseScript):  # Название класса (должен от
     '''
 
     def getNextFrame(self, throttle=0.0):
-        self.camerastop = True
+        #self.camerastop = True
         if self.t is not None:
             self.t.join()
             self.t = None
 
-            sleep(self.aftermovedelay-0.005)
+            sleep(self.aftermovedelay-1/self.target_fps)
 
             #print("asdasd")
         #print("asdasd1")
-        sleep(0.005)
-        img = self.camera.get_latest_frame()
+        sleep(1/self.target_fps)
+        #img = self.camera.get_latest_frame()
         #self.fpstimer = time()
-        img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
-        self.img = img
-        self.camerastop = False
+        #img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
+        #self.img = img
+        #self.camerastop = False
 
         '''
         
