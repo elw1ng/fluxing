@@ -409,6 +409,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.fpstimer = time()
             img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
             self.img = img
+
     '''
     def videocamera(self):
         while True:
@@ -420,6 +421,17 @@ class ClassName(BaseScript):  # Название класса (должен от
             #self.fpstimer = time()
             img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
             self.img = img
+    '''
+    def getNextFrame(self,throttle = 0.0):
+        if self.t is not None:
+            self.t.join()
+            self.t = None
+            self.camerastop = True
+            sleep(1/20)
+            self.camerastop = False
+        while time()-self.fpstimer > 1/60:
+            sleep(0.0005)
+    '''
 
     def getNextFrame(self, throttle=0.0):
         self.camerastop = True
@@ -439,6 +451,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.camerastop = False
 
         '''
+        
         while time() - self.fpstimer < (1 / self.target_fps):
             sleep(0.001)
 
@@ -1758,15 +1771,28 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         if self.blackScreenDetect():
             print("too early")
-        self.getNextFrame()
-        self.mousemove(41,0)
-        timerstart = time()
-        self.getNextFrame()
 
-        while not self.blackScreenDetect():
+        while True:
             self.getNextFrame()
-            #sleep(0.001)
-        print(f"input lag {time()-timerstart}")
+            self.mousemove(81,0)
+            timerstart = time()
+            self.getNextFrame()
+
+            while not self.blackScreenDetect():
+                self.getNextFrame()
+            print(f"input lag {time() - timerstart}")
+
+            self.getNextFrame()
+            self.getNextFrame()
+            self.mousemove(-81, 0)
+            timerstart = time()
+            self.getNextFrame()
+
+            while self.blackScreenDetect():
+                self.getNextFrame()
+            print(f"input lag {time() - timerstart}")
+            sleep(5.001)
+
         sleep(1111)
 
         while True:
