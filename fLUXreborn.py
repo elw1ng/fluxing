@@ -193,7 +193,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.ban = False
         self.mousemovetimer = time()
         self.camerastop = False
-        self.camera.start(region=(8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31), target_fps=self.target_fps)
+        self.camera.start(region=(8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31), target_fps=self.target_fps,video_mode=True)
         self.c = Thread(target=self.videocamera, args=())
         self.c.start()
         self.reconnection = False
