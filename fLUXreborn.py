@@ -180,7 +180,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.rect = win32gui.GetWindowRect(self.hwnd)
         # region = rect[0], rect[1], rect[2] - rect[0], rect[3] - rect[1]
         print(self.rect[0], self.rect[1], self.rect[2], self.rect[3])
-
+        self.rect =(8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31)
         self.img = None
         self.fpstimer = time()
 
@@ -433,14 +433,13 @@ class ClassName(BaseScript):  # Название класса (должен от
                 sleep(fpstimer - delta)
             while self.camerastop:
                 sleep(0.001)
-            img = self.camera.grab(
-                region=(8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31))
+            img = self.camera.grab(region=self.rect)
             while img is None:
-                img = self.camera.grab(
-                    region=(8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31))
-            self.fpstimer = time()
+                img = self.camera.grab(region=self.rect)
+
             img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
             self.img = img
+            self.fpstimer = time()
 
     '''
     def videocamera(self):
