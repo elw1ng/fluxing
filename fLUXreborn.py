@@ -307,9 +307,9 @@ class ClassName(BaseScript):  # Название класса (должен от
         if not turn.strafes:
             self.mover.start()
             sleep(0.6)
-            print("rotate")
+            #print("rotate")
             self.mousemove(turn.beta, 0, limiter=turn.limiter)
-            print("end rotate")
+            #print("end rotate")
             self.alp += turn.beta
             self.x += turn.x
             self.y += turn.y
@@ -339,9 +339,9 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.mover.start()
 
         sleep(0.6)
-        print("rotate")
+        #print("rotate")
         self.mousemove(turn.beta, 0, limiter=turn.limiter)
-        print("end rotate")
+        #print("end rotate")
         self.alp += turn.beta
         self.x += turn.x
         self.y += turn.y
@@ -382,15 +382,15 @@ class ClassName(BaseScript):  # Название класса (должен от
             rad = math.pi / 2
         else:
             rad = math.atan(x / y)
-        print(f"rad {rad}")
+        #print(f"rad {rad}")
         if self.y < 0:
             rad += math.pi - rad
 
         if self.x < 0:
             rad = 2 * math.pi - rad
-        print(f"real rad {rad}")
+        #print(f"real rad {rad}")
         alp = int(self.from_rad(rad))
-        print(f"alp {alp}")
+        #print(f"alp {alp}")
         return alp + random.randint(int(-self.pi / 2), int(self.pi / 2))
 
     '''
@@ -461,8 +461,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
             sleep(self.aftermovedelay - 0.005)
 
-            # print("asdasd")
-        # print("asdasd1")
+
         sleep(0.005)
         img = self.camera.get_latest_frame()
         # self.fpstimer = time()
@@ -1328,7 +1327,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
             Prediction = self.model.predict(source=self.img, device=0, conf=0.2, iou=0.3)
             detected_boxes = Prediction[0].boxes
-            print(len(detected_boxes))
+            #print(len(detected_boxes))
             if len(detected_boxes) >= 1:
                 results = self.getBestBox(detected_boxes, 0)
                 if (not results is None):
@@ -1891,7 +1890,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             pererva = (time() - self.inittimer) / 2200
             if pererva-int(pererva) < 0.02 and pererva > 1:
                 print("PERERVA")
-                sleep(random.randint(90, 250))
+                sleep(random.randint(30, 90))
             while self.reconnection:
                 sleep(1)
                 if time() - timer60 > 1200:
