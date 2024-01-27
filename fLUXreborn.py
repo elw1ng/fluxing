@@ -446,15 +446,15 @@ class ClassName(BaseScript):  # Название класса (должен от
         while True:
 
 
-            #while self.camerastop:
-                #sleep(0.001)
+            while self.camerastop:
+                sleep(0.01)
             img = self.camera.get_latest_frame()
             #self.fpstimer = time()
             img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
             self.img = img
 
     def getNextFrame(self, throttle=0.0):
-        # self.camerastop = True
+        self.camerastop = True
         if self.t is not None:
             self.t.join()
             self.t = None
@@ -464,11 +464,11 @@ class ClassName(BaseScript):  # Название класса (должен от
             # print("asdasd")
         # print("asdasd1")
         sleep(1 / self.target_fps)
-        # img = self.camera.get_latest_frame()
-        # self.fpstimer = time()
-        # img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
-        # self.img = img
-        # self.camerastop = False
+        img = self.camera.get_latest_frame()
+        self.fpstimer = time()
+        img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
+        self.img = img
+        self.camerastop = False
         '''
         while time() - self.fpstimer < (1 / self.target_fps):
             sleep(0.001)
