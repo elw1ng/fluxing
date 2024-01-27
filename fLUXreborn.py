@@ -139,7 +139,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.USER1_ID = self.keys['key17']['value']
         self.USER2_ID = self.keys['key18']['value']
         self.TOKEN = self.keys['key19']['value']
-        self.target_fps = 60
+        self.target_fps = 55
         self.holdtime = time()
         if "fps" in sys.argv:
             self.target_fps = int(sys.argv[sys.argv.index("fps") + 1])
@@ -193,7 +193,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.ban = False
         self.mousemovetimer = time()
         self.camerastop = False
-        self.camera.start(region=(8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31), target_fps=self.target_fps)
+        #self.camera.start(region=(8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31), target_fps=self.target_fps)
         self.c = Thread(target=self.videocamera, args=())
         self.c.start()
         self.reconnection = False
@@ -424,7 +424,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
 
             self.img = img
-    
+    '''
     def videocamera(self):
         while True:
             delta = time() - self.fpstimer
@@ -441,6 +441,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.fpstimer = time()
             img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
             self.img = img
+
     '''
     def videocamera(self):
         while True:
@@ -452,40 +453,18 @@ class ClassName(BaseScript):  # Название класса (должен от
             #self.fpstimer = time()
             img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
             self.img = img
+    '''
 
     def getNextFrame(self, throttle=0.0):
-
         if self.t is not None:
-            self.camerastop = True
             self.t.join()
             self.t = None
-
+            self.camerastop = True
             sleep(self.aftermovedelay)
-            img = self.camera.get_latest_frame()
-            self.fpstimer = time()
-            img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
-            self.img = img
             self.camerastop = False
-        else:
-            # print("asdasd")
-        # print("asdasd1")
-            sleep(1 / self.target_fps+0.004)
+        while time() - self.fpstimer > 1 / 190:
+            sleep(0.0005)
 
-        '''
-        while time() - self.fpstimer < (1 / self.target_fps):
-            sleep(0.001)
-
-        if throttle > 0:
-            sleep(throttle)
-        img = self.camera.grab(
-            region=(8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31))
-        while img is None:
-            img = self.camera.grab(
-                region=(8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31))
-        self.fpstimer = time()
-        img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
-        self.img = img
-        '''
 
     def _debug(self, text):
         if self.debug:
