@@ -56,7 +56,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.avgd = avgd
             self.x = self.avgd * math.sin(self.to_rad(self.gamma))
             self.y = self.avgd * math.cos(self.to_rad(self.gamma))
-            self.limiter = random.randint(20, 35)
+            self.limiter = random.randint(4, 6)
             self.strafes = strafes
             self.timings = []
 
@@ -206,7 +206,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.y = 0.01
         self.yelipse = 1.0
         self.overload = 0
-        self.aftermovedelay = 0.06
+        self.aftermovedelay = 0.061
         if "R" in sys.argv:
             self.R = float(sys.argv[sys.argv.index("R") + 1])
         if "e" in sys.argv:
@@ -241,10 +241,10 @@ class ClassName(BaseScript):  # Название класса (должен от
             d -= delta
             chance *= 0.6
 
-        self.mousemove(d, 0,limiter = random.randint(55,99))
+        self.mousemove(d, 0,limiter = random.randint(15,21))
         for delta in deltas:
             sleep(random.uniform(0.05 , 0.12))
-            self.mousemove(delta, 0, limiter=random.randint(55, 99))
+            self.mousemove(delta, 0, limiter=random.randint(15, 21))
         sleep(self.aftermovedelay-0.005)
         self.alp = alp
 
@@ -512,72 +512,65 @@ class ClassName(BaseScript):  # Название класса (должен от
         sleep(0.1)
         self.lkmrelease()
         sleep(0.1)
-    def mousemove(self, x, y, timer=0.007, limiter=120):
+    def mousemove(self, x, y, timer=0.007, limiter=24):
         self.arduino.move(x, y, limiter)
         #self.aftermovedelay= 0.05+0.015*(abs(x)+abs(y))/120
         #if self.aftermovedelay > 0.08:
         #    self.aftermovedelay = 0.08
         self.mousemovetimer = time()
 
-    '''
-    def mousemove(self, x, y, timer=0.007, limiter=124):
+
+    def mousemove(self, x, y, speed=0.025):
         # limiter = 235
-        nx = int(abs(x) / limiter)  # 35 UE5
-        ny = int(abs(y) / limiter)
+        xi=0
+        yi=0
+        xmulti =1
+        ymulti =1
+        multi = 1
+
+
+        starttimer = time()
         if abs(x) > 0 or abs(y) > 0:
-            if nx or ny  > 0:
-                if x<0:
-                    xstep = -limiter
-                else:
-                    xstep = limiter
-                if y < 0:
-                    ystep = -limiter
-                else:
-                    ystep = limiter
-                xlast = x - xstep * nx
-                ylast = y - ystep * ny
-                lengthlast = abs(xlast)+abs(ylast)
+            while True:
+                deltax= abs(x - xi)
+                deltay= abs(y - yi)
+                if deltax == 0 and deltay == 0:
+                    break
+                xmulti = int((x - xi)/deltax)
+                ymulti = int((y - yi) / deltay)
+                xstep = xmulti*multi
+                ystep = ymulti *multi
+
+                if deltax >= deltay:
+                    ystep = int(ystep * random.uniform(deltay / deltax-0.12,deltay / deltax+0.12))
+                elif  deltay >= deltax:
+                    xstep = int(xstep * random.uniform(deltax / deltay-0.12, deltax/ deltay+0.12))
+
+                if abs(xstep) > deltax:
+                    xstep = deltax*xmulti
+                if abs(ystep) > deltay:
+                    ystep = deltay*ymulti
 
 
-                kx = 0
-                ky = 0
-                for i in range(nx+ny):
+                self.arduino.move(xstep, ystep)
+                xi+= xstep
+                yi+= ystep
+                gas = speed - max(xi,yi)/(time() - starttimer)
+                if gas>0:
+                    razgon = max(abs(deltax/x),abs(deltay/y))
+                    multi = int(multi*(0.37+1.5*razgon)) + 1
 
-                    decide = random.uniform(0.0,1.0)
-                    chance = (nx-kx)/(nx+ny-kx-ky+1)
+                    if multi>55:
+                        multi = 55
 
-                    if ky == ny or decide < chance:
-                        self.mousemovetimer = time()
-                        self.arduino.move(xstep, 0)
-                        kx += 1
-                    else:
-                        self.mousemovetimer = time()
-                        self.arduino.move(0,ystep)
-                        ky += 1
+                if gas<0:
+                    multi = int(multi * 0.5) + 1
 
 
-                    delay = time() - self.mousemovetimer
-                    if (delay < timer):
-                        sleep(timer - (delay))
 
-                    # timespent+= time()-starttime
-                # print(f"avgtimespentfor cycle = {timespent/n}")
 
-                self.mousemovetimer = time()
-                self.arduino.move(xlast, ylast)
-                delay = time() - self.mousemovetimer
-                lasttimer = timer * (lengthlast / limiter)
-                if (delay < lasttimer):
-                    sleep(lasttimer - (delay))
 
-            else:
-                self.mousemovetimer = time()
-                self.arduino.move(x, y)
-                delay = time() - self.mousemovetimer
-                lasttimer = timer * ((abs(x)+abs(y)) / limiter)
-                if (delay < lasttimer):
-                    sleep(lasttimer - (delay))
-    '''
+
     def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=1200,changealp=False):
         # Check Closest
 
@@ -718,7 +711,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
             if found:
                 if newboxdist*2.3 > (newbox.xyxy[0][2] - newbox.xyxy[0][0]):
-                    if time() - self.holdtime > 0.28:
+                    if time() - self.holdtime > 0.29:
                         return False, None
                     else:
                         self.holdtime = time()
@@ -1830,7 +1823,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.mousereturn[0] += x
                 self.mousereturn[1] += y
                 sleep(random.uniform(0.3 , 0.7))
-                self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]),limiter=random.randint(66,88))
+                self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]),limiter=random.randint(14,18))
                 self.mousereturn[0] = 0
                 self.mousereturn[1] = 0
 
@@ -2066,9 +2059,9 @@ class ClassName(BaseScript):  # Название класса (должен от
                 sleep(4)
                 x= random.randint(-222,222)
                 y= random.randint(-666,666)
-                self.mousemove(x,y,limiter=random.randint(77,99))
+                self.mousemove(x,y,limiter=random.randint(14,18))
                 sleep(11)
-                self.mousemove(-x, -y, limiter=random.randint(77, 99))
+                self.mousemove(-x, -y, limiter=random.randint(14, 18))
                 sleep(3)
             elif sl>18:
                 sleep(3.5)
