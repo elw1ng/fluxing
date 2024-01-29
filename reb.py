@@ -544,7 +544,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         sleep(0.1)
         self.lkmrelease()
         sleep(0.1)
-    def mousemove(self, x, y, limiter=16):
+    def mousemove(self, x, y, limiter=13):
         self.arduino.move(x, y, limiter)
         #self.aftermovedelay= 0.05+0.015*(abs(x)+abs(y))/120
         #if self.aftermovedelay > 0.08:
