@@ -138,6 +138,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         print("Enter to continue")
 
         input()
+        sleep(10)
 
         #win32gui.SetForegroundWindow(self.hwnd)
         #self.region = self.rect[0], self.rect[1], self.rect[2] - self.rect[0], self.rect[3] - self.rect[1]
