@@ -107,15 +107,40 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.debug = True
         self.mousereturn = [0, 0]
         self.model = YOLO('best7nano100.pt')  # load a pretrained YOLOv8n model
-
+        self.rect = [0,0,0,0]
         # self.model = YOLO("bestOUTDOORnew.pt")  # load a pretrained YOLOv8n model
 
         # Get rect of Window
-        self.hwnd = win32gui.FindWindow(None, 'Mortal Online 2  ')
-        # hwnd = win32gui.FindWindow("UnrealWindow", None) # Fortnite
-        self.rect = win32gui.GetWindowRect(self.hwnd)
-        win32gui.SetForegroundWindow(self.hwnd)
-        self.region = self.rect[0], self.rect[1], self.rect[2] - self.rect[0], self.rect[3] - self.rect[1]
+
+        print("Enter 1 find window, 2 to use saved coordinates")
+        comand = int(input())
+        if comand == 2:
+            try:
+                with open("rect.txt", "r") as file1:
+
+                    self.rect = [int(i) for i in file1.read().split('\n')]
+                    print(self.rect)
+            except Exception as e:
+                print(e)
+                comand = 1
+        if comand == 1:
+            self.hwnd = win32gui.FindWindow(None, 'Mortal Online 2  ')
+            # hwnd = win32gui.FindWindow("UnrealWindow", None) # Fortnite
+            self.rect = win32gui.GetWindowRect(self.hwnd)
+
+            with open("rect.txt", "w") as file1:
+                for i in range(4):
+                    if i != 3:
+                        file1.write(f"{self.rect[i]}\n")
+                    else:
+                        file1.write(f"{self.rect[i]}")
+
+        print("Enter to continue")
+
+        input()
+
+        #win32gui.SetForegroundWindow(self.hwnd)
+        #self.region = self.rect[0], self.rect[1], self.rect[2] - self.rect[0], self.rect[3] - self.rect[1]
         # initialize the WindowCapture class
         self.camera = dxcam.create()
         self.restart = False
@@ -175,9 +200,9 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.ultrasavecounter = 0
         self.earlydamagesave = True
 
-        self.hwnd = win32gui.FindWindow(None, 'Mortal Online 2  ')
+        #self.hwnd = win32gui.FindWindow(None, 'Mortal Online 2  ')
         # hwnd = win32gui.FinwdWindow("UnrealWindow", None) # Fortnite
-        self.rect = win32gui.GetWindowRect(self.hwnd)
+        #self.rect = win32gui.GetWindowRect(self.hwnd)
         # region = rect[0], rect[1], rect[2] - rect[0], rect[3] - rect[1]
         print(self.rect[0], self.rect[1], self.rect[2], self.rect[3])
         self.rect =(8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31)
@@ -500,8 +525,8 @@ class ClassName(BaseScript):  # Название класса (должен от
 
     def mousemoveABS(self, x, y):
         pos = (x + 8 + self.rect[0], y + 31 + self.rect[1])
-        win32api.SetCursorPos(pos)
-        win32gui.SetForegroundWindow(self.hwnd)
+        #win32api.SetCursorPos(pos)
+        #win32gui.SetForegroundWindow(self.hwnd)
 
     def pressLoc(self, mxLoc):
         win32gui.SetForegroundWindow(self.hwnd)
