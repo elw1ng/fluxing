@@ -267,13 +267,13 @@ class ClassName(BaseScript):  # Название класса (должен от
             d -= delta
             chance *= 0.6
         if d < 800:
-            dy = random.randint(int(-0.06*abs(d)) ,int(0.1*abs(d)))
+            dy = random.randint(int(-0.09*abs(d)) ,int(0.14*abs(d)))
         else:
-            dy = random.randint(-30,90)
+            dy = random.randint(-50,150)
         self.mousereturn[1] += dy
         self.mousemove(d, dy, limiter = random.randint(19,24))
         for delta in deltas:
-            dy = random.randint(-10, 20)
+            dy = random.randint(-20, 30)
             self.mousereturn[1] += dy
             sleep(random.uniform(0.05 , 0.12))
             self.mousemove(delta, dy, limiter=random.randint(19, 24))
