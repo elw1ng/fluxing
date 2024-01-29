@@ -266,11 +266,14 @@ class ClassName(BaseScript):  # Название класса (должен от
             deltas.append(delta)
             d -= delta
             chance *= 0.6
-
-        self.mousemove(d, random.randint(-30 ,100),limiter = random.randint(19,24))
+        dy = random.randint(-35 ,99)
+        self.mousereturn[1] += dy
+        self.mousemove(d, dy, limiter = random.randint(19,24))
         for delta in deltas:
+            dy = random.randint(-35, 99)
+            self.mousereturn[1] += dy
             sleep(random.uniform(0.05 , 0.12))
-            self.mousemove(delta, 0, limiter=random.randint(19, 24))
+            self.mousemove(delta, dy, limiter=random.randint(19, 24))
         sleep(self.aftermovedelay-0.005)
         self.alp = alp
 
