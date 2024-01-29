@@ -266,7 +266,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             deltas.append(delta)
             d -= delta
             chance *= 0.6
-        if d < 800:
+        if abs(d) < 800:
             dy = random.randint(int(-0.09*abs(d)) ,int(0.14*abs(d)))
         else:
             dy = random.randint(-50,150)
