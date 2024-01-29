@@ -260,14 +260,14 @@ class ClassName(BaseScript):  # Название класса (должен от
             d = d1
         else:
             d = d2
-        chance = 0.66
+        chance = 0.5
         while random.uniform(0.0, 1.0) <chance:
             delta = random.randint(-abs(int(d/5)),abs(int(d/5)))
             deltas.append(delta)
             d -= delta
             chance *= 0.6
 
-        self.mousemove(d, random.randint(-100 ,300),limiter = random.randint(19,24))
+        self.mousemove(d, random.randint(-30 ,100),limiter = random.randint(19,24))
         for delta in deltas:
             sleep(random.uniform(0.05 , 0.12))
             self.mousemove(delta, 0, limiter=random.randint(19, 24))
@@ -538,7 +538,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         sleep(0.1)
         self.lkmrelease()
         sleep(0.1)
-    def mousemove(self, x, y, limiter=14):
+    def mousemove(self, x, y, limiter=15):
         self.arduino.move(x, y, limiter)
         #self.aftermovedelay= 0.05+0.015*(abs(x)+abs(y))/120
         #if self.aftermovedelay > 0.08:
