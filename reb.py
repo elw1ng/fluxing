@@ -1372,9 +1372,9 @@ class ClassName(BaseScript):  # Название класса (должен от
                                     self.turner.start()
 
                                 self.startextramove= True
-                            elif ssize > 43:
+                            elif ssize > 47:
                                 t = random.uniform(0.55, 0.63)
-                                if ssize>50:
+                                if ssize > 60:
                                     t += 0.15
                                 turn = self.Turn(self.alp, 0, t, self.Dt(t))
                                 if self.turner is None:
