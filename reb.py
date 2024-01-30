@@ -611,7 +611,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         x1, y1, x2, y2 = box.xyxy[0]
         if box.cls == 0 and ((x2 - x1) < (y2 - y1)):
-            y2 = y2 - random.uniform(0.25, 0.4) * ((y2 - y1))
+            y2 = y2 - random.uniform(0.25, 0.35) * ((y2 - y1))
             # print("move upper")
         c_x = ((x2 - x1) / 2) + x1
         c_y = ((y2 - y1) / 2) + y1
@@ -631,17 +631,18 @@ class ClassName(BaseScript):  # Название класса (должен от
         #print(r1,r2)
         x = int(self.from_rad(r1))  # 2.8 UE 5
         y = int(self.from_rad(r2))
-        if changealp:
-            self.movetoalp(self.alp+x)
-            x = 0
-            sleep(0.03)
+
         #print(x,y)
         if x == 0 and y == 0:
             return False, currentMousemove
 
         if currentMousemove is not None and limit is not None:
             if math.sqrt(math.pow(currentMousemove[0] + x, 2) + 4 * math.pow(currentMousemove[1] + y, 2)) < 1.5 * limit:
-                self.mousereturn[0] += x
+
+                if changealp:
+                    self.alp = self.alp + x
+                else:
+                    self.mousereturn[0] += x
                 self.mousereturn[1] += y
                 currentMousemove[0] += x
                 currentMousemove[1] += y
@@ -653,7 +654,10 @@ class ClassName(BaseScript):  # Название класса (должен от
             else:
                 return False, currentMousemove
         else:
-            self.mousereturn[0] += x
+            if changealp:
+                self.alp = self.alp + x
+            else:
+                self.mousereturn[0] += x
             self.mousereturn[1] += y
             if self.t is not None:
                 self.t.join()
@@ -1189,7 +1193,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                         bestbox, _ = results
                                         result = self.confirmExisting(bestbox, conf=0.15, i=1, precision=0.99)
                                         confirmed = result[0]
-                                        if confirmed and (result[1].xyxy[0][2] - result[1].xyxy[0][0])<45 and  240<result[1].xyxy[0][0]<400:
+                                        if confirmed and (result[1].xyxy[0][2] - result[1].xyxy[0][0])<40 and  240<result[1].xyxy[0][0]<400:
                                             sleep(random.uniform(0.5,2.5))
                                             t= random.uniform(0.6,0.8)
                                             turn = self.Turn(self.alp-self.pi,0,t,self.Dt(t))
@@ -1324,7 +1328,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     return False
                 '''
 
-                self.getNextFrame()
+                #self.getNextFrame()
 
             if self.turner is not None:
                 self.turner.join()
@@ -1341,7 +1345,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 if (not results is None):
                     best_box, nospirittime = results
 
-                    result = self.confirmExisting(best_box, conf=0.2, precision=0.99, i=3)
+                    result = self.confirmExisting(best_box, conf=0.2, precision=0.99, i=2)
 
                     confirmed = result[0]
                     best_box = result[1]
@@ -1372,7 +1376,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                     self.turner.start()
 
                                 self.startextramove= True
-                            elif ssize > 47:
+                            elif ssize > 48:
                                 t = random.uniform(0.55, 0.63)
                                 if ssize > 60:
                                     t += 0.15
