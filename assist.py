@@ -712,7 +712,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                         #box.xyxy[0][2] += 160
                         #box.xyxy[0][3] += 160
                         dist = self.checkDistance(box)
-                        if dist < 12*(j+1):
+                        if dist < 15*(j+1):
                             if not found:
                                 newbox = box
                                 newboxdist = dist
@@ -722,7 +722,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                     newbox = box
                                     newboxdist = dist
                             if newbox.conf > 0.13 and dist < 3*(j+1):
-
+                                self.MouseMove(newbox)
                                 return True, newbox
 
 
@@ -732,7 +732,9 @@ class ClassName(BaseScript):  # Название класса (должен от
                         return False, None
                     else:
                         self.holdtime = time()
+                        self.MouseMove(newbox)
                         return True, newbox
+                self.MouseMove(newbox)
                 return True, newbox
 
         return False, None
