@@ -574,6 +574,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     ystep = deltay * ymulti
 
                 win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, xstep, ystep, 0, 0)
+                self.mousemovetimer = time()
                 sleep(0.002)
                 xi += xstep
                 yi += ystep
