@@ -712,7 +712,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                         #box.xyxy[0][2] += 160
                         #box.xyxy[0][3] += 160
                         dist = self.checkDistance(box)
-                        if dist < 30*(j+1):
+                        if dist < 20*(j+1):
                             if not found:
                                 newbox = box
                                 newboxdist = dist
