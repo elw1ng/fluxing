@@ -701,7 +701,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             found = False
             # sleep(1 / 60)
             self.getNextFrame()
-            Prediction = self.model.predict(source= self.img, device=0, conf=conf, iou=0.3)
+            Prediction = self.model.predict(source= self.img, device=0, conf=conf, iou=0.3,verbose = False)
             detected_boxes = Prediction[0].boxes
             if len(detected_boxes) >= 1:
                 for box in detected_boxes:
