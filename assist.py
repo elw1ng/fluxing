@@ -727,13 +727,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
 
             if found:
-                if newboxdist*2.3 > (newbox.xyxy[0][2] - newbox.xyxy[0][0]):
-                    if time() - self.holdtime > 0.29:
-                        return False, None
-                    else:
-                        self.holdtime = time()
-                        self.MouseMove(newbox)
-                        return True, newbox
+
                 self.MouseMove(newbox)
                 return True, newbox
 
