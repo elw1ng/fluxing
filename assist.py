@@ -605,7 +605,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         y = centers[at][1] - img_h / 2
 
         # Move mouse and shoot
-        scalex = scale
+        scalex = 1.2
         scaley = 1.0
         x = int(x * scalex)
         y = int(y * scaley)
@@ -692,7 +692,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         return False, None
 
-    def track(self, conf=0.05, i=1):
+    def track(self, conf=0.25, i=1):
 
         newbox = None
         newboxdist = None
@@ -712,7 +712,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                         #box.xyxy[0][2] += 160
                         #box.xyxy[0][3] += 160
                         dist = self.checkDistance(box)
-                        if dist < 20*(j+1):
+                        if dist < 9*(j+1):
                             if not found:
                                 newbox = box
                                 newboxdist = dist
@@ -1857,9 +1857,9 @@ class ClassName(BaseScript):  # Название класса (должен от
     def custom(self):
         sleep(1)
 
-        keyboard.add_hotkey('e', self.track)
+        #keyboard.add_hotkey('e', self.track)
         while True:
-            keyboard.wait()
+            self.track()
         self.camera.stop()
         print('Done.')
         pass
