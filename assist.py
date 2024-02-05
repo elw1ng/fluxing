@@ -587,7 +587,7 @@ class ClassName(BaseScript):  # Название класса (должен от
     '''
 
 
-    def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=1200,changealp=False):
+    def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=None,changealp=False):
         # Check Closest
         print("tryingtomove")
         at = 0
