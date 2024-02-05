@@ -1921,9 +1921,18 @@ class ClassName(BaseScript):  # Название класса (должен от
     def custom(self):
         sleep(1)
 
-        #keyboard.add_hotkey('e', self.track)
         while True:
-            self.track()
+            if keyboard.is_pressed('e'):
+
+                while True:
+                    timer = time()
+                    while time()-timer<0.9:
+                        self.track()
+                    self.mousemove(-self.mousereturn[0], -self.mousereturn[1])
+                    self.mousereturn[0] = 0
+                    self.mousereturn[1] = 0
+                    if keyboard.is_pressed('e'):
+                        break
         self.camera.stop()
         print('Done.')
         pass
