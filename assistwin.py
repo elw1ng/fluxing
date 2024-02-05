@@ -224,7 +224,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.turns = []
         self.turn = None
         self.startextramove = False
-
+        self.sw = False
     def movetoalp(self, alp):
         if alp >= 2 * self.pi:
             alp = alp - 2 * self.pi * int(alp / (2 * self.pi))
@@ -1917,22 +1917,24 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.mover = Thread(target=self.strafing, args=(True, i, False, True,))
             self.mover.start()
 
-
+    def switch(self):
+        if self.sw:
+            self.sw = False
+        else:
+            self.sw = True
+        sleep(1)
     def custom(self):
         sleep(1)
-
+        keyboard.add_hotkey('e', self.switch)
         while True:
-            if keyboard.is_pressed('e'):
-
-                while True:
+                while self.sw:
                     timer = time()
                     while time()-timer<0.9:
                         self.track()
                     self.mousemove(-self.mousereturn[0], -self.mousereturn[1])
                     self.mousereturn[0] = 0
                     self.mousereturn[1] = 0
-                    if keyboard.is_pressed('e'):
-                        break
+
         self.camera.stop()
         print('Done.')
         pass
