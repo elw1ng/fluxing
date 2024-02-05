@@ -756,7 +756,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         return False, None
 
-    def track(self, conf=0.05, i=1):
+    def track(self, conf=0.21, i=1):
 
         newbox = None
         newboxdist = None
@@ -776,7 +776,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                         #box.xyxy[0][2] += 160
                         #box.xyxy[0][3] += 160
                         dist = self.checkDistance(box)
-                        if dist < 20*(j+1):
+                        if dist < 12*(j+1):
                             if not found:
                                 newbox = box
                                 newboxdist = dist
