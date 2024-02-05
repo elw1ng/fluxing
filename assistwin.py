@@ -1920,8 +1920,10 @@ class ClassName(BaseScript):  # Название класса (должен от
     def switch(self):
         if self.sw:
             self.sw = False
+            print("OFF")
         else:
             self.sw = True
+            print("ON")
         sleep(1)
     def custom(self):
         sleep(1)
