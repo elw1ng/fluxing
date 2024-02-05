@@ -177,7 +177,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         #self.hwnd = win32gui.FindWindow(None, 'HDClone 6 Enterprise Edition ')
         # hwnd = win32gui.FinwdWindow("UnrealWindow", None) # Fortnite
         #self.rect = win32gui.GetWindowRect(self.hwnd)
-        self.rect = [0, 0, 1080, 1080]
+        self.rect = [0, 0, 1024, 1024]
         #print(self.rect[0], self.rect[1], self.rect[2], self.rect[3])
 
         self.img = None
