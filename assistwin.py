@@ -224,7 +224,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.turns = []
         self.turn = None
         self.startextramove = False
-        self.sw = False
+
     def movetoalp(self, alp):
         if alp >= 2 * self.pi:
             alp = alp - 2 * self.pi * int(alp / (2 * self.pi))
@@ -756,7 +756,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         return False, None
 
-    def track(self, conf=0.15, i=1):
+    def track(self, conf=0.21, i=1):
 
         newbox = None
         newboxdist = None
@@ -776,7 +776,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                         #box.xyxy[0][2] += 160
                         #box.xyxy[0][3] += 160
                         dist = self.checkDistance(box)
-                        if dist < 21*(j+1):
+                        if dist < 11*(j+1):
                             if not found:
                                 newbox = box
                                 newboxdist = dist
@@ -797,7 +797,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         return False, None
 
-    def nextTarget(self, conf=0.15):
+    def nextTarget(self, checkbox, conf=0.05):
         newbox = None
         counter = 0
         newbox_XDiff = None
@@ -809,30 +809,30 @@ class ClassName(BaseScript):  # Название класса (должен от
         detected_boxes = Prediction[0].boxes
         if len(detected_boxes) >= 1:
             for box in detected_boxes:
-                if (box.cls == 1):
+                if (box.cls == checkbox.cls):
 
-                    #sizeDiff = abs(box.xyxy[0][2] - box.xyxy[0][0] - checkbox.xyxy[0][2] + checkbox.xyxy[0][0])
-                    #XDiff = abs(box.xyxy[0][0] - checkbox.xyxy[0][0])
-                    #YDiff = abs(box.xyxy[0][1] - checkbox.xyxy[0][1])
-                    if box.xyxy[0][0]>326 and 150<box.xyxy[0][1]<390:
+                    sizeDiff = abs(box.xyxy[0][2] - box.xyxy[0][0] - checkbox.xyxy[0][2] + checkbox.xyxy[0][0])
+                    XDiff = abs(box.xyxy[0][0] - checkbox.xyxy[0][0])
+                    YDiff = abs(box.xyxy[0][1] - checkbox.xyxy[0][1])
+                    if sizeDiff < 35 and XDiff < 350 and YDiff < 100:
                         if not found:
                             newbox = box
-                            #newbox_XDiff = XDiff
-                            #newbox_YDiff = YDiff
+                            newbox_XDiff = XDiff
+                            newbox_YDiff = YDiff
                             found = True
                         else:
                             # dist1 = self.checkDistance(checkbox)
                             # dist2 = self.checkDistance(box)
 
-                            if box.conf>newbox.conf:
+                            if XDiff * XDiff + YDiff * YDiff >= 600 and \
+                                    (
+                                            newbox.conf < box.conf or newbox_XDiff * newbox_XDiff + newbox_YDiff * newbox_YDiff < 600):
                                 newbox = box
-                                #newbox_XDiff = XDiff
-                                #newbox_YDiff = YDiff
-                        if newbox.conf > 0.3:
-                            self.MouseMove(newbox)
+                                newbox_XDiff = XDiff
+                                newbox_YDiff = YDiff
+                        if newbox.conf > 0.2 and newbox_XDiff * newbox_XDiff + newbox_YDiff * newbox_YDiff >= 600:
                             return True, newbox
         if found:
-            self.MouseMove(newbox)
             return True, newbox
         return False, None
 
@@ -1917,27 +1917,12 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.mover = Thread(target=self.strafing, args=(True, i, False, True,))
             self.mover.start()
 
-    def switch(self):
-        if self.sw:
-            self.sw = False
-            print("OFF")
-        else:
-            self.sw = True
-            print("ON")
-        sleep(1)
+
     def custom(self):
         sleep(1)
-        keyboard.add_hotkey('e', self.switch)
+
         while True:
-                while self.sw:
-                    timer = time()
-                    while time()-timer < 0.9:
-                        self.track()
-                    while not(self.nextTarget())[0]:
-                        sleep(0.001)
-                    #self.mousemove(-self.mousereturn[0], -self.mousereturn[1])
-                    #self.mousereturn[0] = 0
-                    #self.mousereturn[1] = 0
+            self.track()
 
         self.camera.stop()
         print('Done.')
