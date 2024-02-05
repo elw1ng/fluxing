@@ -177,7 +177,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         #self.hwnd = win32gui.FindWindow(None, 'HDClone 6 Enterprise Edition ')
         # hwnd = win32gui.FinwdWindow("UnrealWindow", None) # Fortnite
         #self.rect = win32gui.GetWindowRect(self.hwnd)
-        self.rect = [0, 0, 640, 640]
+        self.rect = [0, 0, 1080, 1080]
         #print(self.rect[0], self.rect[1], self.rect[2], self.rect[3])
 
         self.img = None
@@ -512,7 +512,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         sleep(0.1)
         self.lkmrelease()
         sleep(0.1)
-
+    '''
     def mousemove(self, x, y, timer=0.023, limiter=510):
         # limiter = 235
         length = abs(x) + abs(y)
@@ -553,6 +553,79 @@ class ClassName(BaseScript):  # Название класса (должен от
                 lasttimer = timer * (length / limiter)
                 #if (delay < lasttimer):
                     #sleep(lasttimer - (delay))
+    '''
+
+    def mousemove(self, x, y, speed=5):
+        # limiter = 235
+        xi=0
+        yi=0
+        xmulti =1
+        ymulti =1
+        multi = 1
+        i = 1
+        vector = 1
+        spusk = False
+        starttimer = time()
+        if abs(x) > 0 or abs(y) > 0:
+            while True:
+                if spusk:
+                    i -= 1
+                    if i == 1:
+                        spusk = False
+                        vector *= -1
+                elif random.randint(0,i) == 5:
+
+                    spusk = True
+                else:
+                    i+=1
+                deltax= abs(x - xi)
+                deltay= abs(y - yi)
+                if deltax == 0 and deltay == 0:
+                    break
+                if deltax>0:
+                    xmulti = int((x - xi)/deltax)
+                if deltay>0:
+                    ymulti = int((y - yi) / deltay)
+                xstep = xmulti * multi
+                ystep = ymulti * multi
+
+                if deltax >= deltay:
+                    ystep = round(ystep * deltay / deltax)
+                    ystep += round(xstep * vector * (i*0.01))
+                elif deltay >= deltax:
+                    xstep = round(xstep * deltax / deltay)
+                    xstep += round(ystep * vector * (i*0.01))
+
+                if abs(xstep) > deltax and deltay<15:
+                    xstep = deltax*xmulti
+                if abs(ystep) > deltay and deltax<15:
+                    ystep = deltay*ymulti
+
+
+                win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, xstep, ystep, 0, 0)
+                sleep(0.002)
+                xi+= xstep
+                yi+= ystep
+                gas = speed - max(xi,yi)/(time() - starttimer)/1000
+                if gas>0:
+                    razy = 0
+                    razx = 0
+                    if y !=0 :
+                        razy = deltay/abs(y)
+                    if x !=0 :
+                        razx = deltax/abs(x)
+
+                    razgon = max(razx,razy)
+                    multi = int(multi*(0.2+1.2*razgon)) + 3
+
+                    if multi > 40:
+                        multi = 40
+
+                elif gas<0:
+                    sleep(0.001)
+                    multi = int(multi * 0.4) + 1
+
+
 
     def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=1200,changealp=False):
         # Check Closest
@@ -1768,13 +1841,21 @@ class ClassName(BaseScript):  # Название класса (должен от
     def custom(self):
 
         sleep(3)
-
+        while True:
+            timer = time()
+            Prediction = self.model.predict(source=self.img, device=0, conf=0.2, iou=0.3,imgsz = 1024)
+            print(f"{time()-timer} secs")
+        #self.mousemove(-120, 251)
+        #self.arduino.move(dest_x=1, dest_y=-22,limiter=25)
+        sleep(1)
+        #self.arduino.move(11, 36,1)
+        sleep(1111)
         if self.blackScreenDetect():
             print("too early")
 
         while True:
             self.getNextFrame()
-            self.mousemove(81,0)
+            self.mousemove(8,4)
             timerstart = time()
             self.getNextFrame()
 
@@ -1784,7 +1865,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
             self.getNextFrame()
             self.getNextFrame()
-            self.mousemove(-81, 0)
+            self.mousemove(-8, 4)
             timerstart = time()
             self.getNextFrame()
 
