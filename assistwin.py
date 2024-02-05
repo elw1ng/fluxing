@@ -147,7 +147,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.USER1_ID = self.keys['key17']['value']
         self.USER2_ID = self.keys['key18']['value']
         self.TOKEN = self.keys['key19']['value']
-        self.target_fps = 55
+        self.target_fps = 75
         self.holdtime = time()
         if "fps" in sys.argv:
             self.target_fps = int(sys.argv[sys.argv.index("fps") + 1])
@@ -214,7 +214,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.y = 0.01
         self.yelipse = 1.0
         self.overload = 0
-        self.aftermovedelay = 0.061
+        self.aftermovedelay = 0.051
         if "R" in sys.argv:
             self.R = float(sys.argv[sys.argv.index("R") + 1])
         if "e" in sys.argv:
@@ -475,9 +475,9 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.camerastop = True
             timing = self.aftermovedelay-time()+self.mousemovetimer
             if timing>0:
-                sleep(self.aftermovedelay)
+                sleep(timing)
             self.camerastop = False
-        while time() - self.fpstimer > 1 / 190:
+        while time() - self.fpstimer > 1 / 180:
             sleep(0.0005)
 
 
@@ -649,7 +649,7 @@ class ClassName(BaseScript):  # Название класса (должен от
     '''
 
 
-    def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=1200,changealp=False):
+    def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=None,changealp=False):
         # Check Closest
 
         at = 0
@@ -669,7 +669,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         y = centers[at][1] - img_h / 2
 
         # Move mouse and shoot
-        scalex = scale
+        scalex = 1.2
         scaley = 1.0
         x = int(x * scalex)
         y = int(y * scaley)
@@ -1921,9 +1921,9 @@ class ClassName(BaseScript):  # Название класса (должен от
     def custom(self):
         sleep(1)
 
-        keyboard.add_hotkey('e', self.track)
+        #keyboard.add_hotkey('e', self.track)
         while True:
-            keyboard.wait()
+            self.track()
         self.camera.stop()
         print('Done.')
         pass
