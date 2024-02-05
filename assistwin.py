@@ -147,7 +147,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.USER1_ID = self.keys['key17']['value']
         self.USER2_ID = self.keys['key18']['value']
         self.TOKEN = self.keys['key19']['value']
-        self.target_fps = 75
+        self.target_fps = 74
         self.holdtime = time()
         if "fps" in sys.argv:
             self.target_fps = int(sys.argv[sys.argv.index("fps") + 1])
@@ -214,7 +214,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.y = 0.01
         self.yelipse = 1.0
         self.overload = 0
-        self.aftermovedelay = 0.051
+        self.aftermovedelay = 0.054
         if "R" in sys.argv:
             self.R = float(sys.argv[sys.argv.index("R") + 1])
         if "e" in sys.argv:
@@ -575,7 +575,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                 win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, xstep, ystep, 0, 0)
                 self.mousemovetimer = time()
-                sleep(0.002)
+                sleep(0.003)
                 xi += xstep
                 yi += ystep
                 gas = speed - max(xi, yi) / (time() - starttimer) / 1000
@@ -588,10 +588,10 @@ class ClassName(BaseScript):  # Название класса (должен от
                         razx = deltax / abs(x)
 
                     razgon = max(razx, razy)
-                    multi = int(multi * (0.2 + 1.2 * razgon)) + 3
+                    multi = int(multi * (0.2 + 1.2 * razgon)) + 1
 
-                    if multi > 40:
-                        multi = 40
+                    if multi > 10:
+                        multi = 10
 
                 elif gas < 0:
                     sleep(0.001)
