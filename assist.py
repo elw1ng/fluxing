@@ -147,7 +147,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.USER1_ID = self.keys['key17']['value']
         self.USER2_ID = self.keys['key18']['value']
         self.TOKEN = self.keys['key19']['value']
-        self.target_fps = 55
+        self.target_fps = 80
         self.holdtime = time()
         if "fps" in sys.argv:
             self.target_fps = int(sys.argv[sys.argv.index("fps") + 1])
@@ -214,7 +214,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.y = 0.01
         self.yelipse = 1.0
         self.overload = 0
-        self.aftermovedelay = 0.061
+        self.aftermovedelay = 0.035
         if "R" in sys.argv:
             self.R = float(sys.argv[sys.argv.index("R") + 1])
         if "e" in sys.argv:
@@ -469,7 +469,7 @@ class ClassName(BaseScript):  # Название класса (должен от
     '''
 
     def getNextFrame(self, throttle=0.0):
-        print("getting next frame")
+        #print("getting next frame")
         if self.t is not None:
             self.t.join()
             self.t = None
@@ -480,7 +480,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.camerastop = False
         while time() - self.fpstimer > 1 / 160:
             sleep(0.0005)
-        print("got")
+        #print("got")
 
 
     def _debug(self, text):
@@ -589,7 +589,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
     def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=None,changealp=False):
         # Check Closest
-        print("tryingtomove")
+        #print("tryingtomove")
         at = 0
         centers = []
 
@@ -1861,7 +1861,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         #keyboard.add_hotkey('e', self.track)
         while True:
-            print("track")
+            #print("track")
             self.track()
         self.camera.stop()
         print('Done.')
