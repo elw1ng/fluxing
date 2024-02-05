@@ -797,7 +797,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         return False, None
 
-    def nextTarget(self, checkbox, conf=0.05):
+    def nextTarget(self, conf=0.15):
         newbox = None
         counter = 0
         newbox_XDiff = None
@@ -809,30 +809,30 @@ class ClassName(BaseScript):  # Название класса (должен от
         detected_boxes = Prediction[0].boxes
         if len(detected_boxes) >= 1:
             for box in detected_boxes:
-                if (box.cls == checkbox.cls):
+                if (box.cls == 1):
 
-                    sizeDiff = abs(box.xyxy[0][2] - box.xyxy[0][0] - checkbox.xyxy[0][2] + checkbox.xyxy[0][0])
-                    XDiff = abs(box.xyxy[0][0] - checkbox.xyxy[0][0])
-                    YDiff = abs(box.xyxy[0][1] - checkbox.xyxy[0][1])
-                    if sizeDiff < 35 and XDiff < 350 and YDiff < 100:
+                    #sizeDiff = abs(box.xyxy[0][2] - box.xyxy[0][0] - checkbox.xyxy[0][2] + checkbox.xyxy[0][0])
+                    #XDiff = abs(box.xyxy[0][0] - checkbox.xyxy[0][0])
+                    #YDiff = abs(box.xyxy[0][1] - checkbox.xyxy[0][1])
+                    if box.xyxy[0][0]>326 and 150<box.xyxy[0][1]<390:
                         if not found:
                             newbox = box
-                            newbox_XDiff = XDiff
-                            newbox_YDiff = YDiff
+                            #newbox_XDiff = XDiff
+                            #newbox_YDiff = YDiff
                             found = True
                         else:
                             # dist1 = self.checkDistance(checkbox)
                             # dist2 = self.checkDistance(box)
 
-                            if XDiff * XDiff + YDiff * YDiff >= 600 and \
-                                    (
-                                            newbox.conf < box.conf or newbox_XDiff * newbox_XDiff + newbox_YDiff * newbox_YDiff < 600):
+                            if box.conf>newbox.conf:
                                 newbox = box
-                                newbox_XDiff = XDiff
-                                newbox_YDiff = YDiff
-                        if newbox.conf > 0.2 and newbox_XDiff * newbox_XDiff + newbox_YDiff * newbox_YDiff >= 600:
+                                #newbox_XDiff = XDiff
+                                #newbox_YDiff = YDiff
+                        if newbox.conf > 0.3:
+                            self.MouseMove(newbox)
                             return True, newbox
         if found:
+            self.MouseMove(newbox)
             return True, newbox
         return False, None
 
@@ -1931,11 +1931,13 @@ class ClassName(BaseScript):  # Название класса (должен от
         while True:
                 while self.sw:
                     timer = time()
-                    while time()-timer<0.9:
+                    while time()-timer < 0.9:
                         self.track()
-                    self.mousemove(-self.mousereturn[0], -self.mousereturn[1])
-                    self.mousereturn[0] = 0
-                    self.mousereturn[1] = 0
+                    while not(self.nextTarget())[0]:
+                        sleep(0.001)
+                    #self.mousemove(-self.mousereturn[0], -self.mousereturn[1])
+                    #self.mousereturn[0] = 0
+                    #self.mousereturn[1] = 0
 
         self.camera.stop()
         print('Done.')
