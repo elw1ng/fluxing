@@ -469,16 +469,18 @@ class ClassName(BaseScript):  # Название класса (должен от
     '''
 
     def getNextFrame(self, throttle=0.0):
+        print("getting next frame")
         if self.t is not None:
             self.t.join()
             self.t = None
             self.camerastop = True
             timing = self.aftermovedelay-time()+self.mousemovetimer
             if timing>0:
-                sleep(self.aftermovedelay)
+                sleep(timing)
             self.camerastop = False
-        while time() - self.fpstimer > 1 / 190:
+        while time() - self.fpstimer > 1 / 160:
             sleep(0.0005)
+        print("got")
 
 
     def _debug(self, text):

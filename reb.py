@@ -493,7 +493,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.camerastop = True
             timing = self.aftermovedelay-time()+self.mousemovetimer
             if timing>0:
-                sleep(self.aftermovedelay)
+                sleep(timing)
             self.camerastop = False
         while time() - self.fpstimer > 1 / 190:
             sleep(0.0005)
