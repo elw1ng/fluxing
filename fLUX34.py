@@ -208,13 +208,13 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
                 if checkrebuff:
                     #sleep(0.07)
                     timer60power = time()
-                    self.fastselfcast(self.power, 5.5)
+                    self.fastselfcast(self.power, 5.65)
 
                 if not checkrebuff and not rebuffed:
                     #sleep(0.07)
                     self.lkmrelease()
                     self.press(self.kau)
-                    sleep(3.8)
+                    sleep(4.1)
                 #else:
                     #self.fastselfcast(self.kau, 4)
                 print("\n\nSPIRITLOOP\n\n")

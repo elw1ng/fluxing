@@ -172,6 +172,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.pi = 6858
         self.turns = []
 
+    '''
     def movetoalp(self,alp):
         if alp >= 2*self.pi:
             alp = alp-2*self.pi * int(alp/(2*self.pi))
@@ -182,11 +183,13 @@ class ClassName(BaseScript):  # Название класса (должен от
         else:
             self.mousemove(-d2,0)
         self.alp = alp
-
+    '''
     def to_rad(self,alp):
         return (alp*math.pi/self.pi)
     def from_rad(self,rad):
         return (rad*self.pi/math.pi)
+
+    '''
     def Dt(self,t):
         if t >= 0.5:
             return 7.6*t-1.8
@@ -198,6 +201,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         else:
             return False
 
+    
     def generateturn(self):
         beta = random.randint(-int(self.pi/2.3), int(self.pi/2.3))
         rads = self.to_rad(beta)
@@ -212,6 +216,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             d = d* mult
 
         return self.Turn(alp,beta,t,d)
+    
     def maketurn(self,turn):
         self.movetoalp(turn.alp)
         sleep(0.04)
@@ -229,7 +234,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.x += turn.x
         self.y += turn.y
 
-
+    
     def decider(self):
         turn = self.generateturn()
         if math.pow(self.x+turn.x, 2)+math.pow(self.y+turn.y, 2)/math.pow(self.yelipse, 2) < math.pow(self.R-len(self.turns)-1, 2):
@@ -266,7 +271,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         alp = int(self.from_rad(rad))
         print (f"alp{ alp }")
         return alp+random.randint(int(-self.pi/5), int(self.pi/5))
-
+    '''
     def videocamera(self):
         while True:
             delta = time() - self.fpstimer
