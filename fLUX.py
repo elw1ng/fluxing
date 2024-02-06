@@ -351,6 +351,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         sleep(0.1)
         self.lkmrelease()
         sleep(0.1)
+    '''
     def mousemove(self, x, y, timer=0.023,limiter = 510 ):
         #limiter = 235
         length = abs(x) + abs(y)
@@ -395,9 +396,78 @@ class ClassName(BaseScript):  # Название класса (должен от
                 lasttimer = timer * (length / limiter)
                 if (delay < lasttimer):
                     sleep(lasttimer - (delay))
+    '''
+    def mousemove(self, x, y, speed=10):
+        # limiter = 235
+        xi = 0
+        yi = 0
+        xmulti = 1
+        ymulti = 1
+        multi = 1
+        i = 1
+        vector = 1
+        spusk = False
+        starttimer = time()
+        if abs(x) > 0 or abs(y) > 0:
+            while True:
+                if spusk:
+                    i -= 1
+                    if i == 1:
+                        spusk = False
+                        vector *= -1
+                elif random.randint(0, i) >= 8:
 
+                    spusk = True
+                else:
+                    i += 1
+                deltax = abs(x - xi)
+                deltay = abs(y - yi)
+                if deltax == 0 and deltay == 0:
+                    break
+                if deltax > 0:
+                    xmulti = int((x - xi) / deltax)
+                if deltay > 0:
+                    ymulti = int((y - yi) / deltay)
+                xstep = xmulti * multi
+                ystep = ymulti * multi
 
-    def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=400):
+                if deltax >= deltay:
+                    ystep = round(ystep * deltay / deltax)
+                    ystep += round(xstep * vector * (i * 0.01))
+                elif deltay >= deltax:
+                    xstep = round(xstep * deltax / deltay)
+                    xstep += round(ystep * vector * (i * 0.01))
+
+                if abs(xstep) > deltax and deltay < 15:
+                    xstep = deltax * xmulti
+                if abs(ystep) > deltay and deltax < 15:
+                    ystep = deltay * ymulti
+
+                win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, xstep, ystep, 0, 0)
+                self.mousemovetimer = time()
+                sleep(0.0035)
+                xi += xstep
+                yi += ystep
+                gas = speed - max(xi, yi) / (time() - starttimer) / 1000
+                if gas > 0:
+                    razy = 0
+                    razx = 0
+                    if y != 0:
+                        razy = deltay / abs(y)
+                    if x != 0:
+                        razx = deltax / abs(x)
+
+                    razgon = max(razx, razy)
+                    multi = int(multi * (0.2 + 1.2 * razgon)) + 1
+
+                    if multi > 10:
+                        multi = 10
+
+                elif gas < 0:
+                    sleep(0.001)
+                    multi = int(multi * 0.4) + 1
+
+    def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=1400):
         # Check Closest
 
         at = 0
@@ -925,7 +995,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 if not results is None:
 
                     best_box = results[0]
-                    result = self.MouseMove(best_box, currentMousemove=maxmousemove, limit=1450)
+                    result = self.MouseMove(best_box, currentMousemove=maxmousemove, limit=2450)
                     maxmousemove = result[1]
                     # sleep(0.05)
                     if self.spiritdetect():
@@ -966,22 +1036,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                     return False
                             else:
                                 ballscounter = 0
-                            if not extramove:
-                                if len(detected_boxes) >= 1:
-                                    results = self.getBestBox(detected_boxes, 0)
-                                    if not results is None:
-                                        bestbox, _ = results
-                                        result = self.confirmExisting(bestbox, conf=0.15, i=1, precision=0.99)
-                                        confirmed = result[0]
-                                        if confirmed and (result[1].xyxy[0][2] - result[1].xyxy[0][0]) < 40 and 240 < \
-                                                result[1].xyxy[0][0] < 400:
-                                            sleep(random.uniform(0.5, 2.5))
-                                            t = random.uniform(0.6, 0.8)
-                                            turn = self.Turn(self.alp - self.pi, 0, t, self.Dt(t))
-                                            self.maketurnw(turn)
-                                            sleep(0.3)
-                                            extramove = True
-                                            self.lkmrelease()
+
                             self.lkmpress()
                             if self.blackscreen:
                                 self.blackscreen_event.wait()
@@ -1138,36 +1193,10 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                         self.lkmpress()
 
-                        result = self.MouseMove(best_box, currentMousemove=maxmousemove, limit=1450, changealp=True)
+                        result = self.MouseMove(best_box, currentMousemove=maxmousemove, limit=2450)
                         maxmousemove = result[1]
                         # sleep(0.11)
                         if self.checkDistance(best_box) < 25:
-                            ssize = best_box.xyxy[0][2] - best_box.xyxy[0][0]
-                            if ssize < 35:
-
-                                t = random.uniform(0.51, 0.61)
-                                turn = self.Turn(self.alp - self.pi, 0, t, self.Dt(t))
-                                if self.turner is None:
-                                    self.turner = Thread(target=self.maketurnw, args=(turn,))
-                                    self.turner.start()
-                                else:
-                                    self.turner.join()
-                                    self.turner = Thread(target=self.maketurnw, args=(turn,))
-                                    self.turner.start()
-
-                                self.startextramove = True
-                            elif ssize > 48:
-                                t = random.uniform(0.55, 0.63)
-                                if ssize > 60:
-                                    t += 0.15
-                                turn = self.Turn(self.alp, 0, t, self.Dt(t))
-                                if self.turner is None:
-                                    self.turner = Thread(target=self.maketurn, args=(turn,))
-                                    self.turner.start()
-                                else:
-                                    self.turner.join()
-                                    self.turner = Thread(target=self.maketurn, args=(turn,))
-                                    self.turner.start()
                             return True
             '''
             if self.ultrasave and released and (time() - nospirittime > 5):
