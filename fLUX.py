@@ -440,7 +440,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     if i == 1:
                         spusk = False
                         vector *= -1
-                elif random.randint(0, i) >= 8:
+                elif random.randint(0, i) >= 7:
 
                     spusk = True
                 else:
@@ -470,7 +470,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                 win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, xstep, ystep, 0, 0)
                 self.mousemovetimer = time()
-                sleep(0.003)
+                sleep(0.0025)
                 xi += xstep
                 yi += ystep
                 gas = speed - max(xi, yi) / (time() - starttimer) / 1000
