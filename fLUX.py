@@ -243,7 +243,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         else:
             for turn in self.turns:
                 if math.pow(self.x+turn.x,2)+math.pow(self.y+turn.y,2)/math.pow(self.yelipse, 2) < math.pow(self.R - len(self.turns) + 1, 2):
-                    self.maketurn(turn)
+                    #self.maketurn(turn)
                     print(f"Turn from stack with  :{turn.alp, turn.beta, turn.t,turn.x,turn.y}")
                     returning = turn
                     self.turns.remove(turn)
