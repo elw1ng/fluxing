@@ -208,7 +208,7 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
                 if checkrebuff:
                     #sleep(0.07)
                     timer60power = time()
-                    self.fastselfcast(self.power, 4.6)
+                    self.fastselfcast(self.power, 5.5)
 
                 if not checkrebuff and not rebuffed:
                     #sleep(0.07)
