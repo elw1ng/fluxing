@@ -40,11 +40,12 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         def __eq__(self, other):
             return self.alp == other.alp and self.beta == other.beta and self.t == other.t
+
     def __init__(self):
         super().__init__()  # инициализация класса после наследования
 
         """                   Ключи - Обязательное                   """
-        self.host_ip = "113.30.191.17" #"188.72.203.58"
+        self.host_ip = "113.30.191.17"  # "188.72.203.58"
         self.port = 20035
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         connected = False
@@ -74,15 +75,22 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.debug = True
         self.mousereturn = [0, 0]
         self.model = YOLO('best7nano100.pt')  # load a pretrained YOLOv8n model
-
+        self.rect = [0, 0, 0, 0]
         # self.model = YOLO("bestOUTDOORnew.pt")  # load a pretrained YOLOv8n model
 
         # Get rect of Window
+
+
+
         self.hwnd = win32gui.FindWindow(None, 'Mortal Online 2  ')
         # hwnd = win32gui.FindWindow("UnrealWindow", None) # Fortnite
         self.rect = win32gui.GetWindowRect(self.hwnd)
-        win32gui.SetForegroundWindow(self.hwnd)
-        self.region = self.rect[0], self.rect[1], self.rect[2] - self.rect[0], self.rect[3] - self.rect[1]
+
+
+        sleep(2)
+
+        # win32gui.SetForegroundWindow(self.hwnd)
+        # self.region = self.rect[0], self.rect[1], self.rect[2] - self.rect[0], self.rect[3] - self.rect[1]
         # initialize the WindowCapture class
         self.camera = dxcam.create()
         self.restart = False
@@ -107,8 +115,12 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.USER2_ID = self.keys['key18']['value']
         self.TOKEN = self.keys['key19']['value']
         self.target_fps = 55
+        self.holdtime = time()
         if "fps" in sys.argv:
-            self.target_fps = int(sys.argv[sys.argv.index("fps")+1])
+            self.target_fps = int(sys.argv[sys.argv.index("fps") + 1])
+        self.bar = False
+        if "bar" in sys.argv:
+            self.bar = True
         self.savemovetimer = 2.5
         self.savedelay = 69
         self.bot = telega.Telega(self.USER1_ID, self.USER2_ID, self.TOKEN)
@@ -137,40 +149,48 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.ultrasavereturning = False
         self.ultrasavecounter = 0
         self.earlydamagesave = True
-        self.aftermovedelay = 0.061
-        self.hwnd = win32gui.FindWindow(None, 'Mortal Online 2  ')
+
+        # self.hwnd = win32gui.FindWindow(None, 'Mortal Online 2  ')
         # hwnd = win32gui.FinwdWindow("UnrealWindow", None) # Fortnite
-        self.rect = win32gui.GetWindowRect(self.hwnd)
+        # self.rect = win32gui.GetWindowRect(self.hwnd)
         # region = rect[0], rect[1], rect[2] - rect[0], rect[3] - rect[1]
         print(self.rect[0], self.rect[1], self.rect[2], self.rect[3])
-
+        self.rect = (8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31)
         self.img = None
         self.fpstimer = time()
 
         self.t = None
         self.mover = None
+        self.turner = None
         self.checker = None
         self.blackscreen_event = threading.Event()
         self.mainmenu = False
         self.ban = False
         self.mousemovetimer = time()
         self.camerastop = False
+        # self.camera.start(region=(8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31), target_fps=self.target_fps)
         self.c = Thread(target=self.videocamera, args=())
         self.c.start()
         self.reconnection = False
         sleep(1)
         self.inittimer = time()
         self.strafe = False
-
-
-        #gps
-        self.R=15
-        self.x=0
-        self.y=0
-        self.yelipse = 1
-        self.alp=0
+        # gps
+        self.R = 14.0
+        self.x = 0
+        self.y = 0.01
+        self.yelipse = 1.0
+        self.overload = 0
+        self.aftermovedelay = 0.061
+        if "R" in sys.argv:
+            self.R = float(sys.argv[sys.argv.index("R") + 1])
+        if "e" in sys.argv:
+            self.yelipse = float(sys.argv[sys.argv.index("e") + 1])
+        self.alp = 0
         self.pi = 6858
         self.turns = []
+        self.turn = None
+        self.startextramove = False
 
     '''
     def movetoalp(self,alp):
@@ -310,7 +330,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             if timing > 0:
                 sleep(timing)
             self.camerastop = False
-        while time() - self.fpstimer > 1 / 190:
+        while time() - self.fpstimer > 1 / 150:
             sleep(0.0005)
 
     def _debug(self, text):
