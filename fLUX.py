@@ -707,7 +707,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     self.holdtime = time()
                     if confirmed:
                         noballstime = time()
-                        while time() - noballstime < 0.9:
+                        while time() - noballstime < 1.0:
                             '''
                             if self.earlydamagesave and (
                                     not ball_was or (ball_was and (time() - noballstimeFull < 0.8))) and self.lowmana:
