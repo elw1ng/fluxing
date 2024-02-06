@@ -470,7 +470,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                 win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, xstep, ystep, 0, 0)
                 self.mousemovetimer = time()
-                sleep(0.0035)
+                sleep(0.003)
                 xi += xstep
                 yi += ystep
                 gas = speed - max(xi, yi) / (time() - starttimer) / 1000
@@ -485,27 +485,27 @@ class ClassName(BaseScript):  # Название класса (должен от
                     razgon = max(razx, razy)
                     multi = int(multi * (0.2 + 1.2 * razgon)) + 1
 
-                    if multi > 10:
-                        multi = 10
+                    if multi > 12:
+                        multi = 12
 
                 elif gas < 0:
                     sleep(0.001)
                     multi = int(multi * 0.4) + 1
 
-    def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=1400):
+    def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=1200, changealp=False):
         # Check Closest
 
         at = 0
         centers = []
 
         x1, y1, x2, y2 = box.xyxy[0]
-        if box.cls == 0 and (2 * (x2 - x1) < (y2 - y1)):
-            y2 = y2 - random.uniform(0.1, 0.4) * ((y2 - y1) - (x2 - x1))
-            #print("move upper")
+        if box.cls == 0 and ((x2 - x1) < (y2 - y1)):
+            y2 = y2 - random.uniform(0.25, 0.35) * ((y2 - y1))
+            # print("move upper")
         c_x = ((x2 - x1) / 2) + x1
         c_y = ((y2 - y1) / 2) + y1
         centers.append((c_x, c_y))
-        dist = math.sqrt(math.pow(img_w / 2 - c_x, 2) + math.pow(img_h / 2 - c_y, 2))
+        # dist = math.sqrt(math.pow(img_w / 2 - c_x, 2) + math.pow(img_h / 2 - c_y, 2))
 
         # Pixel difference between crosshair(center) and the closest object
         x = centers[at][0] - img_w / 2
@@ -517,26 +517,39 @@ class ClassName(BaseScript):  # Название класса (должен от
         x = int(x * scalex)
         y = int(y * scaley)
         r1, r2 = self.get_angles([int(x + img_w / 2), int(y + img_h / 2)])
+        # print(r1,r2)
+        x = int(self.from_rad(r1))  # 2.8 UE 5
+        y = int(self.from_rad(r2))
 
-        x = int(10 * r1 / 1.1167 * 90 / 60)  #2.8 UE 5
-        y = int(10 * r2 / 1.125 * 90 / 60)
+        # print(x,y)
         if x == 0 and y == 0:
             return False, currentMousemove
 
         if currentMousemove is not None and limit is not None:
             if math.sqrt(math.pow(currentMousemove[0] + x, 2) + 4 * math.pow(currentMousemove[1] + y, 2)) < 1.5 * limit:
-                self.mousereturn[0] += x
+
+                if changealp:
+                    self.alp = self.alp + x
+                else:
+                    self.mousereturn[0] += x
                 self.mousereturn[1] += y
                 currentMousemove[0] += x
                 currentMousemove[1] += y
+                if self.t is not None:
+                    self.t.join()
                 self.t = Thread(target=self.mousemove, args=(x, y))
                 self.t.start()
                 return True, currentMousemove
             else:
                 return False, currentMousemove
         else:
-            self.mousereturn[0] += x
+            if changealp:
+                self.alp = self.alp + x
+            else:
+                self.mousereturn[0] += x
             self.mousereturn[1] += y
+            if self.t is not None:
+                self.t.join()
             self.t = Thread(target=self.mousemove, args=(x, y))
             self.t.start()
             return True, None
