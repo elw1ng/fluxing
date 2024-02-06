@@ -422,7 +422,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 if (delay < lasttimer):
                     sleep(lasttimer - (delay))
     '''
-    def mousemove(self, x, y, speed=12):
+    def mousemove(self, x, y, speed=14):
         # limiter = 235
         xi = 0
         yi = 0
@@ -485,8 +485,8 @@ class ClassName(BaseScript):  # Название класса (должен от
                     razgon = max(razx, razy)
                     multi = int(multi * (0.2 + 1.2 * razgon)) + 2
 
-                    if multi > 13:
-                        multi = 13
+                    if multi > 21:
+                        multi = 21
 
                 elif gas < 0:
                     sleep(0.001)
