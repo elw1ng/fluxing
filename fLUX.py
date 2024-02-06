@@ -422,7 +422,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 if (delay < lasttimer):
                     sleep(lasttimer - (delay))
     '''
-    def mousemove(self, x, y, speed=14):
+    def mousemove(self, x, y, speed=15):
         # limiter = 235
         xi = 0
         yi = 0
@@ -483,7 +483,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                         razx = deltax / abs(x)
 
                     razgon = max(razx, razy)
-                    multi = int(multi * (0.2 + 1.2 * razgon)) + 2
+                    multi = int(multi * (0.25 + 1.2 * razgon)) + 2
 
                     if multi > 21:
                         multi = 21
@@ -492,7 +492,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     sleep(0.001)
                     multi = int(multi * 0.4) + 1
 
-    def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=1200, changealp=False):
+    def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=2400, changealp=False):
         # Check Closest
 
         at = 0
@@ -873,7 +873,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                                 maxmousemove = mouseresult[1]
 
-                            if time() - self.holdtime < 1.0 and confirmed:
+                            if time() - self.holdtime < 0.75 and confirmed:
                                 # sleep(0.02)
                                 result = self.track(bestbox, conf=0.05, precision=0.99, i=2)
                                 confirmed = result[0]
