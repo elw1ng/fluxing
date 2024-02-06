@@ -422,7 +422,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 if (delay < lasttimer):
                     sleep(lasttimer - (delay))
     '''
-    def mousemove(self, x, y, speed=10):
+    def mousemove(self, x, y, speed=12):
         # limiter = 235
         xi = 0
         yi = 0
@@ -483,10 +483,10 @@ class ClassName(BaseScript):  # Название класса (должен от
                         razx = deltax / abs(x)
 
                     razgon = max(razx, razy)
-                    multi = int(multi * (0.2 + 1.2 * razgon)) + 1
+                    multi = int(multi * (0.2 + 1.2 * razgon)) + 2
 
-                    if multi > 12:
-                        multi = 12
+                    if multi > 13:
+                        multi = 13
 
                 elif gas < 0:
                     sleep(0.001)
@@ -815,7 +815,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     self.holdtime = time()
                     if confirmed:
                         noballstime = time()
-                        while time() - noballstime < 1.0:
+                        while time() - noballstime < maxnoballtimer:
                             '''
                             if self.earlydamagesave and (
                                     not ball_was or (ball_was and (time() - noballstimeFull < 0.8))) and self.lowmana:
@@ -873,7 +873,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                                 maxmousemove = mouseresult[1]
 
-                            if time() - self.holdtime < 0.69 and confirmed:
+                            if time() - self.holdtime < 1.0 and confirmed:
                                 # sleep(0.02)
                                 result = self.track(bestbox, conf=0.05, precision=0.99, i=2)
                                 confirmed = result[0]
