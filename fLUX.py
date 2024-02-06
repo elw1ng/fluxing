@@ -1265,7 +1265,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         #sleep(0.05)
         # self.hold_and_release_sleep(self.moveright,0.1)
         self.press(self.selfcast)
-        if strafe:
+        #if strafe:
             #self.strafe = True
             #if self.mover is None:
                # self.mover = Thread(target=self.strafing, args=(False,12,True,))
