@@ -1105,7 +1105,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             # loop_time = time()
 
             while not status_confirmed:
-                if (time() - self.looptime > 4.5):
+                if (time() - self.looptime > 5.5):
                     self.nospiritCounter += 1
                     self.nospiritRow += 1
                     self.gosave()
@@ -1126,10 +1126,10 @@ class ClassName(BaseScript):  # Название класса (должен от
                 if self.checkdrawnspirit():
                     print(f"spiritdrawned")
                     status_confirmed = True
-                    if self.turner is not None:
-                        self.turner.join()
-                        self.turner = None
-                        released = True
+                    #if self.turner is not None:
+                        #self.turner.join()
+                        #self.turner = None
+                    released = True
                     sleep(0.1)
 
                     #self.movetoalp(self.alp - int(self.turn.beta / 3.5))
@@ -1142,10 +1142,10 @@ class ClassName(BaseScript):  # Название класса (должен от
                     print(f"nospirit release")
                     self.nospiritCounter += 1
                     self.nospiritRow += 1
-                    if self.turner is not None:
-                        self.turner.join()
-                        self.turner = None
-                        released = True
+                    #if self.turner is not None:
+                        #self.turner.join()
+                        #self.turner = None
+                    released = True
                     sleep(0.2)
                     return False
                 '''
@@ -1158,10 +1158,10 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                 # self.getNextFrame()
 
-            if self.turner is not None:
-                self.turner.join()
-                self.turner = None
-                released = True
+           # if self.turner is not None:
+                #self.turner.join()
+                #self.turner = None
+                #released = True
 
             self.getNextFrame()
 
