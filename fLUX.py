@@ -1132,7 +1132,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                         released = True
                     sleep(0.1)
 
-                    self.movetoalp(self.alp - int(self.turn.beta / 3.5))
+                    #self.movetoalp(self.alp - int(self.turn.beta / 3.5))
 
                     sleep(0.01)
                     break
