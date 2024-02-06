@@ -1072,14 +1072,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.mousereturn[1] = 0
                 sleep(self.aftermovedelay - 0.005)
                 nodetectcounter += 1
-                if nodetectcounter == 10:
-                    self.hold_and_release_sleep(' ', 0.1)
-                if nodetectcounter == 150:
-                    self.movetoalp(self.alp - int(self.pi / 3))
-                    sleep(0.05)
-                if nodetectcounter == 450:
-                    self.movetoalp(self.alp + int(2 * self.pi / 3))
-                    sleep(0.05)
+
 
             if time() - predictedtime > 21 and detected:
                 spirit_loop = False
