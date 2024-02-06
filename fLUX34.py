@@ -107,11 +107,11 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
 
                 self.fastselfcast(self.summon, 6.2)
                 if self.mover is None:
-                    self.mover = Thread(target=self.MoveBack(), args=())
+                    self.mover = Thread(target=self.MoveBack, args=())
                     self.mover.start()
                 else:
                     self.mover.join()
-                    self.mover = Thread(target=self.MoveBack(), args=())
+                    self.mover = Thread(target=self.MoveBack, args=())
                     self.mover.start()
                 startp = time()
                 self.looptime = startp
