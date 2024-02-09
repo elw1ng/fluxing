@@ -1018,7 +1018,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                                 maxmousemove = mouseresult[1]
 
-                            if time() - self.holdtime < 0.61 and confirmed:
+                            if time() - self.holdtime < 0.51 and confirmed:
                                 # sleep(0.02)
                                 result = self.track(conf=0.05, i=2)
                                 confirmed = result[0]
