@@ -1020,7 +1020,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                             if time() - self.holdtime < 0.61 and confirmed:
                                 # sleep(0.02)
-                                result = self.track(conf=0.05, precision=0.99, i=2)
+                                result = self.track(conf=0.05, i=2)
                                 confirmed = result[0]
                                 if confirmed:
                                     noballstime = time()
