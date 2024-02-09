@@ -107,7 +107,8 @@ class ClassName(BaseScript):  # Название класса (должен от
         """ Кастомные атрибуты писать здесь """
         self.debug = True
         self.mousereturn = [0, 0]
-        self.model = YOLO('best7nano100.pt')  # load a pretrained YOLOv8n model
+        self.model = YOLO('best8nano125.pt')  # load a pretrained YOLOv8n model
+        print(self.model.names)
         self.rect = [0,0,0,0]
         # self.model = YOLO("bestOUTDOORnew.pt")  # load a pretrained YOLOv8n model
 
@@ -147,7 +148,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.USER1_ID = self.keys['key17']['value']
         self.USER2_ID = self.keys['key18']['value']
         self.TOKEN = self.keys['key19']['value']
-        self.target_fps = 74
+        self.target_fps = 56
         self.holdtime = time()
         if "fps" in sys.argv:
             self.target_fps = int(sys.argv[sys.argv.index("fps") + 1])
@@ -214,7 +215,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.y = 0.01
         self.yelipse = 1.0
         self.overload = 0
-        self.aftermovedelay = 0.054
+        self.aftermovedelay = 0.061
         if "R" in sys.argv:
             self.R = float(sys.argv[sys.argv.index("R") + 1])
         if "e" in sys.argv:
@@ -527,7 +528,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.lkmrelease()
         sleep(0.1)
 
-    def mousemove(self, x, y, speed=5):
+    def mousemove(self, x, y, speed=15):
         # limiter = 235
         xi = 0
         yi = 0
@@ -588,10 +589,10 @@ class ClassName(BaseScript):  # Название класса (должен от
                         razx = deltax / abs(x)
 
                     razgon = max(razx, razy)
-                    multi = int(multi * (0.2 + 1.2 * razgon)) + 1
+                    multi = int(multi * (0.2 + 1.2 * razgon)) + 2
 
-                    if multi > 10:
-                        multi = 10
+                    if multi > 34:
+                        multi = 34
 
                 elif gas < 0:
                     sleep(0.001)
@@ -656,7 +657,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         centers = []
 
         x1, y1, x2, y2 = box.xyxy[0]
-        if box.cls == 0 and ((x2 - x1) < (y2 - y1)):
+        if box.cls == 2 and ((x2 - x1) < (y2 - y1)):
             y2 = y2 - random.uniform(0.25, 0.35) * ((y2 - y1))
             # print("move upper")
         c_x = ((x2 - x1) / 2) + x1
@@ -725,7 +726,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             detected_boxes = Prediction[0].boxes
             if len(detected_boxes) >= 1:
                 for box in detected_boxes:
-                    if (box.cls == checkbox.cls):
+                    if (box.cls == checkbox.cls or (box.cls<2 and checkbox.cls<2)):
                         sizeDiff = abs(box.xyxy[0][2] - box.xyxy[0][0] - checkbox.xyxy[0][2] + checkbox.xyxy[0][0])
                         XDiff = abs(box.xyxy[0][0] - checkbox.xyxy[0][0])
                         YDiff = abs(box.xyxy[0][1] - checkbox.xyxy[0][1])
@@ -769,7 +770,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             detected_boxes = Prediction[0].boxes
             if len(detected_boxes) >= 1:
                 for box in detected_boxes:
-                    if (box.cls == 1):
+                    if (box.cls <2):
                         #box = np.array(box.cpu())
                         #box.xyxy[0][0] += 160            [160:480][160:480]
                         #box.xyxy[0][1] += 160
@@ -805,11 +806,11 @@ class ClassName(BaseScript):  # Название класса (должен от
         found = False
         # sleep(1 / 60)
         self.getNextFrame()
-        Prediction = self.model.predict(source=self.img, device=0, conf=conf, iou=0.3,imgsz=320)
+        Prediction = self.model.predict(source=self.img, device=0, conf=conf, iou=0.3,imgsz=640)
         detected_boxes = Prediction[0].boxes
         if len(detected_boxes) >= 1:
             for box in detected_boxes:
-                if (box.cls == checkbox.cls):
+                if (box.cls < 2):
 
                     sizeDiff = abs(box.xyxy[0][2] - box.xyxy[0][0] - checkbox.xyxy[0][2] + checkbox.xyxy[0][0])
                     XDiff = abs(box.xyxy[0][0] - checkbox.xyxy[0][0])
@@ -823,14 +824,17 @@ class ClassName(BaseScript):  # Название класса (должен от
                         else:
                             # dist1 = self.checkDistance(checkbox)
                             # dist2 = self.checkDistance(box)
-
-                            if XDiff * XDiff + YDiff * YDiff >= 600 and \
+                            if box.cls ==0 and newbox.cls ==1:
+                                newbox = box
+                                newbox_XDiff = XDiff
+                                newbox_YDiff = YDiff
+                            elif box.cls ==0 and XDiff * XDiff + YDiff * YDiff >= 600 and \
                                     (
                                             newbox.conf < box.conf or newbox_XDiff * newbox_XDiff + newbox_YDiff * newbox_YDiff < 600):
                                 newbox = box
                                 newbox_XDiff = XDiff
                                 newbox_YDiff = YDiff
-                        if newbox.conf > 0.2 and newbox_XDiff * newbox_XDiff + newbox_YDiff * newbox_YDiff >= 600:
+                        if box.cls ==0 and newbox.conf > 0.2 and newbox_XDiff * newbox_XDiff + newbox_YDiff * newbox_YDiff >= 600:
                             return True, newbox
         if found:
             return True, newbox
@@ -887,9 +891,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         kitetime = time()
         maxmousemove = [0, 0]
         while (ball_loop):
-            if self.ban:
-                self.fastselfcast(self.summon, 6.5)
-                self.logout()
+
             if time() - noballstimeFull < 1:
                 self.lkmrelease()
                 self.lkmpress()
@@ -904,11 +906,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 sleep(0.15)
                 self.hold_and_release_sleep(self.moveforward, 1.5)
             '''
-            if time() - self.looptime > 2.5 and not ball_was:
-                print("noBALLSonspirit")
-                self.restart = True
-                self.gosave()
-                return False
+
 
             '''
             if time() - self.looptime > 25:
@@ -934,12 +932,6 @@ class ClassName(BaseScript):  # Название класса (должен от
             '''
             # sleep(1 / 60)
             self.getNextFrame()
-            if self.blackscreen:
-                self.blackscreen_event.wait()
-                self.checker.join()
-                if not self.ban and not self.mainmenu:
-                    self.send_message_telega(f"BANISHED on {time() - noballstimeFull} sec in ballloop")
-                sys.exit()
 
             Prediction = self.model.predict(source=self.img, device=0, conf=0.07)
             detected_boxes = Prediction[0].boxes
@@ -1026,7 +1018,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                                 maxmousemove = mouseresult[1]
 
-                            if time() - self.holdtime < 0.69 and confirmed:
+                            if time() - self.holdtime < 0.61 and confirmed:
                                 # sleep(0.02)
                                 result = self.track(bestbox, conf=0.05, precision=0.99, i=2)
                                 confirmed = result[0]
@@ -1053,7 +1045,9 @@ class ClassName(BaseScript):  # Название класса (должен от
                     # if pressed:
                     #    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
                     #    pressed= False
-
+            if keyboard.is_pressed('e'):
+                print("OFF")
+                return True
             # if (ball_was) and (time() - noballstime > 1.0):
             # self.lkmrelease()
             # print("OTPUSK")
@@ -1103,11 +1097,11 @@ class ClassName(BaseScript):  # Название класса (должен от
         ballexist = False
         no_time = None
         for box in detected_boxes:
-            if box.cls == cls:
+            if box.cls == cls or (box.cls<2 and cls<2):
                 # distFactor = self.checkDistance(box)
                 Y = self.checkDistanceY(box)
                 # X = self.checkDistanceX(box)
-                if -200 < Y < 210 and (cls==0 or Y>-90):
+                if -200 < Y < 210:
                     if not ballexist:
 
                         result = self.confirmExisting(box)
@@ -1922,7 +1916,10 @@ class ClassName(BaseScript):  # Название класса (должен от
         sleep(1)
 
         while True:
-            self.track()
+            if keyboard.is_pressed('e'):
+                print("ON")
+                self.BallLoop()
+                sleep(2)
 
         self.camera.stop()
         print('Done.')
