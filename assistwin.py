@@ -670,7 +670,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         y = centers[at][1] - img_h / 2
 
         # Move mouse and shoot
-        scalex = 1.2
+        scalex = scale
         scaley = 1.0
         x = int(x * scalex)
         y = int(y * scaley)
