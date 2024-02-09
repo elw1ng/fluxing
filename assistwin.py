@@ -787,13 +787,13 @@ class ClassName(BaseScript):  # Название класса (должен от
                                     newbox = box
                                     newboxdist = dist
                             if newbox.conf > 0.13 and dist < 3*(j+1):
-                                self.MouseMove(newbox)
+                                #self.MouseMove(newbox)
                                 return True, newbox
 
 
             if found:
 
-                self.MouseMove(newbox)
+                #self.MouseMove(newbox)
                 return True, newbox
 
         return False, None
@@ -1045,9 +1045,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     # if pressed:
                     #    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
                     #    pressed= False
-            if keyboard.is_pressed('e'):
-                print("OFF")
-                return True
+
             # if (ball_was) and (time() - noballstime > 1.0):
             # self.lkmrelease()
             # print("OTPUSK")
@@ -1069,9 +1067,10 @@ class ClassName(BaseScript):  # Название класса (должен от
                 ball_loop = False
                 self.lkmrelease()
                 print("ballstop")
-            if (time() - noballstimeFull > 50):
-                ball_loop = False
-                self.lkmrelease()
+            if (time() - noballstimeFull > 2):
+                if keyboard.is_pressed('e'):
+                    print("OFF")
+                    ball_loop = False
             '''if self.safeMode and (time() - noballstimeFull > 2):
                 if (time() - noballstimeFull > 6.5) and self.checklowmana(percentage=0.08):
                     print("6.5 sec Timer + low mana in ballloop save")
