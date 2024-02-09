@@ -843,7 +843,7 @@ class ClassName(BaseScript):  # Название класса (должен от
     def lkmpress(self):
         sleep(0.001)
         if not self.lkmpressed:
-            self.arduino.press()
+            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
             self.lkmpressed = True
             return True
         return False
@@ -851,7 +851,7 @@ class ClassName(BaseScript):  # Название класса (должен от
     def lkmrelease(self):
         sleep(0.001)
         if self.lkmpressed:
-            self.arduino.release()
+            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
             self.lkmpressed = False
             return True
         return False
