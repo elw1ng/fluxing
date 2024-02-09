@@ -868,7 +868,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         # loop_time = time()
         print("i will check")
         if len(detected_boxes) >= 1:
-            results = self.getBestBox(detected_boxes, 0)
+            results = self.getBestBox(detected_boxes, 2)
             if not results is None:
                 best_box = results[0]
                 self.MouseMove(best_box)
@@ -947,7 +947,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             # loop_time = time()
 
             if len(detected_boxes) >= 1:
-                results = self.getBestBox(detected_boxes, 1)
+                results = self.getBestBox(detected_boxes, 0)
                 if not results is None:
 
                     bestbox, _ = results
@@ -1176,7 +1176,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             # print("i will check")
 
             if len(detected_boxes) >= 1:
-                results = self.getBestBox(detected_boxes, 0)
+                results = self.getBestBox(detected_boxes, 2)
                 if not results is None:
 
                     best_box = results[0]
@@ -1223,7 +1223,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                 ballscounter=0
                             if not extramove:
                                 if len(detected_boxes) >= 1:
-                                    results = self.getBestBox(detected_boxes, 0)
+                                    results = self.getBestBox(detected_boxes, 2)
                                     if not results is None:
                                         bestbox, _ = results
                                         result = self.confirmExisting(bestbox, conf=0.15, i=1, precision=0.99)
@@ -1376,7 +1376,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             detected_boxes = Prediction[0].boxes
             #print(len(detected_boxes))
             if len(detected_boxes) >= 1:
-                results = self.getBestBox(detected_boxes, 0)
+                results = self.getBestBox(detected_boxes, 2)
                 if (not results is None):
                     best_box, nospirittime = results
 
