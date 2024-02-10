@@ -1366,80 +1366,13 @@ class ClassName(BaseScript):  # Название класса (должен от
         start_loop = True
         startp = self.looptime
         nospirittime = time()
-        released = False
+        released = True
         maxmousemove = [0, 0]
-        status_confirmed = False
+        status_confirmed = True
         while (start_loop):
 
             self.getNextFrame()
-            if self.blackscreen:
-                self.blackscreen_event.wait()
-                self.checker.join()
-                if not self.ban and not self.mainmenu:
-                    self.send_message_telega(f"BANISHED on {time() - startp} sec in startloop")
-                sys.exit()
 
-            # print('FPS {}'.format(1 / (time() - loop_time)))
-            # loop_time = time()
-
-            while not status_confirmed:
-                if (time() - self.looptime > 5.5):
-                    self.nospiritCounter += 1
-                    self.nospiritRow += 1
-                    #self.gosave()
-                    return False
-                if self.blackscreen:
-                    self.blackscreen_event.wait()
-                    self.checker.join()
-                    if not self.ban and not self.mainmenu:
-                        self.send_message_telega(f"BANISHED on {time() - startp} sec in startloop")
-                    sys.exit()
-
-                # if (time()-self.looptime > self.MaxMoveBackTimer) and not released:
-                #     self.release(self.moveback)
-                #     self.looptime = time()
-                #     #sleep(0.4)
-                #     print(f"{self.MaxMoveBackTimer} release")
-                #     released = True
-                if self.checkdrawnspirit():
-                    print(f"spiritdrawned")
-                    status_confirmed = True
-                    #if self.turner is not None:
-                        #self.turner.join()
-                        #self.turner = None
-                    released = True
-                    #sleep(0.1)
-
-                    #self.movetoalp(self.alp - int(self.turn.beta / 3.5))
-
-                    sleep(0.01)
-                    break
-
-                if not status_confirmed and self.checknospirit():
-                    # sleep(0.3)
-                    print(f"nospirit release")
-                    self.nospiritCounter += 1
-                    self.nospiritRow += 1
-                    #if self.turner is not None:
-                        #self.turner.join()
-                        #self.turner = None
-                    released = True
-                    sleep(0.2)
-                    return False
-                '''
-                if self.lowmana:
-                    print("LOWMANA")
-                    self.restart = True
-                    self.gosave()
-                    return False
-                '''
-
-                # self.getNextFrame()
-
-           # if self.turner is not None:
-                #self.turner.join()
-                #self.turner = None
-                #released = True
 
             self.getNextFrame()
 
