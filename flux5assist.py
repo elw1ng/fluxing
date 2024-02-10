@@ -231,7 +231,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.y = 0.01
         self.yelipse = 1.0
         self.overload = 0
-        self.aftermovedelay = 0.061
+        self.aftermovedelay = 0.060
         if "R" in sys.argv:
             self.R = float(sys.argv[sys.argv.index("R") + 1])
         if "e" in sys.argv:
@@ -547,7 +547,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.lkmrelease()
         sleep(0.1)
 
-    def mousemove(self, x, y, speed=15):
+    def mousemove(self, x, y, speed=16):
         # limiter = 235
         xi = 0
         yi = 0
@@ -565,7 +565,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     if i == 1:
                         spusk = False
                         vector *= -1
-                elif random.randint(0, i) >= 8:
+                elif random.randint(0, i) >= 9:
 
                     spusk = True
                 else:
@@ -595,7 +595,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                 win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, xstep, ystep, 0, 0)
                 self.mousemovetimer = time()
-                sleep(0.003)
+                sleep(0.0025)
                 xi += xstep
                 yi += ystep
                 gas = speed - max(xi, yi) / (time() - starttimer) / 1000
@@ -610,8 +610,8 @@ class ClassName(BaseScript):  # Название класса (должен от
                     razgon = max(razx, razy)
                     multi = int(multi * (0.2 + 1.2 * razgon)) + 2
 
-                    if multi > 34:
-                        multi = 34
+                    if multi > 35:
+                        multi = 35
 
                 elif gas < 0:
                     sleep(0.001)
@@ -1043,13 +1043,13 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                             if time() - self.holdtime < 0.61 and confirmed:
                                 # sleep(0.02)
-                                result = self.track(conf=0.07, i=3)
+                                result = self.track(conf=0.05, i=2)
                                 confirmed = result[0]
                                 if confirmed:
                                     noballstime = time()
                                     bestbox = result[1]
                                 else:
-                                    result = self.nextTarget(bestbox, conf=0.12)
+                                    result = self.nextTarget(bestbox, conf=0.11)
                                     confirmed = result[0]
                                     if confirmed:
                                         noballstime = time()
@@ -1057,7 +1057,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                         self.holdtime = time()
                             else:
                                 # sleep(0.02)
-                                result = self.nextTarget(bestbox, conf=0.12)
+                                result = self.nextTarget(bestbox, conf=0.11)
                                 confirmed = result[0]
                                 if confirmed:
                                     noballstime = time()
