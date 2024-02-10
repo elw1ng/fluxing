@@ -20,16 +20,7 @@ from pyduino_mk import Arduino
 import numpy as np
 import keyboard
 
-# встановлюємо IP-адресу та порт хоста
-host_ip = "192.168.0.177"
-#host_ip = "193.33.38.56"
-# замініть це на IP-адресу свого хоста
-port = 12345
 
-# підключаємося до хоста
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect((host_ip, port))
-client_socket.settimeout(0.1)
 class ClassName(BaseScript):  # Название класса (должен отличаться от других названий скриптов)
     class Turn():
         def to_rad(self, alp):
@@ -56,6 +47,21 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.timings.append(str1)
                 self.timings.append(str2)
         def __init__(self, alp, beta, t, avgd,strafes = False):
+            # встановлюємо IP-адресу та порт хоста
+
+            host_ip = "192.168.0.34"
+
+            if "ip" in sys.argv:
+                ip = int(sys.argv[sys.argv.index("ip") + 1])
+                host_ip = f"192.168.0.{ip}"
+            # host_ip = "193.33.38.56"
+            # замініть це на IP-адресу свого хоста
+            port = 12345
+
+            # підключаємося до хоста
+            client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            client_socket.connect((host_ip, port))
+            client_socket.settimeout(0.1)
             self.pi = 6858
             self.alp = alp
             self.beta = beta
