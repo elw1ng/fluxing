@@ -824,17 +824,21 @@ class ClassName(BaseScript):  # Название класса (должен от
                         else:
                             # dist1 = self.checkDistance(checkbox)
                             # dist2 = self.checkDistance(box)
-                            if box.cls ==0 and newbox.cls ==1:
+                            if box.cls ==0 and newbox.cls ==1 and XDiff * XDiff + YDiff * YDiff >= 140:
+                                newbox = box
+                                newbox_XDiff = XDiff
+                                newbox_YDiff = YDiff
+                            elif newbox_XDiff * newbox_XDiff + newbox_YDiff * newbox_YDiff < 150:
                                 newbox = box
                                 newbox_XDiff = XDiff
                                 newbox_YDiff = YDiff
                             elif (box.cls ==0 or newbox.cls ==1) and XDiff * XDiff + YDiff * YDiff >= 200 and \
                                     (
-                                            newbox.conf < box.conf or newbox_XDiff * newbox_XDiff + newbox_YDiff * newbox_YDiff < 200):
+                                            newbox.conf < box.conf):
                                 newbox = box
                                 newbox_XDiff = XDiff
                                 newbox_YDiff = YDiff
-                        if (newbox.cls ==0) and newbox.conf > 0.2 and newbox_XDiff * newbox_XDiff + newbox_YDiff * newbox_YDiff >= 200:
+                        if (newbox.cls ==0) and newbox.conf > 0.2 and newbox_XDiff * newbox_XDiff + newbox_YDiff * newbox_YDiff >= 180:
                             return True, newbox
         if found:
             return True, newbox
