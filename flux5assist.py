@@ -242,6 +242,9 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.turn = None
         self.startextramove = False
 
+        self.rebuffCounter = 0
+        self.lastAntiAFKmove = 0
+
     def movetoalp(self, alp):
         if alp >= 2 * self.pi:
             alp = alp - 2 * self.pi * int(alp / (2 * self.pi))
