@@ -757,7 +757,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         return False, None
 
-    def track(self, conf=0.12, i=1):
+    def track(self, conf=0.07, i=1):
 
         newbox = None
         newboxdist = None
@@ -1024,7 +1024,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                             if time() - self.holdtime < 0.61 and confirmed:
                                 # sleep(0.02)
-                                result = self.track(conf=0.12, i=2)
+                                result = self.track(conf=0.07, i=3)
                                 confirmed = result[0]
                                 if confirmed:
                                     noballstime = time()
