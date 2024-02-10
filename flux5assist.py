@@ -1383,7 +1383,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 if (time() - self.looptime > 5.5):
                     self.nospiritCounter += 1
                     self.nospiritRow += 1
-                    self.gosave()
+                    #self.gosave()
                     return False
                 if self.blackscreen:
                     self.blackscreen_event.wait()
@@ -1481,8 +1481,8 @@ class ClassName(BaseScript):  # Название класса (должен от
             '''
             if (time() - nospirittime > 12):
                 self.lkmrelease()
-                self.restart = True
-                self.gosave()
+                #self.restart = True
+                #self.gosave()
                 return False
             '''
             if self.lowmana:
@@ -2013,25 +2013,13 @@ class ClassName(BaseScript):  # Название класса (должен от
                 break
             if self.startLoop():
                 self.BallLoop()
-            if self.restart:
-                self.restart = False
-                self.returning()
-                continue
             self.lkmrelease()
             checkrebuff = time()-timer60power > 52
             if checkrebuff:
                 while time()-timer60power < 53.1:
                     sleep(0.1)
                     self.getNextFrame()
-                    if self.blackScreenDetect():
-                        self.send_message_telega(
-                            f"VAS ZABANISHILI or VAS KICKNULO pered buffom expel")
-                        self.stop = True
 
-                    if self.checklowmana():
-                        print("LOWMANA")
-                        self.restart = True
-                        self.gosave()
                     print("wait until 4 sec of expel")
             if checkrebuff:
                 self.fastselfcast(self.power, 6.0 )
@@ -2043,9 +2031,6 @@ class ClassName(BaseScript):  # Название класса (должен от
                 break
 
             self.SpiritLoop()
-            if self.restart:
-                self.restart = False
-                continue
             if self.stop:
                 break
             sleep(0.1)
