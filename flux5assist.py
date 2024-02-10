@@ -1956,7 +1956,9 @@ class ClassName(BaseScript):  # Название класса (должен от
 
     def custom(self):
 
-
+        if self.checker is None:
+            self.checker = Thread(target=self.checkers, args=())
+            self.checker.start()
 
 
         #self.camera.start(region=(8+self.rect[0], 31+self.rect[1], 640+self.rect[0]-8, 640+self.rect[1]-31), target_fps=self.target_fps)
