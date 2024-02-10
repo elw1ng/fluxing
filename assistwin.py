@@ -712,7 +712,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.t.start()
             return True, None
 
-    def confirmExisting(self, checkbox, precision=0.6, conf=0.05, i=3):
+    def confirmExisting(self, checkbox, precision=0.6, conf=0.06, i=3):
 
         newbox = None
         newbox_XDiff = None
@@ -757,7 +757,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         return False, None
 
-    def track(self, conf=0.21, i=1):
+    def track(self, conf=0.12, i=1):
 
         newbox = None
         newboxdist = None
@@ -798,7 +798,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         return False, None
 
-    def nextTarget(self, checkbox, conf=0.05):
+    def nextTarget(self, checkbox, conf=0.12):
         newbox = None
         counter = 0
         newbox_XDiff = None
@@ -937,7 +937,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             # sleep(1 / 60)
             self.getNextFrame()
 
-            Prediction = self.model.predict(source=self.img, device=0, conf=0.07)
+            Prediction = self.model.predict(source=self.img, device=0, conf=0.12)
             detected_boxes = Prediction[0].boxes
             '''
             if self.lowmana:
@@ -956,7 +956,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                     bestbox, _ = results
 
-                    result = self.confirmExisting(bestbox, conf=0.05, i=1, precision=0.99)
+                    result = self.confirmExisting(bestbox, conf=0.12, i=1, precision=0.99)
                     confirmed = result[0]
                     bestbox = result[1]
                     scale = 1
@@ -1024,13 +1024,13 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                             if time() - self.holdtime < 0.61 and confirmed:
                                 # sleep(0.02)
-                                result = self.track(conf=0.05, i=2)
+                                result = self.track(conf=0.12, i=2)
                                 confirmed = result[0]
                                 if confirmed:
                                     noballstime = time()
                                     bestbox = result[1]
                                 else:
-                                    result = self.nextTarget(bestbox, conf=0.05)
+                                    result = self.nextTarget(bestbox, conf=0.14)
                                     confirmed = result[0]
                                     if confirmed:
                                         noballstime = time()
@@ -1038,7 +1038,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                                         self.holdtime = time()
                             else:
                                 # sleep(0.02)
-                                result = self.nextTarget(bestbox, conf=0.05)
+                                result = self.nextTarget(bestbox, conf=0.12)
                                 confirmed = result[0]
                                 if confirmed:
                                     noballstime = time()
