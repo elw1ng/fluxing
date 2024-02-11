@@ -1,8 +1,11 @@
 import time
 
-import keyboard
+#import keyboard
 import tools.jsonOper
-import pyautogui
+#import pyautogui
+from pyduino_mk.constants import *
+from pyduino_mk import Arduino
+
 
 class BaseScript:
 
@@ -16,6 +19,7 @@ class BaseScript:
         self.isStop = False
         self.loop = True
         self.debug = True
+        self.arduino = Arduino(port='COM3')
 
     def _debug(self, value: str, debug_show=True):
         if self.debug:
@@ -51,16 +55,7 @@ class BaseScript:
         self.release(key)
         self._debug(f"{key} key released with sleep method...")
 
-    def checkExitKey(self):
-        if keyboard.is_pressed("f9"):
-            self.exitKey = True
-            self._debug(f"F9 pressed...")
-            exit(0)
 
-    def checkStopKey(self):
-        if keyboard.is_pressed("f7"):
-            self.isStop = True
-            self._debug(f"F7 pressed...")
 
     def func_repetition(self, function, repetitions, args=None):
         self._debug(f"func_repetition: func {function} for {repetitions} repetitions...")
@@ -115,26 +110,17 @@ class BaseScript:
 
     def press(self, key):
         self._debug(f"pressed {key} key...")
-        pyautogui.press(key)
+        self.arduino.write(key)
 
     def hold(self, key):
         self._debug(f"holding {key} key...")
-        pyautogui.keyDown(key)
+        self.arduino.press(key)
 
     def release(self, key):
         self._debug(f"released {key} key...")
-        pyautogui.keyUp(key)
+        self.arduino.release(key)
 
-    def run(self):
-        if keyboard.is_pressed(self.keyActivate):
-            self._debug(f"{self.name} is activated")
-            self.startFunction()
-            if self.loop:
-                self.customLoop()
-                self._debug(f"{self.name} is deactivated")
-            else:
-                self.custom()
-                self._debug(f"{self.name} is deactivated")
+
 
 
     def custom(self):

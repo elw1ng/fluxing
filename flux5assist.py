@@ -547,7 +547,8 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.lkmrelease()
         sleep(0.1)
 
-    def mousemove(self, x, y, speed=16):
+    '''
+    def mousemove(self, x, y, speed=12):
         # limiter = 235
         xi = 0
         yi = 0
@@ -618,55 +619,13 @@ class ClassName(BaseScript):  # Название класса (должен от
                     multi = int(multi * 0.4) + 1
 
     '''
-    def mousemove(self, x, y, speed=0.025):
-        # limiter = 235
-        xi=0
-        yi=0
-        xmulti =1
-        ymulti =1
-        multi = 1
-
-
-        starttimer = time()
-        if abs(x) > 0 or abs(y) > 0:
-            while True:
-                deltax= abs(x - xi)
-                deltay= abs(y - yi)
-                if deltax == 0 and deltay == 0:
-                    break
-                xmulti = int((x - xi)/deltax)
-                ymulti = int((y - yi) / deltay)
-                xstep = xmulti*multi
-                ystep = ymulti *multi
-
-                if deltax >= deltay:
-                    ystep = int(ystep * random.uniform(deltay / deltax-0.12,deltay / deltax+0.12))
-                elif  deltay >= deltax:
-                    xstep = int(xstep * random.uniform(deltax / deltay-0.12, deltax/ deltay+0.12))
-
-                if abs(xstep) > deltax:
-                    xstep = deltax*xmulti
-                if abs(ystep) > deltay:
-                    ystep = deltay*ymulti
-
-
-                self.arduino.move(xstep, ystep)
-                xi+= xstep
-                yi+= ystep
-                gas = speed - max(xi,yi)/(time() - starttimer)
-                if gas>0:
-                    razgon = max(abs(deltax/x),abs(deltay/y))
-                    multi = int(multi*(0.37+1.5*razgon)) + 1
-
-                    if multi>55:
-                        multi = 55
-
-                if gas<0:
-                    multi = int(multi * 0.5) + 1
+    def mousemove(self, x, y, speed=14):
+        self.arduino.move(x,y,speed)
+        self.mousemovetimer = time()
 
 
 
-    '''
+
 
 
     def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=2000,changealp=False):
@@ -866,7 +825,7 @@ class ClassName(BaseScript):  # Название класса (должен от
     def lkmpress(self):
         sleep(0.001)
         if not self.lkmpressed:
-            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
+            self.arduino.press()
             self.lkmpressed = True
             return True
         return False
@@ -874,7 +833,7 @@ class ClassName(BaseScript):  # Название класса (должен от
     def lkmrelease(self):
         sleep(0.001)
         if self.lkmpressed:
-            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
+            self.arduino.release()
             self.lkmpressed = False
             return True
         return False
