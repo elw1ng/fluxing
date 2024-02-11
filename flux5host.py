@@ -35,24 +35,26 @@ print("Waiting for connections...")
 # очікуємо на підключення першого клієнта
 client1_socket, client1_address = server_socket.accept()
 print("Client 1 connected from", client1_address)
+def rebuff():
+    print("REBUFF")
+    command = 3
+    command_with_time = f"{command}".encode()
+    client1_socket.sendall(command_with_time)
+def ball():
+    print("ballloop")
+    command = 4
+    command_with_time = f"{command}".encode()
+    client1_socket.sendall(command_with_time)
+def spirit():
+    print("spiritloop")
+    command = 2
+    command_with_time = f"{command}".encode()
+    client1_socket.sendall(command_with_time)
 
+
+keyboard.add_hotkey('r',rebuff)
+keyboard.add_hotkey('e', ball)
+keyboard.add_hotkey('f', spirit)
 while True:
-    if keyboard.is_pressed('r'):
-        print("REBUFF")
-        command = 3
-        command_with_time = f"{command}".encode()
-        client1_socket.sendall(command_with_time)
+    sleep(0.1)
 
-        sleep(2)
-    if keyboard.is_pressed('e'):
-        print("ballloop")
-        command = 4
-        command_with_time = f"{command}".encode()
-        client1_socket.sendall(command_with_time)
-
-        sleep(2)
-    if keyboard.is_pressed('f'):
-        print("spiritloop")
-        command = 2
-        command_with_time = f"{command}".encode()
-        client1_socket.sendall(command_with_time)

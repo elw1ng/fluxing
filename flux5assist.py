@@ -1163,30 +1163,11 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                     best_box = results[0]
                     result = self.MouseMove(best_box, currentMousemove=maxmousemove, limit=2450)
-                    try:
-                        command = client_socket.recv(1024)
-                        command = command.decode()
-                        print(command)
-                        if int(command) == 3:
-                            self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
-                            self.mousereturn[0] = 0
-                            self.mousereturn[1] = 0
-                            sleep(random.uniform(0.4, 1.2))
-                            self.fastselfcast(self.barrier, 4.5)
-                            self.fastselfcast(self.kau, 4)
-                            # self.hold_and_release_sleep(self.moveback, 1.8)
-                            # self.hold_and_release_sleep(self.moveright, 1)
-                            # sleep(1)
-                            # self.hold_and_release_sleep(self.moveleft, 1)
-                        if int(command) == 2:
-                            canpress = True
-                        elif int(command) != 2 and int(command) < 10:
-                            spirit_loop = False
 
-                    except socket.timeout:
-                        print('timeout')
-                    if canpress:
-                        self.lkmpress()
+
+
+
+                    self.lkmpress()
                     maxmousemove = result[1]
                     # sleep(0.05)
                     if self.spiritdetect():
@@ -1197,30 +1178,8 @@ class ClassName(BaseScript):  # Название класса (должен от
                         nospirittime = time()
                         # print("click")
                         detected = True
-                        try:
-                            command = client_socket.recv(1024)
-                            command = command.decode()
-                            print(command)
-                            if int(command) == 3:
-                                self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
-                                self.mousereturn[0] = 0
-                                self.mousereturn[1] = 0
-                                sleep(random.uniform(0.4, 1.2))
-                                self.fastselfcast(self.barrier, 4.5)
-                                self.fastselfcast(self.kau, 4)
-                                # self.hold_and_release_sleep(self.moveback, 1.8)
-                                # self.hold_and_release_sleep(self.moveright, 1)
-                                # sleep(1)
-                                # self.hold_and_release_sleep(self.moveleft, 1)
-                            if int(command) == 2:
-                                canpress = True
-                            elif int(command) != 2 and int(command) < 10:
-                                spirit_loop = False
 
-                        except socket.timeout:
-                            print('timeout')
-                        if canpress:
-                            self.lkmpress()
+                        self.lkmpress()
 
                         while self.spiritdetect():
                             nospirittime = time()
@@ -1251,30 +1210,8 @@ class ClassName(BaseScript):  # Название класса (должен от
                             else:
                                 ballscounter = 0
 
-                            try:
-                                command = client_socket.recv(1024)
-                                command = command.decode()
-                                print(command)
-                                if int(command) == 3:
-                                    self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
-                                    self.mousereturn[0] = 0
-                                    self.mousereturn[1] = 0
-                                    sleep(random.uniform(0.4, 1.2))
-                                    self.fastselfcast(self.barrier, 4.5)
-                                    self.fastselfcast(self.kau, 4)
-                                    # self.hold_and_release_sleep(self.moveback, 1.8)
-                                    # self.hold_and_release_sleep(self.moveright, 1)
-                                    # sleep(1)
-                                    # self.hold_and_release_sleep(self.moveleft, 1)
-                                if int(command) == 2:
-                                    canpress = True
-                                elif int(command) != 2 and int(command) < 10:
-                                    spirit_loop = False
+                            self.lkmpress()
 
-                            except socket.timeout:
-                                print('timeout')
-                            if canpress:
-                                self.lkmpress()
                             if self.blackscreen:
                                 self.blackscreen_event.wait()
                                 self.checker.join()
@@ -1911,6 +1848,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             if self.startLoop():
                 self.BallLoop()
             self.lkmrelease()
+            '''
             checkrebuff = time()-timer60power > 52
             if checkrebuff:
                 while time()-timer60power < 53.1:
@@ -1918,6 +1856,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     self.getNextFrame()
 
                     print("wait until 4 sec of expel")
+            
             if checkrebuff:
                 self.fastselfcast(self.power, 6.0 )
                 timer60power = time()
@@ -1930,6 +1869,7 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.SpiritLoop()
             if self.stop:
                 break
+            '''
             sleep(0.1)
             # win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, -mousereturn[0], -mousereturn[1], 0, 0)
             print("ANGLES", self.mousereturn[0], self.mousereturn[1])
