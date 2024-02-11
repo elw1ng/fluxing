@@ -56,5 +56,5 @@ keyboard.add_hotkey('r',rebuff)
 keyboard.add_hotkey('e', ball)
 #keyboard.add_hotkey('f', spirit)
 while True:
-    sleep(0.1)
+    keyboard.wait()
 
