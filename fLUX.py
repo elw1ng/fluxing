@@ -680,15 +680,27 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.MouseMove(best_box)
                 sleep(0.1)
 
-    def BallLoop(self):
+    def BallLoop(self, firsttime=True, maxnoballtimer=2.6):
+        if not firsttime:
+            sleep(0.3)
+
+        self.lkmrelease()
+        self.lkmpress()
         ball_loop = True
-        ball_was = False
+        if firsttime:
+            ball_was = False
+        else:
+            ball_was = True
+        lkmpresstime = time()
         noballstime = time()
         noballstimeFull = noballstime
         kitetime = time()
         maxmousemove = [0, 0]
         while (ball_loop):
 
+            if time() - noballstimeFull < 1:
+                self.lkmrelease()
+                self.lkmpress()
             '''
             if time() - kitetime > 10:
                 sleep(0.1)
@@ -700,10 +712,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 sleep(0.15)
                 self.hold_and_release_sleep(self.moveforward, 1.5)
             '''
-            if time() - self.looptime > 1 and not ball_was:
-                self.lkmpress()
-                sleep(0.35)
-                self.lkmrelease()
+
             '''
             if time() - self.looptime > 25:
                 sleep(0.2)
@@ -718,23 +727,26 @@ class ClassName(BaseScript):  # Название класса (должен от
 
             if (not ball_was):
                 noballstime = time()
+            '''
+            if self.earlydamagesave and (
+                    not ball_was or (ball_was and (time() - noballstimeFull < 1.1))) and self.lowmana:
+                print("earlyLOWMANA")
+                self.restart = True
+                self.gosave()
+                return False
+            '''
             # sleep(1 / 60)
             self.getNextFrame()
 
-            if self.blackScreenDetect():
-                self.send_message_telega(
-                    f"{time() - noballstimeFull} sec,VAS ZABANISHILI or VAS KICKNULO vo vremya SHAROV")
-                self.stop = True
-                break
-
-            Prediction = self.model.predict(source=self.img, device=0, conf=0.065)
+            Prediction = self.model.predict(source=self.img, device=0, conf=0.12)
             detected_boxes = Prediction[0].boxes
-
-            if self.checklowmana():
+            '''
+            if self.lowmana:
                 print("LOWMANA")
                 self.restart = True
                 self.gosave()
                 return False
+            '''
             # debug the loop rate
             # print('FPS {}'.format(1 / (time() - loop_time)))
             # loop_time = time()
@@ -745,102 +757,172 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                     bestbox, _ = results
 
-                    result = self.confirmExisting(bestbox, conf=0.065, i=2, precision=0.99)
+                    result = self.confirmExisting(bestbox, conf=0.12, i=1, precision=0.99)
                     confirmed = result[0]
                     bestbox = result[1]
                     scale = 1
                     # if confirmed:
-                    holdtime = time()
-                    while confirmed:
-
-                        if self.checklowmana():
-                            print("LOWMANA")
-                            self.restart = True
-                            self.gosave()
-                            return False
-                        ml = self.checkDistance(bestbox)
-                        if ml < 10:
-                            scale = self.Prefire  # random.uniform(1, 1.2)
-                        else:
-                            scale = 1 + (self.Prefire - 1) * ((100) / (ml * ml))
-                        mouseresult = self.MouseMove(bestbox, scale=scale, currentMousemove=maxmousemove)
+                    self.holdtime = time()
+                    if confirmed:
                         noballstime = time()
-                        if mouseresult[0]:
-                            ball_was = True
-                            noballstime = time()
-                            if self.lkmpress():
-                                lkmpresstime = time()
-                            if self.lkmballspam:
-                                if time() - lkmpresstime > 0.220:
-                                    self.lkmrelease()
-                                    sleep(0.001)
-                                    self.lkmpress()
-                                    lkmpresstime = time()
+                        while time() - noballstime < 0.9:
+                            '''
+                            if self.earlydamagesave and (
+                                    not ball_was or (ball_was and (time() - noballstimeFull < 0.8))) and self.lowmana:
+                                print("earlyLOWMANA")
+                                self.restart = True
+                                self.gosave()
+                                return False
+                            '''
 
-                        else:
-                            break
+                            '''
+                            if self.safeMode and (time() - noballstimeFull > 2):
+                                if (time() - noballstimeFull > 6.5) and self.checklowmana(percentage=0.08):
+                                    print("6.5 sec Timer + low mana in ballloop save")
+                                    self.restart = True
+                                    self.gosave()
+                                    return False
+                                elif (time() - noballstimeFull > 4) and self.checklowmana(percentage=0.09):
+                                    print("4 sec Timer + low mana in ballloop save")
+                                    self.restart = True
+                                    self.gosave()
+                                    return False
+                                elif self.checklowmana(percentage=0.11):
+                                    print("2 sec Timer + low mana in ballloop save")
+                                    self.restart = True
+                                    self.gosave()
+                                    return False
 
-                        maxmousemove = mouseresult[1]
+                            if self.safeMode and self.checklowmana():
+                                print("LOWMANA")
+                                self.restart = True
+                                self.gosave()
+                                return False
+                            '''
+                            ml = self.checkDistance(bestbox)
+                            if confirmed:
+                                if ml < 10:
+                                    scale = self.Prefire  # random.uniform(1, 1.2)
+                                else:
+                                    scale = 1 + (self.Prefire - 1) * ((100) / (ml * ml))
+                                mouseresult = self.MouseMove(bestbox, scale=scale, currentMousemove=maxmousemove)
+                                if mouseresult[0]:
+                                    ball_was = True
+                                    noballstime = time()
+                                    if self.lkmpress():
+                                        lkmpresstime = time()
+                                    if self.lkmballspam:
+                                        if time() - lkmpresstime > 0.21:
+                                            self.lkmrelease()
+                                            sleep(0.001)
+                                            self.lkmpress()
+                                            lkmpresstime = time()
 
-                        if time() - holdtime < 0.255:
-                            sleep(0.050)
-                            result = self.track(bestbox, conf=0.065, precision=0.99, i=1)
-                            confirmed = result[0]
-                            bestbox = result[1]
-                        else:
-                            result = self.nextTarget(bestbox, conf=0.065)
-                            confirmed = result[0]
-                            bestbox = result[1]
-                            holdtime = time()
+                                else:
+                                    break
+
+                                maxmousemove = mouseresult[1]
+
+                            if time() - self.holdtime < 0.61 and confirmed:
+                                # sleep(0.02)
+                                result = self.track(conf=0.05, i=2)
+                                confirmed = result[0]
+                                if confirmed:
+                                    noballstime = time()
+                                    bestbox = result[1]
+                                else:
+                                    result = self.nextTarget(bestbox, conf=0.11)
+                                    confirmed = result[0]
+                                    if confirmed:
+                                        noballstime = time()
+                                        bestbox = result[1]
+                                        self.holdtime = time()
+                            else:
+                                # sleep(0.02)
+                                result = self.nextTarget(bestbox, conf=0.11)
+                                confirmed = result[0]
+                                if confirmed:
+                                    noballstime = time()
+                                    bestbox = result[1]
+                                    self.holdtime = time()
 
                     # print("Otpusk")
                     # if pressed:
                     #    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
                     #    pressed= False
 
-
-            if (ball_was) and (time() - noballstime > 1.0):
-                self.lkmrelease()
-                # print("OTPUSK")
-            # if (ball_was) and (time() - noballstime > 6.0):
-            # ball_loop = False
+            # if (ball_was) and (time() - noballstime > 1.0):
             # self.lkmrelease()
-            # print("ballstop")
-            if (time() - noballstimeFull > 50):
+            # print("OTPUSK")
+            if ball_was and (time() - noballstime > 0.3):
+                self.strafe = False
+            if (ball_was) and (time() - noballstime > 1.1) and (self.mousereturn[0] > 30 or self.mousereturn[1] > 30):
+                self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
+                self.mousereturn[0] = 0
+                self.mousereturn[1] = 0
+                maxmousemove = [0, 0]
+                sleep(self.aftermovedelay - 0.005)
+
+            if (ball_was) and (time() - noballstime > maxnoballtimer) and (time() - noballstimeFull > 3.5):
+                self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
+                self.mousereturn[0] = 0
+                self.mousereturn[1] = 0
+                maxmousemove = [0, 0]
+                sleep(self.aftermovedelay - 0.005)
                 ball_loop = False
                 self.lkmrelease()
+                print("ballstop")
 
-    def getBestBox(self, detected_boxes, cls, xyxy=[0, 0, 640, 640]):
+            '''if self.safeMode and (time() - noballstimeFull > 2):
+                if (time() - noballstimeFull > 6.5) and self.checklowmana(percentage=0.08):
+                    print("6.5 sec Timer + low mana in ballloop save")
+                    self.restart = True
+                    self.gosave()
+                    return False
+                elif (time() - noballstimeFull > 4) and self.checklowmana(percentage=0.095):
+                    print("4 sec Timer + low mana in ballloop save")
+                    self.restart = True
+                    self.gosave()
+                    return False
+                elif self.checklowmana(percentage=0.11):
+                    print("2 sec Timer + low mana in ballloop save")
+                    self.restart = True
+                    self.gosave()
+                    return False
+            '''
+
+    def getBestBox(self, detected_boxes, cls):
+
         best_box = None
         # bestboxdistFactor = None
         ballexist = False
         no_time = None
         for box in detected_boxes:
-            distFactor = self.checkDistance(box)
-            Y = self.checkDistanceY(box)
-            # X = self.checkDistanceX(box)
-            if -180 < Y < 300 and xyxy[0] <= (box.xyxy[0][0] + box.xyxy[0][2]) / 2 <= xyxy[2] and xyxy[1] <= (
-                    box.xyxy[0][1] + box.xyxy[0][3]) / 2 <= xyxy[3]:
-                if box.cls == cls and not ballexist:
+            if box.cls == cls or (box.cls < 2 and cls < 2):
+                # distFactor = self.checkDistance(box)
+                Y = self.checkDistanceY(box)
+                # X = self.checkDistanceX(box)
+                if -200 < Y < 210:
+                    if not ballexist:
 
-                    result = self.confirmExisting(box)
+                        result = self.confirmExisting(box)
 
-                    confirmed = result[0]
-                    box = result[1]
-                    if confirmed:
-                        best_box = box
-                        # bestboxdistFactor= distFactor
-                        ballexist = True
-                        no_time = time()
-                elif box.cls == cls and box.conf > best_box.conf and ballexist:
-                    result = self.confirmExisting(box)
+                        confirmed = result[0]
+                        box = result[1]
+                        if confirmed:
+                            best_box = box
+                            # bestboxdistFactor= distFactor
+                            ballexist = True
+                            no_time = time()
+                    elif box.conf > best_box.conf and ballexist:
+                        result = self.confirmExisting(box)
 
-                    confirmed = result[0]
-                    box = result[1]
-                    if confirmed:
-                        best_box = box
-                        # bestboxdistFactor = distFactor
-                        no_time = time()
+                        confirmed = result[0]
+                        box = result[1]
+                        if confirmed:
+                            best_box = box
+                            # bestboxdistFactor = distFactor
+                            no_time = time()
         if ballexist:
             return best_box, no_time
         else:
