@@ -797,18 +797,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     # if pressed:
                     #    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
                     #    pressed= False
-            try:
-                command_with_time = client_socket.recv(1024)
-                command = command_with_time.decode()
 
-                # виконуємо команду та виводимо час її отримання
-                print(f"Command '{command}' received")
-                if int(command) > 0:
-                    ball_loop = False
-                    self.lkmrelease()
-                    print("Otpusk po prikazu")
-            except socket.timeout:
-                print('timeout')
 
             if (ball_was) and (time() - noballstime > 1.0):
                 self.lkmrelease()
