@@ -1244,13 +1244,13 @@ class ClassName(BaseScript):  # Название класса (должен от
                 self.send_message_telega(f"VAS ZABANISHILI or VAS KICKNULO Vo vremya selfcasta knopki {spell}")
             sys.exit()
         # sleep(0.15)
-        self.press(spell)
-        #sleep(0.05)
+        self.hold_and_release_sleep(spell, random.uniform(0.05, 0.061))
+        sleep(random.uniform(0.03, 0.051))
         # self.hold_and_release_sleep(self.moveleft,0.1)
-        self.press(self.feint)
-        #sleep(0.05)
+        self.hold_and_release_sleep(self.feint, random.uniform(0.05, 0.061))
+        sleep(random.uniform(0.03, 0.051))
         # self.hold_and_release_sleep(self.moveright,0.1)
-        self.press(self.selfcast)
+        self.hold_and_release_sleep(self.selfcast, random.uniform(0.05, 0.061))
         #if strafe:
             #self.strafe = True
             #if self.mover is None:
@@ -1750,9 +1750,9 @@ class ClassName(BaseScript):  # Название класса (должен от
                         self.press(1)
                         sleep(13)
                     timer60 = time()
-                    self.fastselfcast(self.barrier, 4.5)
+                    self.fastselfcast(self.barrier, 5)
                     # if self.checklowmana(percentage=0.36):
-                    self.fastselfcast(self.kau, 4.01)
+                    self.fastselfcast(self.kau, 4.51)
 
                 self.fastselfcast(self.summon, 6.2)
                 if self.mover is None:

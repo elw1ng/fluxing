@@ -101,9 +101,9 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
                         self.press(1)
                         sleep(13)
                     timer60 = time()
-                    self.fastselfcast(self.barrier, 4)
+                    self.fastselfcast(self.barrier, 4.5)
                     # if self.checklowmana(percentage=0.36):
-                    self.fastselfcast(self.kau, 3.7)
+                    self.fastselfcast(self.kau, 4.1)
 
                 self.fastselfcast(self.summon, 6.2)
                 if self.mover is None:
