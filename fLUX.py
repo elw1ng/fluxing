@@ -451,7 +451,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                     sleep(0.001)
                     multi = int(multi * 0.4) + 1
     '''
-    def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=2400, changealp=False):
+    def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=2200, changealp=False):
         # Check Closest
 
         at = 0
