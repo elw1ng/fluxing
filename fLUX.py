@@ -377,7 +377,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.lkmrelease()
         sleep(0.1)
 
-    def mousemove(self, x, y, speed=14):
+    def mousemove(self, x, y, speed=16):
         self.arduino.move(x,y,speed)
         self.mousemovetimer = time()
     '''
@@ -578,7 +578,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                         # box.xyxy[0][2] += 160
                         # box.xyxy[0][3] += 160
                         dist = self.checkDistance(box)
-                        if dist < 11 * (j + 1):
+                        if dist < 16:
                             if not found:
                                 newbox = box
                                 newboxdist = dist

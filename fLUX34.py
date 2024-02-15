@@ -1,3 +1,4 @@
+import random
 import sys
 from time import sleep
 from time import time
@@ -229,7 +230,7 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
                 break
             if self.stop:
                 break
-
+            sleep(random.uniform(7,14))
             self.returning()
 
             '''
