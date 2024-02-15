@@ -106,7 +106,7 @@ class ClassName(fLUX.ClassName):  # Название класса (должен 
                     # if self.checklowmana(percentage=0.36):
                     self.fastselfcast(self.kau, 4.1)
 
-                self.fastselfcast(self.summon, 6.35)
+                self.fastselfcast(self.summon, 6.4)
                 if self.mover is None:
                     self.mover = Thread(target=self.MoveBack, args=())
                     self.mover.start()
