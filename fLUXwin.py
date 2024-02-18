@@ -1,0 +1,1900 @@
+import threading
+import sys
+from scripts.base import BaseScript  # обязательный импорт для наследования
+from ultralytics import YOLO
+import cv2 as cv
+import random
+from time import sleep
+from time import time
+import dxcam
+import win32api, win32con, win32gui
+import math
+from tools import telega
+from threading import Thread
+import socket
+import pyautogui
+
+class ClassName(BaseScript):  # Название класса (должен отличаться от других названий скриптов)
+    class Turn ():
+        def to_rad(self, alp):
+            return (alp * math.pi / self.pi)
+        def mirror(self):
+            if self.alp >= self.pi:
+                self.alp = self.alp-self.pi
+            else:
+                self.alp = self.alp+self.pi
+            self.gamma = self.alp + int(self.beta / 2)-self.pi
+            self.x = -self.x
+            self.y = -self.y
+
+        def __init__(self,alp,beta,t,avgd):
+            self.pi = 6858
+            self.alp = alp
+            self.beta = beta
+            self.t = t
+            self.gamma = self.alp + int(self.beta/2)-self.pi
+            self.avgd = avgd
+            self.x = self.avgd * math.sin(self.to_rad(self.gamma))
+            self.y = self.avgd * math.cos(self.to_rad(self.gamma))
+            self.limiter = random.randint(60, 100)
+
+        def __eq__(self, other):
+            return self.alp == other.alp and self.beta == other.beta and self.t == other.t
+
+    def __init__(self):
+        super().__init__()  # инициализация класса после наследования
+
+        """                   Ключи - Обязательное                   """
+        self.host_ip = "113.30.191.17"  # "188.72.203.58"
+        self.port = 20035
+        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        connected = False
+
+        print("Connecting to server")
+        while not connected:
+            # attempt to reconnect, otherwise sleep for 2 seconds
+            try:
+                self.client_socket.connect((self.host_ip, self.port))
+                connected = True
+                print("connection successful")
+            except (ConnectionRefusedError):
+                sleep(2)
+                print("Unable to connect. try again")
+        self.client_socket.settimeout(0.05)
+
+        self.name = "fluxing"  # имя в базе ключей
+        self.keys = self.keys_data[self.name]  # загрузка настройки всех ключей данного скрипта
+        self.keyActivate = self.keys["activate_key"]  # кнопка активации скрипта
+        # обязательно скопировать ключ-значение "base", и переименовать согласно значению в self.name
+        """ Полезное, но имеющее значение по дефолту, удалить при ненадобности """
+
+        self.loop = True  # True активирует бесконечный цикл метода custom()
+        self.debug = True  # Логи на стандартные функции
+
+        """ Кастомные атрибуты писать здесь """
+        self.debug = True
+        self.mousereturn = [0, 0]
+        self.model = YOLO('best9nano125.pt')  # load a pretrained YOLOv8n model
+        self.rect = [0, 0, 0, 0]
+        # self.model = YOLO("bestOUTDOORnew.pt")  # load a pretrained YOLOv8n model
+
+        # Get rect of Window
+
+
+
+        self.hwnd = win32gui.FindWindow(None, 'Mortal Online 2  ')
+        # hwnd = win32gui.FindWindow("UnrealWindow", None) # Fortnite
+        self.rect = win32gui.GetWindowRect(self.hwnd)
+
+
+        sleep(2)
+
+        # win32gui.SetForegroundWindow(self.hwnd)
+        # self.region = self.rect[0], self.rect[1], self.rect[2] - self.rect[0], self.rect[3] - self.rect[1]
+        # initialize the WindowCapture class
+        self.camera = dxcam.create()
+        self.restart = False
+        self.selfcast = self.keys['key1']['value']
+        self.moveback = self.keys['key2']['value']
+        self.moveforward = self.keys['key3']['value']
+        self.moveleft = self.keys['key4']['value']
+        self.moveright = self.keys['key5']['value']
+        self.power = self.keys['key6']['value']
+        self.summon = self.keys['key7']['value']
+        self.barrier = self.keys['key8']['value']
+        self.kau = self.keys['key9']['value']
+        self.feint = 'q'
+        self.returnifNoAnswerTimer = int(self.keys['key10']['value'])  # seconds
+        self.MoveForwardMultiplier = float(self.keys['key11']['value'])
+        self.MaxMoveBackTimer = float(self.keys['key12']['value'])  # seconds
+        self.StopifInactive = int(self.keys['key13']['value']) * 60  # 4 minutes
+        self.MaxSpiritSize = int(self.keys['key14']['value'])  # in pixels
+        self.SpiritFile = self.keys['key15']['value']
+        self.Prefire = float(self.keys['key16']['value'])
+        self.USER1_ID = self.keys['key17']['value']
+        self.USER2_ID = self.keys['key18']['value']
+        self.TOKEN = self.keys['key19']['value']
+        self.target_fps = 55
+        self.holdtime = time()
+        if "fps" in sys.argv:
+            self.target_fps = int(sys.argv[sys.argv.index("fps") + 1])
+        self.bar = False
+        if "bar" in sys.argv:
+            self.bar = True
+        self.savemovetimer = 2.5
+        self.savedelay = 69
+        self.bot = telega.Telega(self.USER1_ID, self.USER2_ID, self.TOKEN)
+        self.SleepMode = True
+        self.NoAnsweredThecalltime = time()
+        self.looptime = time()
+        self.movetime = 0
+        self.movecounter = 0
+        self.stop = False
+        self.lowmana = False
+        self.blackscreen = False
+        self.lowmana_percentage = 0.07
+        self.lkmpressed = False
+        self.SuperSave = False
+        self.lkmspam = True
+        self.lkmballspam = False
+        self.SecretSpotSetting = False
+        self.justReturned = False
+        self.safeMode = False
+        self.nospiritRow = 0
+        self.spiritCounter = 0
+        self.nospiritCounter = 0
+        self.AFKtime = 0
+        self.lvling = False
+        self.ultrasave = True
+        self.ultrasavereturning = False
+        self.ultrasavecounter = 0
+        self.earlydamagesave = True
+
+        # self.hwnd = win32gui.FindWindow(None, 'Mortal Online 2  ')
+        # hwnd = win32gui.FinwdWindow("UnrealWindow", None) # Fortnite
+        # self.rect = win32gui.GetWindowRect(self.hwnd)
+        # region = rect[0], rect[1], rect[2] - rect[0], rect[3] - rect[1]
+        print(self.rect[0], self.rect[1], self.rect[2], self.rect[3])
+        self.rect = (8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31)
+        self.img = None
+        self.fpstimer = time()
+
+        self.t = None
+        self.mover = None
+        self.turner = None
+        self.checker = None
+        self.blackscreen_event = threading.Event()
+        self.mainmenu = False
+        self.ban = False
+        self.mousemovetimer = time()
+        self.camerastop = False
+        # self.camera.start(region=(8 + self.rect[0], 31 + self.rect[1], 640 + self.rect[0] + 8, 640 + self.rect[1] + 31), target_fps=self.target_fps)
+        self.c = Thread(target=self.videocamera, args=())
+        self.c.start()
+        self.reconnection = False
+        sleep(1)
+        self.inittimer = time()
+        self.strafe = False
+        # gps
+        self.R = 14.0
+        self.x = 0
+        self.y = 0.01
+        self.yelipse = 1.0
+        self.overload = 0
+        self.aftermovedelay = 0.061
+        if "R" in sys.argv:
+            self.R = float(sys.argv[sys.argv.index("R") + 1])
+        if "e" in sys.argv:
+            self.yelipse = float(sys.argv[sys.argv.index("e") + 1])
+        self.alp = 0
+        self.pi = 6858
+        self.turns = []
+        self.turn = None
+        self.startextramove = False
+
+    '''
+    def movetoalp(self,alp):
+        if alp >= 2*self.pi:
+            alp = alp-2*self.pi * int(alp/(2*self.pi))
+        d1 = alp-self.alp
+        d2 = 2*self.pi-d1
+        if d1<d2:
+            self.mousemove(d1,0)
+        else:
+            self.mousemove(-d2,0)
+        self.alp = alp
+    '''
+    def to_rad(self,alp):
+        return (alp*math.pi/self.pi)
+    def from_rad(self,rad):
+        return (rad*self.pi/math.pi)
+
+    '''
+    def Dt(self,t):
+        if t >= 0.5:
+            return 7.6*t-1.8
+        else:
+            return False
+    def Td(self,d):
+        if d >= 2:
+            return (d+1.8)/7.6
+        else:
+            return False
+
+    
+    def generateturn(self):
+        beta = random.randint(-int(self.pi/2.3), int(self.pi/2.3))
+        rads = self.to_rad(beta)
+        alp = self.fromcenteralp()
+        d=13.4
+        print(f"alp {alp}")
+        if rads == 0:
+            t=2.0
+        else:
+            mult = random.uniform(0.91,1.15)
+            t = self.Td(mult*6.7*rads/math.sin(rads/2))
+            d = d* mult
+
+        return self.Turn(alp,beta,t,d)
+    
+    def maketurn(self,turn):
+        self.movetoalp(turn.alp)
+        sleep(0.04)
+        if self.mover is not None:
+            self.mover.join()
+            self.mover = Thread(target=self.hold_and_release_sleep, args=('s', turn.t,))
+            self.mover.start()
+        else:
+            self.mover = Thread(target=self.hold_and_release_sleep, args=('s', turn.t,))
+            self.mover.start()
+
+        sleep(0.6)
+        self.mousemove(turn.beta, 0, limiter=turn.limiter)
+        self.alp += turn.beta
+        self.x += turn.x
+        self.y += turn.y
+
+    
+    def decider(self):
+        turn = self.generateturn()
+        if math.pow(self.x+turn.x, 2)+math.pow(self.y+turn.y, 2)/math.pow(self.yelipse, 2) < math.pow(self.R-len(self.turns)-1, 2):
+            #self.maketurn(turn)
+            print(f"Turn with :{turn.alp, turn.beta, turn.t, turn.x, turn.y}")
+            returning = turn
+            turn.mirror()
+            self.turns.append(turn)
+            return returning
+
+        else:
+            for turn in self.turns:
+                if math.pow(self.x+turn.x,2)+math.pow(self.y+turn.y,2)/math.pow(self.yelipse, 2) < math.pow(self.R - len(self.turns) + 1, 2):
+                    #self.maketurn(turn)
+                    print(f"Turn from stack with  :{turn.alp, turn.beta, turn.t,turn.x,turn.y}")
+                    returning = turn
+                    self.turns.remove(turn)
+                    return returning
+    def fromcenteralp(self):
+        x = abs(self.x)
+        y = abs(self.y)
+        print(f"calculate center{self.x,self.y}")
+        if y == 0:
+            rad = math.pi/2
+        else:
+            rad = math.atan(x/y)
+        print(f"rad {rad}")
+        if self.y < 0:
+            rad += math.pi-rad
+
+        if self.x < 0:
+            rad = 2*math.pi-rad
+        print(f"real rad {rad}")
+        alp = int(self.from_rad(rad))
+        print (f"alp{ alp }")
+        return alp+random.randint(int(-self.pi/5), int(self.pi/5))
+    '''
+    def videocamera(self):
+        while True:
+            delta = time() - self.fpstimer
+            fpstimer = 1 / self.target_fps
+            if delta < fpstimer:
+                sleep(fpstimer - delta)
+            while self.camerastop:
+                sleep(0.001)
+            img = self.camera.grab(region=self.rect)
+            while img is None:
+                img = self.camera.grab(region=self.rect)
+
+            img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
+            self.img = img
+            self.fpstimer = time()
+
+    '''
+    def videocamera(self):
+        while True:
+
+
+            while self.camerastop:
+                sleep(0.01)
+            img = self.camera.get_latest_frame()
+            #self.fpstimer = time()
+            img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
+            self.img = img
+    '''
+
+    def getNextFrame(self, throttle=0.0):
+        if self.t is not None:
+            self.t.join()
+            self.t = None
+            self.camerastop = True
+            timing = self.aftermovedelay - time() + self.mousemovetimer
+            if timing > 0:
+                sleep(timing)
+            self.camerastop = False
+        while time() - self.fpstimer > 1 / 150:
+            sleep(0.0005)
+
+    def _debug(self, text):
+        if self.debug:
+            print(f"DEBUG: {text}")
+
+    # Посылает сообщение в телегу
+    def send_message_telega(self, text):
+        try:
+            self.bot.send_message(
+                f"{text} \n when {self.spiritCounter} spirits were fluxed and {self.nospiritCounter} summon fails,\n overall AFKtime = {self.AFKtime} seconds  \n , working time: {(time() - self.inittimer) / 3600} hours , spirits per minute: {60 * self.spiritCounter / (time() - self.inittimer)}")
+        except Exception:
+            print("NO INTERNET CONNECTION... retry")
+            sleep(30)
+            self.send_message_telega(f"{text}")
+    def checkDistanceY(self, box, img_h=640):
+        x1, y1, x2, y2 = box.xyxy[0]
+        c_y = ((y2 - y1) / 2) + y1
+
+        return img_h / 2 - c_y
+
+    def checkDistanceX(self, box, img_w=640):
+        x1, y1, x2, y2 = box.xyxy[0]
+        c_x = ((x2 - x1) / 2) + x1
+        return img_w / 2 - c_x
+
+    def checkDistance(self, box, img_w=640, img_h=640):
+        x1, y1, x2, y2 = box.xyxy[0]
+        c_x = ((x2 - x1) / 2) + x1
+        c_y = ((y2 - y1) / 2) + y1
+        return math.sqrt(math.pow(img_w / 2 - c_x, 2) + math.pow(img_h / 2 - c_y, 2))
+
+    def mousemoveABS(self, x, y):
+        pos = (x + 8 + self.rect[0], y + 31 + self.rect[1])
+        win32api.SetCursorPos(pos)
+        win32gui.SetForegroundWindow(self.hwnd)
+    def pressLoc(self, mxLoc):
+        win32gui.SetForegroundWindow(self.hwnd)
+        self.mousemoveABS(mxLoc[0], mxLoc[1])
+        self.lkmrelease()
+        sleep(0.1)
+        self.lkmpress()
+        sleep(0.1)
+        self.lkmrelease()
+        sleep(0.1)
+
+    '''
+    def mousemove(self, x, y, speed=16):
+        self.arduino.move(x,y,speed)
+        self.mousemovetimer = time()
+    '''
+    def mousemove(self, x, y, speed=16):
+        # limiter = 235
+        xi = 0
+        yi = 0
+        xmulti = 1
+        ymulti = 1
+        multi = 1
+        i = 1
+        vector = 1
+        spusk = False
+        starttimer = time()
+        if abs(x) > 0 or abs(y) > 0:
+            while True:
+                if spusk:
+                    i -= 1
+                    if i == 1:
+                        spusk = False
+                        vector *= -1
+                elif random.randint(0, i) >= 7:
+
+                    spusk = True
+                else:
+                    i += 1
+                deltax = abs(x - xi)
+                deltay = abs(y - yi)
+                if deltax == 0 and deltay == 0:
+                    break
+                if deltax > 0:
+                    xmulti = int((x - xi) / deltax)
+                if deltay > 0:
+                    ymulti = int((y - yi) / deltay)
+                xstep = xmulti * multi
+                ystep = ymulti * multi
+
+                if deltax >= deltay:
+                    ystep = round(ystep * deltay / deltax)
+                    ystep += round(xstep * vector * (i * 0.01))
+                elif deltay >= deltax:
+                    xstep = round(xstep * deltax / deltay)
+                    xstep += round(ystep * vector * (i * 0.01))
+
+                if abs(xstep) > deltax and deltay < 15:
+                    xstep = deltax * xmulti
+                if abs(ystep) > deltay and deltax < 15:
+                    ystep = deltay * ymulti
+
+                win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, xstep, ystep, 0, 0)
+                self.mousemovetimer = time()
+                sleep(0.0025)
+                xi += xstep
+                yi += ystep
+                gas = speed - max(xi, yi) / (time() - starttimer) / 1000
+                if gas > 0:
+                    razy = 0
+                    razx = 0
+                    if y != 0:
+                        razy = deltay / abs(y)
+                    if x != 0:
+                        razx = deltax / abs(x)
+
+                    razgon = max(razx, razy)
+                    multi = int(multi * (0.25 + 1.2 * razgon)) + 2
+
+                    if multi > 21:
+                        multi = 21
+
+                elif gas < 0:
+                    sleep(0.001)
+                    multi = int(multi * 0.4) + 1
+
+    def MouseMove(self, box, img_w=640, img_h=640, scale=1, currentMousemove=None, limit=2200, changealp=False):
+        # Check Closest
+
+        at = 0
+        centers = []
+
+        x1, y1, x2, y2 = box.xyxy[0]
+        if box.cls == 0 and ((x2 - x1) < (y2 - y1)):
+            y2 = y2 - random.uniform(0.25, 0.35) * ((y2 - y1))
+            # print("move upper")
+        c_x = ((x2 - x1) / 2) + x1
+        c_y = ((y2 - y1) / 2) + y1
+        centers.append((c_x, c_y))
+        # dist = math.sqrt(math.pow(img_w / 2 - c_x, 2) + math.pow(img_h / 2 - c_y, 2))
+
+        # Pixel difference between crosshair(center) and the closest object
+        x = centers[at][0] - img_w / 2
+        y = centers[at][1] - img_h / 2
+
+        # Move mouse and shoot
+        scalex = scale
+        scaley = 1.0
+        x = int(x * scalex)
+        y = int(y * scaley)
+        r1, r2 = self.get_angles([int(x + img_w / 2), int(y + img_h / 2)])
+        # print(r1,r2)
+        x = int(self.from_rad(r1))  # 2.8 UE 5
+        y = int(self.from_rad(r2))
+
+        # print(x,y)
+        if x == 0 and y == 0:
+            return False, currentMousemove
+
+        if currentMousemove is not None and limit is not None:
+            if math.sqrt(math.pow(currentMousemove[0] + x, 2) + 4 * math.pow(currentMousemove[1] + y, 2)) < 1.5 * limit:
+
+                if changealp:
+                    self.alp = self.alp + x
+                else:
+                    self.mousereturn[0] += x
+                self.mousereturn[1] += y
+                currentMousemove[0] += x
+                currentMousemove[1] += y
+                if self.t is not None:
+                    self.t.join()
+                self.t = Thread(target=self.mousemove, args=(x, y))
+                self.t.start()
+                return True, currentMousemove
+            else:
+                return False, currentMousemove
+        else:
+            if changealp:
+                self.alp = self.alp + x
+            else:
+                self.mousereturn[0] += x
+            self.mousereturn[1] += y
+            if self.t is not None:
+                self.t.join()
+            self.t = Thread(target=self.mousemove, args=(x, y))
+            self.t.start()
+            return True, None
+
+    def confirmExisting(self, checkbox, precision=0.6, conf=0.07, i=3):
+
+        newbox = None
+        newbox_XDiff = None
+        newbox_YDiff = None
+        counter = 0
+        for _ in range(i):
+            found = False
+            # sleep(1 / 60)
+            self.getNextFrame()
+            Prediction = self.model.predict(source=self.img, device=0, conf=conf, iou=0.3)
+            detected_boxes = Prediction[0].boxes
+            if len(detected_boxes) >= 1:
+                for box in detected_boxes:
+                    if (box.cls == checkbox.cls or (box.cls < 2 and checkbox.cls < 2)):
+                        sizeDiff = abs(box.xyxy[0][2] - box.xyxy[0][0] - checkbox.xyxy[0][2] + checkbox.xyxy[0][0])
+                        XDiff = abs(box.xyxy[0][0] - checkbox.xyxy[0][0])
+                        YDiff = abs(box.xyxy[0][1] - checkbox.xyxy[0][1])
+                        if sizeDiff < 30 and XDiff < 25 and YDiff < 25:
+                            if not found:
+                                newbox = box
+                                newbox_XDiff = XDiff
+                                newbox_YDiff = YDiff
+                                found = True
+                            else:
+                                # dist1 = self.checkDistance(newbox)
+                                # dist2 = self.checkDistance(box)
+                                if XDiff * XDiff + YDiff * YDiff < newbox_XDiff * newbox_XDiff + newbox_YDiff * newbox_YDiff:
+                                    newbox = box
+                                    newbox_XDiff = XDiff
+                                    newbox_YDiff = YDiff
+                            if sizeDiff < 5 and XDiff < 8 and YDiff < 8:
+                                checkbox = box
+                                counter += 1
+                                continue
+
+            if found:
+                checkbox = newbox
+                counter += 1
+
+        if float(counter) / i >= precision:
+            return True, checkbox
+
+        return False, None
+
+    def track(self, conf=0.07, i=1):
+
+        newbox = None
+        newboxdist = None
+        counter = 0
+        for j in range(i):
+            found = False
+            # sleep(1 / 60)
+            self.getNextFrame()
+            Prediction = self.model.predict(source=self.img, device=0, conf=conf, iou=0.3, verbose=False)
+            detected_boxes = Prediction[0].boxes
+            if len(detected_boxes) >= 1:
+                for box in detected_boxes:
+                    if (box.cls < 2):
+                        # box = np.array(box.cpu())
+                        # box.xyxy[0][0] += 160            [160:480][160:480]
+                        # box.xyxy[0][1] += 160
+                        # box.xyxy[0][2] += 160
+                        # box.xyxy[0][3] += 160
+                        dist = self.checkDistance(box)
+                        if dist < 16:
+                            if not found:
+                                newbox = box
+                                newboxdist = dist
+                                found = True
+                            else:
+                                if dist < newboxdist:
+                                    newbox = box
+                                    newboxdist = dist
+                            if newbox.conf > 0.13 and dist < 3 * (j + 1):
+                                # self.MouseMove(newbox)
+                                return True, newbox
+
+            if found:
+                # self.MouseMove(newbox)
+                return True, newbox
+
+        return False, None
+
+    def nextTarget(self, checkbox, conf=0.1):
+        newbox = None
+        counter = 0
+        newbox_XDiff = None
+        newbox_YDiff = None
+        found = False
+        # sleep(1 / 60)
+        self.getNextFrame()
+        Prediction = self.model.predict(source=self.img, device=0, conf=conf, iou=0.3, imgsz=640)
+        detected_boxes = Prediction[0].boxes
+        if len(detected_boxes) >= 1:
+            for box in detected_boxes:
+                if (box.cls < 2):
+
+                    # sizeDiff = abs(box.xyxy[0][2] - box.xyxy[0][0] - checkbox.xyxy[0][2] + checkbox.xyxy[0][0])
+                    XDiff = abs(box.xyxy[0][0] - checkbox.xyxy[0][0])
+                    YDiff = abs(box.xyxy[0][1] - checkbox.xyxy[0][1])
+                    if XDiff < 320 and YDiff < 90:
+                        if not found:
+                            newbox = box
+                            newbox_XDiff = XDiff
+                            newbox_YDiff = YDiff
+                            found = True
+                        else:
+                            # dist1 = self.checkDistance(checkbox)
+                            # dist2 = self.checkDistance(box)
+                            if box.cls == 0 and newbox.cls == 1 and XDiff * XDiff + YDiff * YDiff >= 140:
+                                newbox = box
+                                newbox_XDiff = XDiff
+                                newbox_YDiff = YDiff
+                            elif newbox_XDiff * newbox_XDiff + newbox_YDiff * newbox_YDiff < 150:
+                                newbox = box
+                                newbox_XDiff = XDiff
+                                newbox_YDiff = YDiff
+                            elif (box.cls == 0 or newbox.cls == 1) and XDiff * XDiff + YDiff * YDiff >= 200 and \
+                                    (
+                                            newbox.conf < box.conf):
+                                newbox = box
+                                newbox_XDiff = XDiff
+                                newbox_YDiff = YDiff
+                        if (
+                                newbox.cls == 0) and newbox.conf > 0.2 and newbox_XDiff * newbox_XDiff + newbox_YDiff * newbox_YDiff >= 180:
+                            return True, newbox
+        if found:
+            return True, newbox
+        return False, None
+
+    def lkmpress(self):
+        sleep(0.001)
+        if not self.lkmpressed:
+            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
+            #self.arduino.press()
+            self.lkmpressed = True
+            return True
+        return False
+
+    def lkmrelease(self):
+        sleep(0.001)
+        if self.lkmpressed:
+            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
+            #self.arduino.release()
+            self.lkmpressed = False
+            return True
+        return False
+
+    def moveOnSpirit(self):
+        self.getNextFrame()
+        Prediction = self.model.predict(source=self.img, device=0, conf=0.2, iou=0.3)
+        # print(Prediction[0].boxes.xyxy)
+
+        detected_boxes = Prediction[0].boxes
+
+        # debug the loop rate
+        # print('FPS {}'.format(1 / (time() - loop_time)))
+        # loop_time = time()
+        print("i will check")
+        if len(detected_boxes) >= 1:
+            results = self.getBestBox(detected_boxes, 0)
+            if not results is None:
+                best_box = results[0]
+                self.MouseMove(best_box)
+                sleep(0.1)
+
+    def BallLoop(self, firsttime=True, maxnoballtimer=2.6):
+        if not firsttime:
+            sleep(0.3)
+
+        self.lkmrelease()
+        self.lkmpress()
+        ball_loop = True
+        if firsttime:
+            ball_was = False
+        else:
+            ball_was = True
+        lkmpresstime = time()
+        noballstime = time()
+        noballstimeFull = noballstime
+        kitetime = time()
+        maxmousemove = [0, 0]
+        while (ball_loop):
+
+            if time() - noballstimeFull < 1:
+                self.lkmrelease()
+                self.lkmpress()
+            '''
+            if time() - kitetime > 10:
+                sleep(0.1)
+                self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
+                self.mousereturn[0] = 0
+                self.mousereturn[1] = 0
+                self.hold_and_release_sleep(self.moveback, 1.5)
+                kitetime = time()
+                sleep(0.15)
+                self.hold_and_release_sleep(self.moveforward, 1.5)
+            '''
+
+            '''
+            if time() - self.looptime > 25:
+                sleep(0.2)
+                self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
+                self.mousereturn[0] = 0
+                self.mousereturn[1] = 0
+                self.looptime = time()
+                self.hold_and_release_sleep(self.moveforward, 1)
+                sleep(1)
+                self.movecounter += 1
+            '''
+
+            if (not ball_was):
+                noballstime = time()
+            '''
+            if self.earlydamagesave and (
+                    not ball_was or (ball_was and (time() - noballstimeFull < 1.1))) and self.lowmana:
+                print("earlyLOWMANA")
+                self.restart = True
+                self.gosave()
+                return False
+            '''
+            # sleep(1 / 60)
+            self.getNextFrame()
+
+            Prediction = self.model.predict(source=self.img, device=0, conf=0.12)
+            detected_boxes = Prediction[0].boxes
+            '''
+            if self.lowmana:
+                print("LOWMANA")
+                self.restart = True
+                self.gosave()
+                return False
+            '''
+            # debug the loop rate
+            # print('FPS {}'.format(1 / (time() - loop_time)))
+            # loop_time = time()
+
+            if len(detected_boxes) >= 1:
+                results = self.getBestBox(detected_boxes, 0)
+                if not results is None:
+
+                    bestbox, _ = results
+
+                    result = self.confirmExisting(bestbox, conf=0.12, i=1, precision=0.99)
+                    confirmed = result[0]
+                    bestbox = result[1]
+                    scale = 1
+                    # if confirmed:
+                    self.holdtime = time()
+                    if confirmed:
+                        noballstime = time()
+                        while time() - noballstime < 0.9:
+                            '''
+                            if self.earlydamagesave and (
+                                    not ball_was or (ball_was and (time() - noballstimeFull < 0.8))) and self.lowmana:
+                                print("earlyLOWMANA")
+                                self.restart = True
+                                self.gosave()
+                                return False
+                            '''
+
+                            '''
+                            if self.safeMode and (time() - noballstimeFull > 2):
+                                if (time() - noballstimeFull > 6.5) and self.checklowmana(percentage=0.08):
+                                    print("6.5 sec Timer + low mana in ballloop save")
+                                    self.restart = True
+                                    self.gosave()
+                                    return False
+                                elif (time() - noballstimeFull > 4) and self.checklowmana(percentage=0.09):
+                                    print("4 sec Timer + low mana in ballloop save")
+                                    self.restart = True
+                                    self.gosave()
+                                    return False
+                                elif self.checklowmana(percentage=0.11):
+                                    print("2 sec Timer + low mana in ballloop save")
+                                    self.restart = True
+                                    self.gosave()
+                                    return False
+
+                            if self.safeMode and self.checklowmana():
+                                print("LOWMANA")
+                                self.restart = True
+                                self.gosave()
+                                return False
+                            '''
+                            ml = self.checkDistance(bestbox)
+                            if confirmed:
+                                if ml < 10:
+                                    scale = self.Prefire  # random.uniform(1, 1.2)
+                                else:
+                                    scale = 1 + (self.Prefire - 1) * ((100) / (ml * ml))
+                                mouseresult = self.MouseMove(bestbox, scale=scale, currentMousemove=maxmousemove)
+                                if mouseresult[0]:
+                                    ball_was = True
+                                    noballstime = time()
+                                    if self.lkmpress():
+                                        lkmpresstime = time()
+                                    if self.lkmballspam:
+                                        if time() - lkmpresstime > 0.21:
+                                            self.lkmrelease()
+                                            sleep(0.001)
+                                            self.lkmpress()
+                                            lkmpresstime = time()
+
+                                else:
+                                    break
+
+                                maxmousemove = mouseresult[1]
+
+                            if time() - self.holdtime < 0.61 and confirmed:
+                                # sleep(0.02)
+                                result = self.track(conf=0.05, i=2)
+                                confirmed = result[0]
+                                if confirmed:
+                                    noballstime = time()
+                                    bestbox = result[1]
+                                else:
+                                    result = self.nextTarget(bestbox, conf=0.11)
+                                    confirmed = result[0]
+                                    if confirmed:
+                                        noballstime = time()
+                                        bestbox = result[1]
+                                        self.holdtime = time()
+                            else:
+                                # sleep(0.02)
+                                result = self.nextTarget(bestbox, conf=0.11)
+                                confirmed = result[0]
+                                if confirmed:
+                                    noballstime = time()
+                                    bestbox = result[1]
+                                    self.holdtime = time()
+
+                    # print("Otpusk")
+                    # if pressed:
+                    #    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
+                    #    pressed= False
+
+            # if (ball_was) and (time() - noballstime > 1.0):
+            # self.lkmrelease()
+            # print("OTPUSK")
+            if ball_was and (time() - noballstime > 0.3):
+                self.strafe = False
+            if (ball_was) and (time() - noballstime > 1.1) and (self.mousereturn[0] > 30 or self.mousereturn[1] > 30):
+                self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
+                self.mousereturn[0] = 0
+                self.mousereturn[1] = 0
+                maxmousemove = [0, 0]
+                sleep(self.aftermovedelay - 0.005)
+
+            if (ball_was) and (time() - noballstime > maxnoballtimer) and (time() - noballstimeFull > 3.5):
+                self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
+                self.mousereturn[0] = 0
+                self.mousereturn[1] = 0
+                maxmousemove = [0, 0]
+                sleep(self.aftermovedelay - 0.005)
+                ball_loop = False
+                self.lkmrelease()
+                print("ballstop")
+
+            '''if self.safeMode and (time() - noballstimeFull > 2):
+                if (time() - noballstimeFull > 6.5) and self.checklowmana(percentage=0.08):
+                    print("6.5 sec Timer + low mana in ballloop save")
+                    self.restart = True
+                    self.gosave()
+                    return False
+                elif (time() - noballstimeFull > 4) and self.checklowmana(percentage=0.095):
+                    print("4 sec Timer + low mana in ballloop save")
+                    self.restart = True
+                    self.gosave()
+                    return False
+                elif self.checklowmana(percentage=0.11):
+                    print("2 sec Timer + low mana in ballloop save")
+                    self.restart = True
+                    self.gosave()
+                    return False
+            '''
+
+    def getBestBox(self, detected_boxes, cls):
+
+        best_box = None
+        # bestboxdistFactor = None
+        ballexist = False
+        no_time = None
+        for box in detected_boxes:
+            if box.cls == cls or (box.cls < 2 and cls < 2):
+                # distFactor = self.checkDistance(box)
+                Y = self.checkDistanceY(box)
+                # X = self.checkDistanceX(box)
+                if -200 < Y < 210:
+                    if not ballexist:
+
+                        result = self.confirmExisting(box)
+
+                        confirmed = result[0]
+                        box = result[1]
+                        if confirmed:
+                            best_box = box
+                            # bestboxdistFactor= distFactor
+                            ballexist = True
+                            no_time = time()
+                    elif box.conf > best_box.conf and ballexist:
+                        result = self.confirmExisting(box)
+
+                        confirmed = result[0]
+                        box = result[1]
+                        if confirmed:
+                            best_box = box
+                            # bestboxdistFactor = distFactor
+                            no_time = time()
+        if ballexist:
+            return best_box, no_time
+        else:
+            return None
+
+    def lkmspamer(self):
+        while self.lkmspam:
+            sleep(0.215)
+            self.lkmrelease()
+            self.lkmpress()
+        sleep(0.002)
+        self.lkmrelease()
+
+    def SpiritLoop(self, worktime=None):
+        ballscounter = 0
+        nodetectcounter = 0
+        starttime = time()
+        spirit_loop = True
+        nospirittime = starttime
+        predictedtime = nospirittime
+        extramove = False
+        maxmousemove = [0, 0]
+        detected = False
+        while (spirit_loop):
+            if worktime is not None and time() - starttime >= worktime:
+                self.lkmrelease()
+                return True
+
+            self.getNextFrame()
+            '''
+            if self.lowmana:
+                print("LOWMANA")
+                self.restart = True
+                self.gosave()
+                return False
+            '''
+            if self.blackscreen:
+                self.blackscreen_event.wait()
+                self.checker.join()
+                if not self.ban and not self.mainmenu:
+                    self.send_message_telega(f"BANISHED in spiritloop")
+                sys.exit()
+            ###
+            Prediction = self.model.predict(source=self.img, device=0, conf=0.15, iou=0.3)
+            # print(Prediction[0].boxes.xyxy)
+
+            detected_boxes = Prediction[0].boxes
+
+            # debug the loop rate
+            # print('FPS {}'.format(1 / (time() - loop_time)))
+            # loop_time = time()
+            # print("i will check")
+
+            if len(detected_boxes) >= 1:
+                results = self.getBestBox(detected_boxes, 2)
+                if not results is None:
+
+                    best_box = results[0]
+                    result = self.MouseMove(best_box, currentMousemove=maxmousemove, limit=2450)
+                    maxmousemove = result[1]
+                    # sleep(0.05)
+                    if self.spiritdetect():
+                        self.lkmspam = True
+
+                        # lkmspamer = Thread(target=self.lkmspamer, args=())
+                        # lkmspamer.start()
+                        nospirittime = time()
+                        # print("click")
+                        detected = True
+                        self.lkmpress()
+
+                        while self.spiritdetect():
+                            nospirittime = time()
+                            if worktime is not None and time() - starttime >= worktime:
+                                self.lkmspam = False
+                                # lkmspamer.join()
+                                self.lkmrelease()
+                                return True
+
+                            self.getNextFrame()
+                            Prediction = self.model.predict(source=self.img, device=0, conf=0.15, iou=0.3)
+                            # print(Prediction[0].boxes.xyxy)
+
+                            detected_boxes = Prediction[0].boxes
+
+                            # debug the loop rate
+                            # print('FPS {}'.format(1 / (time() - loop_time)))
+                            # loop_time = time()
+                            # print("i will check")
+                            if len(detected_boxes) >= 3:
+                                ballscounter += 1
+
+                                if ballscounter > 9:
+                                    self.lkmspam = False
+                                    self.lkmrelease()
+                                    # lkmspamer.join()
+                                    return False
+                            else:
+                                ballscounter = 0
+
+                            self.lkmpress()
+                            if self.blackscreen:
+                                self.blackscreen_event.wait()
+                                self.checker.join()
+                                if not self.ban and not self.mainmenu:
+                                    self.send_message_telega(f"BANISHED spiritloop")
+                                sys.exit()
+                            '''
+                            if self.lowmana:
+                                print("LOWMANA")
+                                self.restart = True
+                                self.gosave()
+                                self.lkmspam = False
+                                self.lkmrelease()
+                                return False
+                            '''
+                        self.lkmspam = False
+
+                        # print("release")
+                        self.lkmrelease()
+
+                        # result = self.confirmExisting(best_box, precision=0.3, conf=0.4)
+                        # confirmed = result[0]
+                        # if confirmed:
+                        #     nospirittime = time()
+                        # if (time() - holdtime > 26.0):
+                        #     break;
+            if time() - nospirittime > 8:
+                spirit_loop = False
+            if time() - nospirittime > 4.5 and not detected:
+                self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
+                self.mousereturn[0] = 0
+                self.mousereturn[1] = 0
+                sleep(self.aftermovedelay - 0.005)
+                nodetectcounter += 1
+
+
+            if time() - predictedtime > 5 and detected:
+                spirit_loop = False
+            if time() - nospirittime > 5 and detected:
+                spirit_loop = False
+
+        self.spiritCounter += 1
+        self.nospiritRow = 0
+        return True
+
+    def startLoop(self):
+
+        start_loop = True
+        startp = self.looptime
+        nospirittime = time()
+        released = False
+        maxmousemove = [0, 0]
+        status_confirmed = False
+        while (start_loop):
+
+            self.getNextFrame()
+            if self.blackscreen:
+                self.blackscreen_event.wait()
+                self.checker.join()
+                if not self.ban and not self.mainmenu:
+                    self.send_message_telega(f"BANISHED on {time() - startp} sec in startloop")
+                sys.exit()
+
+            # print('FPS {}'.format(1 / (time() - loop_time)))
+            # loop_time = time()
+
+            while not status_confirmed:
+                if (time() - self.looptime > 5.5):
+                    self.nospiritCounter += 1
+                    self.nospiritRow += 1
+                    self.gosave()
+                    return False
+                if self.blackscreen:
+                    self.blackscreen_event.wait()
+                    self.checker.join()
+                    if not self.ban and not self.mainmenu:
+                        self.send_message_telega(f"BANISHED on {time() - startp} sec in startloop")
+                    sys.exit()
+
+                # if (time()-self.looptime > self.MaxMoveBackTimer) and not released:
+                #     self.release(self.moveback)
+                #     self.looptime = time()
+                #     #sleep(0.4)
+                #     print(f"{self.MaxMoveBackTimer} release")
+                #     released = True
+                if self.checkdrawnspirit():
+                    print(f"spiritdrawned")
+                    status_confirmed = True
+                    #if self.turner is not None:
+                        #self.turner.join()
+                        #self.turner = None
+                    released = True
+                    #sleep(0.1)
+
+                    #self.movetoalp(self.alp - int(self.turn.beta / 3.5))
+
+                    sleep(0.01)
+                    break
+
+                if not status_confirmed and self.checknospirit():
+                    # sleep(0.3)
+                    print(f"nospirit release")
+                    self.nospiritCounter += 1
+                    self.nospiritRow += 1
+                    #if self.turner is not None:
+                        #self.turner.join()
+                        #self.turner = None
+                    released = True
+                    sleep(0.2)
+                    return False
+                '''
+                if self.lowmana:
+                    print("LOWMANA")
+                    self.restart = True
+                    self.gosave()
+                    return False
+                '''
+
+                # self.getNextFrame()
+
+           # if self.turner is not None:
+                #self.turner.join()
+                #self.turner = None
+                #released = True
+
+            self.getNextFrame()
+
+            Prediction = self.model.predict(source=self.img, device=0, conf=0.2, iou=0.3)
+            detected_boxes = Prediction[0].boxes
+            # print(len(detected_boxes))
+            if len(detected_boxes) >= 1:
+                results = self.getBestBox(detected_boxes, 2)
+                if (not results is None):
+                    best_box, nospirittime = results
+
+                    result = self.confirmExisting(best_box, conf=0.2, precision=0.99, i=2)
+
+                    confirmed = result[0]
+                    best_box = result[1]
+
+                    if confirmed and released:
+                        # if not released:
+                        #     self.release(self.moveback)
+                        #     self.looptime = time()
+                        #     #sleep(0.3)
+
+                        self.lkmpress()
+
+                        result = self.MouseMove(best_box, currentMousemove=maxmousemove, limit=2450)
+                        maxmousemove = result[1]
+                        # sleep(0.11)
+                        if self.checkDistance(best_box) < 25:
+                            return True
+            '''
+            if self.ultrasave and released and (time() - nospirittime > 5):
+                self.lkmrelease()
+                if self.ultrasavereturning:
+                    self.gosave(nomessage=True, timer=2.5)
+                    self.ultrasavecounter += 1
+                    return True
+                else:
+                    self.restart = True
+                    self.gosave(nomessage=True)
+                    self.ultrasavecounter += 1
+                    return False
+            '''
+            if (time() - nospirittime > 12):
+                self.lkmrelease()
+                self.restart = True
+                self.gosave()
+                return False
+            '''
+            if self.lowmana:
+                print("LOWMANA")
+                self.restart = True
+                self.gosave()
+                return False
+            '''
+        return True
+
+    def get_angles(self, aim_target, window_size=[640, 640], fov=(60, 60)):
+        fov = (math.radians(fov[0]), math.radians(fov[1]))
+
+        x_pos = aim_target[0] / (window_size[0] - 1)
+        y_pos = aim_target[1] / (window_size[1] - 1)
+
+        x_angle = math.atan((x_pos - 0.5) * 2 * math.tan(fov[0] / 2))
+        y_angle = math.atan((y_pos - 0.5) * 2 * math.tan(fov[1] / 2))
+
+        phi = self.to_rad(self.mousereturn[1])
+
+        if phi != 0:
+            x_angle = x_angle / math.cos(phi)
+            y_angle *= (1 - x_angle * math.sin(phi) / self.Prefire)
+            '''
+            cosd = math.cos(phi) * math.cos(x_angle)
+            d = math.acos(cosd)
+            sinalp = math.sin(x_angle) / math.sin(d)
+            alp = math.asin(sinalp)
+            if phi > 0:
+                y_angle += math.asin(math.cos(alp) * math.sin(d)) - phi
+            else:
+                y_angle += -math.asin(math.cos(alp) * math.sin(d)) - phi
+            x_angle = math.atan(sinalp*math.tan(d))
+            '''
+
+        return ((x_angle), (y_angle))
+
+    def fastselfcast(self, spell, casttime,strafe = False):
+        if not self.checker.is_alive() or self.ban or self.mainmenu or self.blackscreen:
+            self.checker.join()
+            if self.ban:
+                self.returning()
+                if self.mover is not None:
+                    self.mover.join()
+                self.logout()
+            elif not self.mainmenu:
+                self.send_message_telega(f"VAS ZABANISHILI or VAS KICKNULO Vo vremya selfcasta knopki {spell}")
+            sys.exit()
+        # sleep(0.15)
+        self.hold_and_release_sleep(spell, random.uniform(0.05, 0.061))
+        sleep(random.uniform(0.03, 0.051))
+        # self.hold_and_release_sleep(self.moveleft,0.1)
+        self.hold_and_release_sleep(self.feint, random.uniform(0.05, 0.061))
+        sleep(random.uniform(0.03, 0.051))
+        # self.hold_and_release_sleep(self.moveright,0.1)
+        self.hold_and_release_sleep(self.selfcast, random.uniform(0.05, 0.061))
+        #if strafe:
+            #self.strafe = True
+            #if self.mover is None:
+               # self.mover = Thread(target=self.strafing, args=(False,12,True,))
+               # self.mover.start()
+           # else:
+             #   self.mover.join()
+              #  self.mover = Thread(target=self.strafing, args=(False,12,True,))
+              #  self.mover.start()
+        sleep(casttime/2)
+        #self.strafe = False
+        sleep(casttime/2)
+        return True
+
+    def spiritdetect(self):
+
+        # Read the images from the file
+        for i in range(3):
+            self.getNextFrame()
+            img = self.img[328:346, 290:350]
+            if self.imgfind(img, self.SpiritFile, "mask.png"):
+                self.NoAnsweredThecalltime = time()
+                return True
+        return False
+
+    def checknospirit(self):
+
+        # Read the images from the file
+        self.getNextFrame()
+        img = self.img[348:382, 213:254]
+        if self.imgfind(img, "nospirit.png", "nospiritmask.png",conf=0.91):
+            self.getNextFrame()
+            if self.imgfind(img, "nospirit.png", "nospiritmask.png",conf=0.91):
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    def checkdrawnspirit(self):
+
+        # Read the images from the file
+        self.getNextFrame()
+        img = self.img[348:382, 213:263]
+        if self.imgfind(img, "drawnthespirit.png", "drawnthespiritmask.png",conf=0.64):
+            self.getNextFrame()
+            if self.imgfind(img, "drawnthespirit.png", "drawnthespiritmask.png",conf=0.64):
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    def checklowmana(self, percentage=None, ignoresafemode=False):
+        result = True
+        if not self.safeMode and not ignoresafemode:
+            return False
+        if percentage is None:
+            percentage = self.lowmana_percentage
+        # Read the images from the file
+        bgrA = self.img[33:38, int(182 * percentage)]
+        for i in range(5):
+            bgr = bgrA[i]
+            # print(bgr)
+            if bgr[0] >= bgr[1] - 1 and bgr[2] + 1 < bgr[0] and bgr[0] > 4:
+                result = False
+        return result
+    def checkGM(self, percentage=None, ignoresafemode=False):
+        result = False
+
+        # Read the images from the file
+        bgrA = self.img[490:639, 1:150]
+        for i in range(1,149):
+            rowcounter = 0
+            for j in range(1,149):
+                bgr = bgrA[i][j]
+            # print(bgr)
+                sum = int(bgr[0]) + int(bgr[1])
+                if bgr[2] > 70 and sum < int (bgr[2] / 2):
+                    rowcounter += 1
+            if rowcounter > 22:
+                return True
+        return result
+
+    def gosave(self, nomessage=False, timer=None):
+        self.restart = True
+        if self.mover is not None:
+            self.mover.join()
+            self.mover = None
+        if timer is None:
+            delay = self.savedelay
+        else:
+            delay = timer
+        self.AFKtime += delay
+        print("TRYINGTOSTAYALIVE")
+        if not self.SleepMode and not nomessage:
+            self.send_message_telega("TRYING TO STAY ALIVe")
+        self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
+        self.mousereturn[0] = 0
+        self.mousereturn[1] = 0
+        for _ in range(1):
+            self.getNextFrame()
+            self.hold_and_release_sleep(self.moveback, self.savemovetimer)
+        if self.SuperSave:
+            sleep(0.05)
+            self.press('4')
+            sleep(0.05)
+            self.hold_and_release_sleep(self.moveright, 0.5)
+            # self.hold_and_release_sleep(self.moveleft,0.1)
+            sleep(0.05)
+            self.press(self.feint)
+            sleep(0.05)
+            self.hold_and_release_sleep(self.moveright, 0.5)
+            # self.hold_and_release_sleep(self.moveright,0.1)
+            sleep(0.05)
+            self.press(self.selfcast)
+            sleep(0.05)
+            self.hold_and_release_sleep(self.moveleft, 1)
+            self.hold_and_release_sleep(self.moveright, 1)
+            self.hold_and_release_sleep(self.moveleft, 1)
+            self.hold_and_release_sleep(self.moveright, 1)
+            self.hold_and_release_sleep(self.moveleft, 1)
+            self.press('5')
+            self.hold_and_release_sleep(self.moveright, 1)
+            self.press(self.feint)
+            self.hold_and_release_sleep(self.moveleft, 1)
+            self.press(self.selfcast)
+            for _ in range(30):
+                # if random.randint(1,10)>6:
+                # self.press("SPACEBAR")
+                self.hold_and_release_sleep(self.moveright, 1)
+                self.hold_and_release_sleep(self.moveleft, 1)
+
+            self.stop = True
+            return False
+        for _ in range(120):
+            sleep(delay / 120)
+            self.getNextFrame()
+
+        for _ in range(1):
+            self.hold_and_release_sleep(self.moveforward, self.savemovetimer * self.MoveForwardMultiplier)
+            self.getNextFrame()
+
+        self.justReturned = True
+        return True
+
+    def imgfind(self, large_image, small_img, mask, conf=0.69, loc = False ):
+
+        # Read the images from the file
+        small_image = cv.imread(small_img)
+        mask = cv.imread(mask)
+        method = cv.TM_CCOEFF_NORMED
+        result = cv.matchTemplate(large_image, small_image, method, None,mask=mask)
+        # We want the minimum squared diff`erence
+        _, mx, _, mxLoc = cv.minMaxLoc(result)
+        if mx > conf and mx < 1.1:
+            self.NoAnsweredThecalltime = time()
+            if loc:
+                return mxLoc
+            return True
+        else:
+            if loc:
+                return None
+            return False
+
+    def blackScreenDetect(self):
+
+        # Read the images from the file
+
+        img = self.img[20:70, 20:100]
+        small_image = cv.imread("white.png")
+        # cv.imshow("asdasd",small_image)
+
+        small_image = small_image  # [43:57, 60:88]
+        large_image = img
+        # cv.imshow("asdasd", large_image)
+        # cv.waitKey(0)
+        method = cv.TM_CCORR_NORMED
+        result = cv.matchTemplate(large_image, small_image, method, None)
+        # We want the minimum squared difference
+        _, mx, _, _ = cv.minMaxLoc(result)
+        #print(mx)
+        if mx == 0:
+            return True
+        else:
+            return False
+
+    def menuDetect(self):
+
+        # Read the images from the file
+
+        img = self.img[10:56, 10:113]
+        if self.imgfind(img, "menu.png", "menumask.png", conf=0.6):
+            self.mainmenu = True
+            return True
+        else:
+            self.mainmenu = False
+            return False
+    def banDetect(self):
+
+        # Read the images from the file
+        img = self.img[460:490, 120:195]
+        if self.imgfind(img, "ban.png", "banmask.png", conf=0.6):
+            return True
+        else:
+            return False
+
+    def returning(self):
+        # win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, -mousereturn[0], -mousereturn[1], 0, 0)
+        if self.t is not None:
+            self.t.join()
+            self.t = None
+            sleep(1 / 35)
+        print("ANGLES", self.mousereturn[0], self.mousereturn[1])
+        self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
+        self.mousereturn[0] = 0
+        self.mousereturn[1] = 0
+
+        sleep(0.02)
+        while self.movecounter > 0:
+            self.movecounter -= 1
+            if self.mover is None:
+                self.mover = Thread(target=self.hold_and_release_sleep, args=(self.moveforward, self.MaxMoveBackTimer * self.MoveForwardMultiplier))
+                self.mover.start()
+            else:
+                self.mover.join()
+                self.mover = Thread(target=self.hold_and_release_sleep, args=(self.moveforward, self.MaxMoveBackTimer * self.MoveForwardMultiplier))
+                self.mover.start()
+
+    def MoveBack(self):
+        self.movecounter+=1
+        self.hold_and_release_sleep(self.moveback, self.MaxMoveBackTimer)
+        #sleep(0.75)
+
+    def checkers(self):
+        gmcheck=time()
+        gmsent = False
+        while True:
+            sleep(0.8)
+            try:
+                command = self.client_socket.recv(1)
+                command = command.decode()
+                print(command)
+                if command:
+                    if int (command) >= 0:
+                        self.send_message_telega("SAVING FROM BAN")
+                        self.ban = True
+                        break
+                    else:
+                        self.send_message_telega("SERVER ISSUE ")
+                        self.ban = True
+                else:
+                    self.client_socket.close()
+
+            except socket.timeout:
+                pass
+            except socket.error:
+                # set connection status and recreate socket
+                self.reconnection = True
+                connected = False
+                self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+                print("connection lost... reconnecting")
+                while not connected:
+                    # attempt to reconnect, otherwise sleep for 2 seconds
+                    try:
+                        self.client_socket.connect((self.host_ip, self.port))
+                        connected = True
+                        print("re-connection successful")
+                    except ConnectionRefusedError:
+                        sleep(2)
+                        print("Unable to connect. try again")
+                self.client_socket.settimeout(0.05)
+                self.reconnection = False
+
+
+            if self.menuDetect():
+
+                self.send_message_telega("MAIN MENU")
+
+                for i in range(20):
+                    sleep(0.5)
+                    self.pressLoc((127, 360))
+                    sleep(1)
+                    self.getNextFrame()
+                    if self.banDetect():
+                        self.send_message_telega("BAN")
+                        command = 0
+                        command_with_time = f"{command}".encode()
+                        self.client_socket.sendall(command_with_time)
+                        break
+                break
+            if self.blackScreenDetect():
+                self.blackscreen = True
+                self.blackscreen_event.set()
+                sleep(3)
+                while self.blackScreenDetect():
+                    sleep(1)
+                    self.getNextFrame()
+                    self.press('space')
+                sleep(2)
+                if self.menuDetect():
+                    self.send_message_telega("MAIN MENU")
+                    for i in range(20):
+                        sleep(0.5)
+                        self.pressLoc((127, 360))
+                        sleep(1)
+                        self.getNextFrame()
+                        if self.banDetect():
+                            self.send_message_telega("BAN")
+                            command = 0
+                            command_with_time = f"{command}".encode()
+                            self.client_socket.sendall(command_with_time)
+                            break
+                    self.blackscreen = False
+                    self.blackscreen_event.clear()
+                    break
+                else:
+                    self.blackscreen = False
+                    self.blackscreen_event.clear()
+                    break
+            if self.checklowmana():
+                print("LOWMANA")
+                self.lowmana = True
+            else:
+                self.lowmana = False
+            if self.checkGM():
+                pass
+            else:
+                gmcheck = time()
+            if time()-gmcheck > 14 and not gmsent and time()-self.fpstimer < 1:
+                self.send_message_telega("GM!!!!!!!!!!!!!!!")
+                gmsent=True
+
+
+
+    def logout(self):
+        print("log out")
+        self.press(self.summon)
+        # sleep(0.05)
+        # self.hold_and_release_sleep(self.moveleft,0.1)
+        self.press(self.feint)
+        # sleep(0.05)
+        # self.hold_and_release_sleep(self.moveright,0.1)
+        self.press(self.selfcast)
+        '''
+        self.lkmrelease()
+        pyautogui.press('esc')
+        sleep(1)
+        self.pressLoc((322,395))
+        '''
+    def strafing(self,jump = False,imax = 11,mousemovement= False):
+        strafingtime = time()
+        while self.strafe and time()- strafingtime < 5:
+            strafetime = random.uniform(0.2 , 0.64)*random.uniform(0.2 , 0.64)
+            i = random.randint(1,imax)
+            if i==1:
+                sleep(random.uniform(0.3,1.1)*random.uniform(0.3, 1.1))
+                self.hold_and_release_sleep('d',strafetime)
+                sleep(random.uniform(0.3, 1.1)*random.uniform(0.3, 1.1))
+                self.hold_and_release_sleep('a',strafetime)
+            elif i==2:
+                sleep(random.uniform(0.3, 1.1)*random.uniform(0.3, 1.1))
+                self.hold_and_release_sleep('d', strafetime)
+                sleep(random.uniform(0.3, 1.1)*random.uniform(0.3, 1.1))
+                self.hold_and_release_sleep('a', strafetime)
+            elif i==3:
+                sleep(random.uniform(0.3, 1.1)*random.uniform(0.3, 1.1))
+                self.hold_and_release_sleep('w', strafetime)
+                sleep(random.uniform(0.3, 1.1)*random.uniform(0.3, 1.1))
+                self.hold_and_release_sleep('s', strafetime)
+            elif i==4:
+                sleep(random.uniform(0.3, 1.1)*random.uniform(0.3, 1.1))
+                self.hold_and_release_sleep('s', strafetime)
+                sleep(random.uniform(0.3, 1.1)*random.uniform(0.3, 1.1))
+                self.hold_and_release_sleep('w', strafetime)
+            elif i==5 and jump:
+                self.hold_and_release_sleep("space",0.1)
+            elif (i==6 or i==7) and mousemovement:
+                x = random.randint(-3000, 3000)
+                y = random.randint(-555, 555)
+                self.mousemove(x,y)
+                self.mousereturn[0] += x
+                self.mousereturn[1] += y
+                sleep(0.7)
+                self.mousemove(int(-self.mousereturn[0]), int(-self.mousereturn[1]))
+                self.mousereturn[0] = 0
+                self.mousereturn[1] = 0
+            else:
+                sleep(1)
+
+    def custom(self):
+        #sleep(1)
+        self.getNextFrame()
+        if self.checker is None:
+            self.checker = Thread(target=self.checkers, args=())
+            self.checker.start()
+        # self.camera.start(region=(8+self.rect[0], 31+self.rect[1], 640+self.rect[0]-8, 640+self.rect[1]-31), target_fps=self.target_fps)
+        extrabarriertime = 0
+        if self.ultrasave and self.ultrasavereturning:
+            extrabarriertime = 8
+
+
+        ###
+        Prediction = self.model.predict(source=self.img, device=0, conf=0.6, iou=0.3, imgsz=640, show=False, verbose=False)
+
+        #sleep(1)
+        ###
+        timer60power = time() - 60
+        k = 0
+        timer60 = time() - 60
+        while (True):
+
+            while self.reconnection:
+                sleep(1)
+                if time()-timer60 > 1200:
+                    self.send_message_telega("Unable to coonect to server 20 mins")
+                    sys.exit()
+            rebuffed = False
+            # 10 pixels = 1.25degree
+            self.lkmrelease()
+
+            if not self.checker.is_alive() or self.ban or self.mainmenu or self.blackscreen:
+                self.checker.join()
+                if self.ban:
+                    if self.mover is not None:
+                        self.mover.join()
+                    self.logout()
+                elif not self.mainmenu:
+                    self.send_message_telega("BANISHED BEFORE START")
+                sys.exit()
+
+            if self.stop:
+                break
+            print(
+                f"Spirit № {self.spiritCounter}  and {self.nospiritCounter} fails\n , working time: {(time() - self.inittimer) / 3600} hours , spirits per minute: {60 * self.spiritCounter / (time() - self.inittimer)}")
+
+            self.getNextFrame()
+            if self.stop:
+                break
+            started = False
+            if self.SecretSpotSetting and self.justReturned:
+                self.hold_and_release_sleep(self.moveback, 1.1)
+                self.justReturned = False
+            if time() - self.NoAnsweredThecalltime > self.StopifInactive:
+                if k % 15 == 0:
+                    self.send_message_telega("NO SPIRIT OCHEN DOLGO")
+                k += 1
+            while (not started):
+
+                if not self.checker.is_alive() or self.ban or self.mainmenu or self.blackscreen:
+                    self.checker.join()
+                    if self.ban:
+                        if self.mover is not None:
+                            self.mover.join()
+
+                        self.logout()
+                    elif not self.mainmenu:
+                        self.send_message_telega("BANISHED BEFORE START")
+                    sys.exit()
+                if self.stop:
+                    break
+                if time() - self.NoAnsweredThecalltime > self.StopifInactive:
+                    if k % 15 == 0:
+                        self.send_message_telega("NO SPIRIT OCHEN DOLGO")
+                    k += 1
+                if (time() - timer60 > 47.5 - extrabarriertime):
+                    if self.nospiritRow > 20:
+                        sleep(90)
+                        self.AFKtime += 90
+                        continue
+                    while (time() - timer60 < 60.05):
+                        sleep(0.1)
+                        self.getNextFrame()
+                        if self.lowmana:
+                            print("LOWMANA")
+                            self.restart = True
+                            self.gosave()
+
+                    rebuffed = True
+
+
+                    if not self.checker.is_alive() or self.ban or self.mainmenu or self.blackscreen:
+                        self.checker.join()
+                        if self.ban:
+                            if self.mover is not None:
+                                self.mover.join()
+                            self.logout()
+                        elif not self.mainmenu:
+                            self.send_message_telega("BANISHED BEFORE START")
+                        sys.exit()
+                    if self.lowmana:
+                        print("LOWMANA")
+                        self.restart = True
+                        self.gosave()
+                    if self.lvling:
+                        self.press(1)
+                        sleep(13)
+                    timer60 = time()
+                    self.fastselfcast(self.barrier, 5)
+                    # if self.checklowmana(percentage=0.36):
+                    self.fastselfcast(self.kau, 4.51)
+
+                self.fastselfcast(self.summon, 6.2)
+                if self.mover is None:
+                    self.mover = Thread(target=self.MoveBack, args=())
+                    self.mover.start()
+                else:
+                    self.mover.join()
+                    self.mover = Thread(target=self.MoveBack, args=())
+                    self.mover.start()
+                startp = time()
+                self.looptime = startp
+
+                print("\n\nSTARTLOOP\n\n")
+
+                started = self.startLoop()
+
+                if self.restart:
+                    self.restart = False
+                    self.returning()
+
+                    continue
+                self.movetime = self.looptime - startp
+                if (not started):
+                    sleep(1.6)
+                    self.getNextFrame()
+                    self.returning()
+                    #sleep(1)
+                    self.getNextFrame()
+
+                    if not self.checker.is_alive() or self.ban or self.mainmenu or self.blackscreen:
+                        self.checker.join()
+                        if self.ban:
+                            if self.mover is not None:
+                                self.mover.join()
+                            self.logout()
+                        elif not self.mainmenu:
+                            self.send_message_telega("BANISHED BEFORE on trying to summon spirit")
+                        sys.exit()
+
+                    if self.lowmana:
+                        print("LOWMANA")
+                        self.restart = True
+                        self.gosave()
+            print("\n\nBALLLOOP\n\n")
+
+            spiritdone = False
+            firsttime = True
+            while not spiritdone:
+                self.looptime = time()
+                if self.stop:
+                    break
+                #self.lkmrelease()
+
+                self.BallLoop(firsttime = firsttime,maxnoballtimer=2.6)
+                firsttime = False
+                if self.restart:
+                    self.restart = False
+                    break
+
+                checkrebuff = time() - timer60power > 60
+                if checkrebuff:
+                    while time() - timer60power < 60.04:
+                        self.getNextFrame()
+                        Prediction = self.model.predict(source=self.img, device=0, conf=0.3, iou=0.3)
+                        # print(Prediction[0].boxes.xyxy)
+
+                        detected_boxes = Prediction[0].boxes
+
+                        # debug the loop rate
+                        # print('FPS {}'.format(1 / (time() - loop_time)))
+                        # loop_time = time()
+                        print("i will check")
+                        if len(detected_boxes) >= 1:
+                            results = self.getBestBox(detected_boxes, 1)
+                            if not results is None:
+                                bestbox, _ = results
+                                result = self.confirmExisting(bestbox, conf=0.3, i=2, precision=0.99)
+                                confirmed = result[0]
+                                if confirmed:
+                                    continue
+
+                        if not self.checker.is_alive() or self.ban or self.mainmenu or self.blackscreen:
+                            self.checker.join()
+                            if self.ban:
+                                self.returning()
+                                if self.mover is not None:
+                                    self.mover.join()
+                                self.logout()
+                            elif not self.mainmenu:
+                                self.send_message_telega("BANISHED BEFORE EXPEL")
+                            sys.exit()
+
+                        if self.lowmana:
+                            print("LOWMANA")
+                            self.restart = True
+                            self.gosave()
+                        print("wait until 4 sec of expel")
+                if checkrebuff:
+                    #sleep(0.07)
+                    timer60power = time()
+                    self.fastselfcast(self.power, 5.5)
+
+                if not checkrebuff and not rebuffed:
+                    #sleep(0.03)
+                    self.lkmrelease()
+                    #sleep(0.07)
+                    self.press(self.kau)
+                    sleep(4)
+                #else:
+                    #self.fastselfcast(self.kau, 4)
+                print("\n\nSPIRITLOOP\n\n")
+                if self.stop:
+                    break
+                self.lkmrelease()
+                spiritdone = self.SpiritLoop()
+                self.lkmrelease()
+            if self.restart:
+                self.restart = False
+                self.returning()
+                break
+            if self.stop:
+                break
+
+            self.returning()
+
+            '''
+            for _ in range(320):
+                win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 10, 0, 0, 0)
+                sleep(0.02)
+            sleep(10.1)
+            '''
+
+        self.camera.stop()
+        print('Done.')
+        pass
+
+
+def run():
+    script_class = ClassName()  # инициализация класса (сменить название на актуальное)
+    script_class.custom()
+
+
+if __name__ == "__main__":
+    run()

@@ -19,7 +19,7 @@ class BaseScript:
         self.isStop = False
         self.loop = True
         self.debug = True
-        self.arduino = Arduino(port='COM3')
+        #self.arduino = Arduino(port='COM3')
 
     def _debug(self, value: str, debug_show=True):
         if self.debug:
