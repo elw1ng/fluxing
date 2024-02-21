@@ -430,7 +430,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
                 win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, xstep, ystep, 0, 0)
                 self.mousemovetimer = time()
-                sleep(0.0025)
+                sleep(0.002)
                 xi += xstep
                 yi += ystep
                 gas = speed - max(xi, yi) / (time() - starttimer) / 1000
@@ -443,10 +443,10 @@ class ClassName(BaseScript):  # Название класса (должен от
                         razx = deltax / abs(x)
 
                     razgon = max(razx, razy)
-                    multi = int(multi * (0.25 + 1.2 * razgon)) + 2
+                    multi = int(multi * (0.35 + 1.3 * razgon)) + 2
 
-                    if multi > 21:
-                        multi = 21
+                    if multi > 31:
+                        multi = 31
 
                 elif gas < 0:
                     sleep(0.001)
