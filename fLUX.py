@@ -74,7 +74,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         """ Кастомные атрибуты писать здесь """
         self.debug = True
         self.mousereturn = [0, 0]
-        self.model = YOLO('best9nano125.pt')  # load a pretrained YOLOv8n model
+        self.model = YOLO('best10nano125.pt')  # load a pretrained YOLOv8n model
         self.rect = [0, 0, 0, 0]
         # self.model = YOLO("bestOUTDOORnew.pt")  # load a pretrained YOLOv8n model
 
